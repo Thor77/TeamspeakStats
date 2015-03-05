@@ -24,13 +24,14 @@ def add_connect(clid, nick, logdatetime):
     clients[clid]['connected'] = True
 
 
-def add_disconnect(clid, nick, logdatetime):
+def add_disconnect(clid, nick, logdatetime, set_connected=True):
     check_client(clid, nick)
     connect = datetime.fromtimestamp(clients[clid]['last_connect'])
     delta = logdatetime - connect
     minutes = delta.seconds // 60
     increase_onlinetime(clid, minutes)
-    clients[clid]['connected'] = False
+    if set_connected:
+        clients[clid]['connected'] = False
 
 
 def add_ban(clid, nick):
@@ -101,7 +102,7 @@ for clid in clients:
     if 'connected' not in clients[clid]:
         clients[clid]['connected'] = False
     if clients[clid]['connected']:
-        add_disconnect(clid, clients[clid]['nick'], today)
+        add_disconnect(clid, clients[clid]['nick'], today, set_connected=False)
 
 
 # helper functions
@@ -113,7 +114,7 @@ def desc(key):
             values[clid] = clients[clid][key]
     for clid in sorted(values, key=values.get, reverse=True):
         value = values[clid]
-        r.append((clients[clid]['nick'], value))
+        r.append((clid, clients[clid]['nick'], value))
     return r
 
 
@@ -161,7 +162,7 @@ if len(onlinetime_desc) >= 1:
     output.append('<h1>Onlinezeit</h1>')
     output.append('<ul class="list-group">')
     colored_class = False
-    for nick, onlinetime in onlinetime_desc:
+    for clid, nick, onlinetime in onlinetime_desc:
         if onlinetime > 60:
             onlinetime_str = str(onlinetime // 60) + 'h'
             m = onlinetime % 60
@@ -169,10 +170,14 @@ if len(onlinetime_desc) >= 1:
                 onlinetime_str += ' ' + str(m) + 'm'
         else:
             onlinetime_str = str(onlinetime) + 'm'
-        colored = ''
-        if colored_class:
-            colored = ' style="background-color: #eee"'
-        output.append('<li class="list-group-item"{}><span class="badge">{}</span>{}</li>'.format(colored, onlinetime_str, nick))
+        attributes = ' class="list-group-item'
+        if clients[clid]['connected']:
+            attributes += ' list-group-item-success"'
+        elif colored_class:
+                attributes += '" style="background-color: #eee"'
+        else:
+            attributes += '"'
+        output.append('<li{}><span class="badge">{}</span>{}</li>'.format(attributes, onlinetime_str, nick))
         colored_class = not colored_class
     output.append('</ul>')
 
@@ -180,7 +185,7 @@ kicks_desc = desc('kicks')
 if len(kicks_desc) >= 1:
     output.append('<h1>Kicks</h1>')
     output.append('<ul class="list-group">')
-    for nick, kicks in kicks_desc:
+    for _, nick, kicks in kicks_desc:
         output.append('<li class="list-group-item"><span class="badge">{}</span>{}</li>'.format(kicks, nick))
     output.append('</ul>')
 
@@ -188,7 +193,7 @@ pkicks_desc = desc('pkicks')
 if len(pkicks_desc) >= 1:
     output.append('<h1>Gekickt worden</h1>')
     output.append('<ul class="list-group">')
-    for nick, pkicks in pkicks_desc:
+    for _, nick, pkicks in pkicks_desc:
         output.append('<li class="list-group-item"><span class="badge">{}</span>{}</li>'.format(pkicks, nick))
     output.append('</ul>')
 
@@ -196,7 +201,7 @@ bans_desc = desc('bans')
 if len(bans_desc) >= 1:
     output.append('<h1>Bans</h1>')
     output.append('<ul class="list-group">')
-    for nick, bans in pkicks_desc:
+    for _, nick, bans in pkicks_desc:
         output.append('<li class="list-group-item"><span class="badge">{}</span>{}</li>'.format(bans, nick))
     output.append('</ul>')
 
