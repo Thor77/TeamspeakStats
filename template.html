@@ -1,0 +1,50 @@
+<html>
+  <head>
+    <link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap-theme.min.css">
+    <style type="text/css">
+      h1, p {
+        text-align: center;
+        }
+    </style>
+  </head>
+  <body>
+    {# Onlinetime #}
+    <h1>Onlinetime</h1>
+    <ul class="list-group">
+      {% for clid, nick, onlinetime_, connected in onlinetime %}
+        <li class="list-group-item{{ ' list-group-item-success' if connected else loop.cycle('" style="background-color: #eee;', '') }}">{{ nick }}<span class="badge">{{ onlinetime_ }}</span></li>
+      {% else %}
+        <li class="list-group-item">No data</li>
+      {% endfor %}
+    </ul>
+    {# Kicks #}
+    <h1>Kicks</h1>
+    <ul class="list-group">
+      {% for _, nick, kicks_ in kicks %}
+        <li class="list-group-item">{{ nick }}<span class="badge">{{ kicks_ }}</span></li>
+      {% else %}
+        <li class="list-group-item">No data</li>
+      {% endfor %}
+    </ul>
+    {# passive Kicks #}
+    <h1>passive Kicks</h1>
+    <ul class="list-group">
+      {% for _, nick, pkicks_ in pkicks %}
+        <li class="list-group-item">{{ nick }}<span class="badge">{{ pkicks_ }}</span></li>
+      {% else %}
+        <li class="list-group-item">No data</li>
+      {% endfor %}
+    </ul>
+    {# Bans #}
+    <h1>Bans</h1>
+    <ul class="list-group">
+      {% for _, nick, bans_ in bans %}
+        <li class="list-group-item">{{ nick }}<span class="badge">{{ bans_ }}</span></li>
+      {% else %}
+        <li class="list-group-item">No data</li>
+      {% endfor %}
+    </ul>
+    <p>generated in {{ seconds }} at {{ date }}</p>
+  </body>
+</html>

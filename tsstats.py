@@ -1,7 +1,11 @@
 import re
+import sys
 import configparser
 from time import mktime
 from datetime import datetime, timedelta
+from jinja2 import Environment, FileSystemLoader
+
+# parse config
 config = configparser.ConfigParser()
 config.read('config.ini')
 if 'General' not in config or not ('logfile' in config['General'] and 'outputfile' in config['General']):
@@ -10,6 +14,7 @@ if 'General' not in config or not ('logfile' in config['General'] and 'outputfil
     sys.exit()
 log_path = config['General']['logfile']
 output_path = config['General']['outputfile']
+
 generation_start = datetime.now()
 clients = {}  # clid: {'nick': ..., 'onlinetime': ..., 'kicks': ..., 'pkicks': ..., 'bans': ..., 'last_connect': ..., 'connected': ...}
 
@@ -105,6 +110,10 @@ for clid in clients:
         add_disconnect(clid, clients[clid]['nick'], today, set_connected=False)
 
 
+generation_end = datetime.now()
+generation_delta = generation_end - generation_start
+
+
 # helper functions
 def desc(key):
     r = []
@@ -118,36 +127,19 @@ def desc(key):
     return r
 
 
-#################
-# Generate HTML #
-#################
-output = []
-# head
-output.append('''
-<html>
-    <head>
-        <title>TeamspeakStats</title>
-        <link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
-        <link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap-theme.min.css">
-        <style>
-        h1 {text-align: center;}
-        </style>
-    </head>
-    <body>
-''')
-# body
-if len(clients) < 1:
-    print('No clients found!')
-    print('Keine Daten gefunden!')
-    import sys
-    sys.exit()
+def render_template():
+    arg = sys.argv[0]
+    arg_find = arg.rfind('/')
+    if arg_find == -1:
+        path = '.'
+    else:
+        path = arg[:arg_find] + '/'
 
-onlinetime_desc = desc('onlinetime')
-if len(onlinetime_desc) >= 1:
-    output.append('<h1>Onlinezeit</h1>')
-    output.append('<ul class="list-group">')
-    colored_class = False
-    for clid, nick, onlinetime in onlinetime_desc:
+    env = Environment(loader=FileSystemLoader(path))
+    template = env.get_template('template.html')
+    # format onlinetime
+    onlinetime_desc = desc('onlinetime')
+    for idx, (clid, nick, onlinetime) in enumerate(onlinetime_desc):
         if onlinetime > 60:
             onlinetime_str = str(onlinetime // 60) + 'h'
             m = onlinetime % 60
@@ -155,45 +147,12 @@ if len(onlinetime_desc) >= 1:
                 onlinetime_str += ' ' + str(m) + 'm'
         else:
             onlinetime_str = str(onlinetime) + 'm'
-        attributes = ' class="list-group-item'
-        if clients[clid]['connected']:
-            attributes += ' list-group-item-success"'
-        elif colored_class:
-                attributes += '" style="background-color: #eee"'
-        else:
-            attributes += '"'
-        output.append('<li{}><span class="badge">{}</span>{}</li>'.format(attributes, onlinetime_str, nick))
-        colored_class = not colored_class
-    output.append('</ul>')
+        onlinetime_desc[idx] = (clid, nick, onlinetime_str, clients[clid]['connected'])
 
-kicks_desc = desc('kicks')
-if len(kicks_desc) >= 1:
-    output.append('<h1>Kicks</h1>')
-    output.append('<ul class="list-group">')
-    for _, nick, kicks in kicks_desc:
-        output.append('<li class="list-group-item"><span class="badge">{}</span>{}</li>'.format(kicks, nick))
-    output.append('</ul>')
+    with open(output_path, 'w+') as f:
+        f.write(template.render(onlinetime=onlinetime_desc, kicks=desc('kicks'), pkicks=desc('pkicks'), bans=desc('bans'), seconds='{}.{}'.format(generation_delta.seconds, generation_delta.microseconds), date=generation_end.strftime('%d.%m.%Y um %H:%M')))
 
-pkicks_desc = desc('pkicks')
-if len(pkicks_desc) >= 1:
-    output.append('<h1>Gekickt worden</h1>')
-    output.append('<ul class="list-group">')
-    for _, nick, pkicks in pkicks_desc:
-        output.append('<li class="list-group-item"><span class="badge">{}</span>{}</li>'.format(pkicks, nick))
-    output.append('</ul>')
-
-bans_desc = desc('bans')
-if len(bans_desc) >= 1:
-    output.append('<h1>Bans</h1>')
-    output.append('<ul class="list-group">')
-    for _, nick, bans in pkicks_desc:
-        output.append('<li class="list-group-item"><span class="badge">{}</span>{}</li>'.format(bans, nick))
-    output.append('</ul>')
-
-generation_end = datetime.now()
-generation_delta = generation_end - generation_start
-output.append('<p style="text-align: center">generiert in {}.{} Sekunden am {}</p>'.format(generation_delta.seconds, generation_delta.microseconds, generation_end.strftime('%d.%m.%Y um %H:%M')))
-output.append('</body></html>')
-
-with open(output_path, 'w+') as f:
-    f.write('\n'.join(output))
+if len(clients) < 1:
+    print('Not enough data!')
+else:
+    render_template()
