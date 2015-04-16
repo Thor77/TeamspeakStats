@@ -5,9 +5,19 @@ from time import mktime
 from datetime import datetime, timedelta
 from jinja2 import Environment, FileSystemLoader
 
+# get path
+arg = sys.argv[0]
+arg_find = arg.rfind('/')
+if arg_find == -1:
+    path = '.'
+else:
+    path = arg[:arg_find]
+path += '/'
+
+
 # parse config
 config = configparser.ConfigParser()
-config.read('config.ini')
+config.read(path + 'config.ini')
 if 'General' not in config or not ('logfile' in config['General'] and 'outputfile' in config['General']):
     print('Invalid configuration!')
     import sys
@@ -128,13 +138,6 @@ def desc(key):
 
 
 def render_template():
-    arg = sys.argv[0]
-    arg_find = arg.rfind('/')
-    if arg_find == -1:
-        path = '.'
-    else:
-        path = arg[:arg_find] + '/'
-
     env = Environment(loader=FileSystemLoader(path))
     template = env.get_template('template.html')
     # format onlinetime
