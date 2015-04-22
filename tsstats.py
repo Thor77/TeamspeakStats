@@ -18,10 +18,11 @@ path += '/'
 # parse config
 config = configparser.ConfigParser()
 config.read(path + 'config.ini')
-if 'General' not in config or not ('logfile' in config['General'] and 'outputfile' in config['General']):
+if 'General' not in config or not ('title' in config['General'] and 'logfile' in config['General'] and 'outputfile' in config['General']):
     print('Invalid configuration!')
     import sys
     sys.exit()
+title = config['General']['title']
 log_path = config['General']['logfile']
 output_path = config['General']['outputfile']
 
@@ -153,7 +154,7 @@ def render_template():
         onlinetime_desc[idx] = (clid, nick, onlinetime_str, clients[clid]['connected'])
 
     with open(output_path, 'w+') as f:
-        f.write(template.render(onlinetime=onlinetime_desc, kicks=desc('kicks'), pkicks=desc('pkicks'), bans=desc('bans'), seconds='{}.{}'.format(generation_delta.seconds, generation_delta.microseconds), date=generation_end.strftime('%d.%m.%Y um %H:%M')))
+        f.write(template.render(title=title, onlinetime=onlinetime_desc, kicks=desc('kicks'), pkicks=desc('pkicks'), bans=desc('bans'), seconds='{}.{}'.format(generation_delta.seconds, generation_delta.microseconds), date=generation_end.strftime('%d.%m.%Y um %H:%M')))
 
 if len(clients) < 1:
     print('Not enough data!')
