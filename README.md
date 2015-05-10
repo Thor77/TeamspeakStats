@@ -25,3 +25,4 @@ outputfile = /var/www/html/stats.html
 
 # TODO
 - Localization
+- Map multiple ID's to one user (`json`)
