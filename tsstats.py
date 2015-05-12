@@ -1,5 +1,6 @@
 import re
 import sys
+import json
 import configparser
 from time import mktime
 from datetime import datetime, timedelta
@@ -18,13 +19,22 @@ path += '/'
 # parse config
 config = configparser.ConfigParser()
 config.read(path + 'config.ini')
-if 'General' not in config or not ('title' in config['General'] and 'logfile' in config['General'] and 'outputfile' in config['General']):
-    print('Invalid configuration!')
+# check keys
+general = config['General']
+html = config['HTML']
+if ('logfile' not in general or 'outputfile' not in general) or ('title' not in html):
+    print('Invalid config!')
     import sys
     sys.exit()
-title = config['General']['title']
-log_path = config['General']['logfile']
-output_path = config['General']['outputfile']
+log_path = general['logfile']
+output_path = general['outputfile']
+title = html['title']
+show_onlinetime = html.get('onlinetime', True)
+show_kicks = html.get('kicks', True)
+show_pkicks = html.get('pkicks', True)
+show_bans = html.get('bans', True)
+# read id_map
+id_map = json.load(open(path + 'id_map.json'))
 
 generation_start = datetime.now()
 clients = {}  # clid: {'nick': ..., 'onlinetime': ..., 'kicks': ..., 'pkicks': ..., 'bans': ..., 'last_connect': ..., 'connected': ...}
@@ -97,22 +107,27 @@ with open(log_path, 'r') as f:
         if data.startswith('client'):
             r = cldata.findall(data)[0]
             nick = r[0]
-            id = r[1]
+            clid = r[1]
+            #print(clid, nick, sep=' | ')
+            if clid in id_map:
+                clid = id_map[clid]
             if data.startswith('client connected'):
-                add_connect(id, nick, logdatetime)
+                add_connect(clid, nick, logdatetime)
             elif data.startswith('client disconnected'):
-                add_disconnect(id, nick, logdatetime)
+                add_disconnect(clid, nick, logdatetime)
                 if 'invokerid' in data:
-                    add_pkick(id, nick)
+                    add_pkick(clid, nick)
                     r = cldata_invoker.findall(data)[0]
                     nick = r[1]
-                    id = r[0]
-                    add_kick(id, nick)
+                    clid = r[0]
+                    if clid in id_map:
+                        clid = id_map[clid]
+                    add_kick(clid, nick)
         elif data.startswith('ban added') and 'cluid' in data:
             r = cldata_ban.findall(data)[0]
             nick = r[0]
-            id = r[1]
-            add_ban(id, nick)
+            clid = r[1]
+            add_ban(clid, nick)
 
 for clid in clients:
     if 'connected' not in clients[clid]:
@@ -154,7 +169,12 @@ def render_template():
         onlinetime_desc[idx] = (clid, nick, onlinetime_str, clients[clid]['connected'])
 
     with open(output_path, 'w+') as f:
-        f.write(template.render(title=title, onlinetime=onlinetime_desc, kicks=desc('kicks'), pkicks=desc('pkicks'), bans=desc('bans'), seconds='{}.{}'.format(generation_delta.seconds, generation_delta.microseconds), date=generation_end.strftime('%d.%m.%Y um %H:%M')))
+        f.write(template.render(title=title, onlinetime=onlinetime_desc, kicks=desc('kicks'), pkicks=desc('pkicks'), bans=desc('bans'), seconds='{}.{}'.format(generation_delta.seconds, generation_delta.microseconds),
+                date=generation_end.strftime('%d.%m.%Y um %H:%M'),
+                show_onlinetime=show_onlinetime,
+                show_kicks=show_kicks,
+                show_pkicks=show_pkicks,
+                show_bans=show_bans))
 
 if len(clients) < 1:
     print('Not enough data!')

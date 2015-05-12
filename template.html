@@ -11,6 +11,7 @@
   </head>
   <body>
     {# Onlinetime #}
+    {% if show_onlinetime is sameas true %}
     <h1>Onlinetime</h1>
     <ul class="list-group">
       {% for clid, nick, onlinetime_, connected in onlinetime %}
@@ -19,7 +20,10 @@
         <li class="list-group-item">No data</li>
       {% endfor %}
     </ul>
+    {% endif %}
+
     {# Kicks #}
+    {% if show_kicks is sameas true %}
     <h1>Kicks</h1>
     <ul class="list-group">
       {% for _, nick, kicks_ in kicks %}
@@ -28,7 +32,10 @@
         <li class="list-group-item">No data</li>
       {% endfor %}
     </ul>
+    {% endif %}
+
     {# passive Kicks #}
+    {% if show_pkicks is sameas true %}
     <h1>passive Kicks</h1>
     <ul class="list-group">
       {% for _, nick, pkicks_ in pkicks %}
@@ -37,7 +44,10 @@
         <li class="list-group-item">No data</li>
       {% endfor %}
     </ul>
+    {% endif %}
+
     {# Bans #}
+    {% if show_bans is sameas true %}
     <h1>Bans</h1>
     <ul class="list-group">
       {% for _, nick, bans_ in bans %}
@@ -46,6 +56,7 @@
         <li class="list-group-item">No data</li>
       {% endfor %}
     </ul>
+    {% endif %}
     <p>generated in {{ seconds }} at {{ date }}</p>
   </body>
 </html>
