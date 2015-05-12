@@ -3,8 +3,15 @@ import sys
 import json
 import configparser
 from time import mktime
+from os.path import exists
 from datetime import datetime, timedelta
 from jinja2 import Environment, FileSystemLoader
+
+
+def exit(error):
+    print('FATAL ERROR:', error)
+    import sys
+    sys.exit(1)
 
 # get path
 arg = sys.argv[0]
@@ -15,26 +22,38 @@ else:
     path = arg[:arg_find]
 path += '/'
 
+config_path = path + 'config.ini'
+id_map_path = path + 'id_map.json'
+
+# exists config-file
+if not exists(config_path):
+    exit('Couldn\'t find config-file at {}'.format(config_path))
 
 # parse config
 config = configparser.ConfigParser()
-config.read(path + 'config.ini')
+config.read(config_path)
 # check keys
+if 'General' not in config or 'HTML' not in config:
+    exit('Invalid config!')
 general = config['General']
 html = config['HTML']
 if ('logfile' not in general or 'outputfile' not in general) or ('title' not in html):
-    print('Invalid config!')
-    import sys
-    sys.exit()
+    exit('Invalid config!')
 log_path = general['logfile']
+if not exists(log_path):
+    exit('Couldn\'t access log-file!')
 output_path = general['outputfile']
 title = html['title']
 show_onlinetime = html.get('onlinetime', True)
 show_kicks = html.get('kicks', True)
 show_pkicks = html.get('pkicks', True)
 show_bans = html.get('bans', True)
-# read id_map
-id_map = json.load(open(path + 'id_map.json'))
+
+if exists(id_map_path):
+    # read id_map
+    id_map = json.load(open(path + 'id_map.json'))
+else:
+    id_map = {}
 
 generation_start = datetime.now()
 clients = {}  # clid: {'nick': ..., 'onlinetime': ..., 'kicks': ..., 'pkicks': ..., 'bans': ..., 'last_connect': ..., 'connected': ...}
