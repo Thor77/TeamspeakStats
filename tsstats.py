@@ -187,9 +187,10 @@ def render_template():
             onlinetime_str = str(onlinetime) + 'm'
         onlinetime_desc[idx] = (clid, nick, onlinetime_str, clients[clid]['connected'])
 
+    
     with open(output_path, 'w+') as f:
         f.write(template.render(title=title, onlinetime=onlinetime_desc, kicks=desc('kicks'), pkicks=desc('pkicks'), bans=desc('bans'), seconds='{}.{}'.format(generation_delta.seconds, generation_delta.microseconds),
-                date=generation_end.strftime('%d.%m.%Y um %H:%M'),
+                date=generation_end.strftime('%d.%m.%Y %H:%M'),
                 show_onlinetime=show_onlinetime,
                 show_kicks=show_kicks,
                 show_pkicks=show_pkicks,
