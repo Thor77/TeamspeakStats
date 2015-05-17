@@ -127,7 +127,6 @@ with open(log_path, 'r') as f:
             r = cldata.findall(data)[0]
             nick = r[0]
             clid = r[1]
-            #print(clid, nick, sep=' | ')
             if clid in id_map:
                 clid = id_map[clid]
             if data.startswith('client connected'):
@@ -187,7 +186,7 @@ def render_template():
             onlinetime_str = str(onlinetime) + 'm'
         onlinetime_desc[idx] = (clid, nick, onlinetime_str, clients[clid]['connected'])
 
-    
+
     with open(output_path, 'w+') as f:
         f.write(template.render(title=title, onlinetime=onlinetime_desc, kicks=desc('kicks'), pkicks=desc('pkicks'), bans=desc('bans'), seconds='{}.{}'.format(generation_delta.seconds, generation_delta.microseconds),
                 date=generation_end.strftime('%d.%m.%Y %H:%M'),
