@@ -18,6 +18,8 @@ Run `tsstats.py` and point your web-server to the generated .html-file, now you 
 - kicks `Show the kicks-section (default=True)`
 - pkicks `Show the passive-kicks-section (default=True)`
 - bans `Show the bans-section (default=True)`
+- pbans `Show the passive-bans-section (default=True)`
+
 
 ## Example
 ```
@@ -43,4 +45,3 @@ The online-time of `1` and `3` will be added to the online-time of `2`
 
 # TODO
 - Localization
-- find a better way to count kicks and bans

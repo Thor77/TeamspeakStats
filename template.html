@@ -57,6 +57,17 @@
       {% endfor %}
     </ul>
     {% endif %}
+    {# passive Bans #}
+    {% if show_pbans is sameas true %}
+    <h1>passive Bans</h1>
+    <ul class="list-group">
+      {% for _, nick, pbans_ in pbans %}
+        <li class="list-group-item">{{ nick }}<span class="badge">{{ pbans_ }}</span></li>
+      {% else %}
+        <li class="list-group-item">No data</li>
+      {% endfor %}
+    </ul>
+    {% endif %}
     <p>generated in {{ seconds }} at {{ date }}</p>
   </body>
 </html>

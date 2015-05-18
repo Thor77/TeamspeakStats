@@ -2,8 +2,9 @@ import re
 import sys
 import json
 import configparser
-from time import mktime
 from os.path import exists
+from telnetlib import Telnet
+from time import mktime, sleep
 from datetime import datetime, timedelta
 from jinja2 import Environment, FileSystemLoader
 
@@ -48,6 +49,7 @@ show_onlinetime = html.get('onlinetime', True)
 show_kicks = html.get('kicks', True)
 show_pkicks = html.get('pkicks', True)
 show_bans = html.get('bans', True)
+show_pbans = html.get('pbans', True)
 
 if exists(id_map_path):
     # read id_map
@@ -57,10 +59,11 @@ else:
 
 generation_start = datetime.now()
 clients = {}  # clid: {'nick': ..., 'onlinetime': ..., 'kicks': ..., 'pkicks': ..., 'bans': ..., 'last_connect': ..., 'connected': ...}
+kicks = {}
 
 cldata = re.compile(r"'(.*)'\(id:(\d*)\)")
 cldata_ban = re.compile(r"by\ client\ '(.*)'\(id:(\d*)\)")
-cldata_invoker = re.compile(r"invokerid=(\d*)\ invokername=(.*)\ invokeruid")
+cldata_invoker = re.compile(r"invokerid=\d*\ invokername=(.*)\ invokeruid=(.*)\ ")
 
 
 def add_connect(clid, nick, logdatetime):
@@ -87,12 +90,29 @@ def add_ban(clid, nick):
         clients[clid]['bans'] = 1
 
 
-def add_kick(clid, nick):
+def add_pban(clid, nick):
     check_client(clid, nick)
-    if 'kicks' in clients[clid]:
-        clients[clid]['kicks'] += 1
+    if 'pbans' in clients[clid]:
+        clients[clid]['pbans'] += 1
     else:
-        clients[clid]['kicks'] = 1
+        clients[clid]['pbans'] = 1
+
+
+####
+#
+#
+#  TODO
+#
+#
+###
+def add_kick(cluid, nick):
+    if cluid not in kicks:
+        kicks[cluid] = {}
+    if 'kicks' in kicks[cluid]:
+        kicks[cluid]['kicks'] += 1
+    else:
+        kicks[cluid]['kicks'] = 1
+    kicks[cluid]['nick'] = nick
 
 
 def add_pkick(clid, nick):
@@ -133,14 +153,14 @@ with open(log_path, 'r') as f:
                 add_connect(clid, nick, logdatetime)
             elif data.startswith('client disconnected'):
                 add_disconnect(clid, nick, logdatetime)
-                if 'invokerid' in data:
+                if 'bantime' in data:
+                    add_pban(clid, nick)
+                elif 'invokerid' in data:
                     add_pkick(clid, nick)
                     r = cldata_invoker.findall(data)[0]
-                    nick = r[1]
-                    clid = r[0]
-                    if clid in id_map:
-                        clid = id_map[clid]
-                    add_kick(clid, nick)
+                    nick = r[0]
+                    cluid = r[1]
+                    add_kick(cluid, nick)
         elif data.startswith('ban added') and 'cluid' in data:
             r = cldata_ban.findall(data)[0]
             nick = r[0]
@@ -159,15 +179,15 @@ generation_delta = generation_end - generation_start
 
 
 # helper functions
-def desc(key):
+def desc(key, data_dict=clients):
     r = []
     values = {}
-    for clid in clients:
-        if key in clients[clid]:
-            values[clid] = clients[clid][key]
+    for clid in data_dict:
+        if key in data_dict[clid]:
+            values[clid] = data_dict[clid][key]
     for clid in sorted(values, key=values.get, reverse=True):
         value = values[clid]
-        r.append((clid, clients[clid]['nick'], value))
+        r.append((clid, data_dict[clid]['nick'], value))
     return r
 
 
@@ -186,22 +206,22 @@ def render_template():
             onlinetime_str = str(onlinetime) + 'm'
         onlinetime_desc[idx] = (clid, nick, onlinetime_str, clients[clid]['connected'])
 
-    kicks_desc = desc('kicks')
+    kicks_desc = desc('kicks', data_dict=kicks)
     pkicks_desc = desc('pkicks')
     bans_desc = desc('bans')
-    if len(kicks_desc) <= 0:
-        show_kicks = False
-    if len(pkicks_desc) <= 0:
-        show_pkicks = False
-    if len(bans_desc) <= 0:
-        show_bans = False
+    pbans_desc = desc('pbans')
+    show_kicks = len(kicks_desc) > 0
+    show_pkicks = len(pkicks_desc) > 0
+    show_bans = len(bans_desc) > 0
+    show_pbans = len(pbans_desc) > 0
     with open(output_path, 'w+') as f:
-        f.write(template.render(title=title, onlinetime=onlinetime_desc, kicks=desc('kicks'), pkicks=desc('pkicks'), bans=desc('bans'), seconds='{}.{}'.format(generation_delta.seconds, generation_delta.microseconds),
+        f.write(template.render(title=title, onlinetime=onlinetime_desc, kicks=kicks_desc, pkicks=pkicks_desc, bans=bans_desc, pbans=pbans_desc, seconds='{}.{}'.format(generation_delta.seconds, generation_delta.microseconds),
                 date=generation_end.strftime('%d.%m.%Y %H:%M'),
                 show_onlinetime=show_onlinetime,
                 show_kicks=show_kicks,
                 show_pkicks=show_pkicks,
-                show_bans=show_bans))
+                show_bans=show_bans,
+                show_pbans=show_pbans))
 
 if len(clients) < 1:
     print('Not enough data!')
