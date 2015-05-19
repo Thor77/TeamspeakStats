@@ -63,7 +63,7 @@ kicks = {}
 
 cldata = re.compile(r"'(.*)'\(id:(\d*)\)")
 cldata_ban = re.compile(r"by\ client\ '(.*)'\(id:(\d*)\)")
-cldata_invoker = re.compile(r"invokerid=\d*\ invokername=(.*)\ invokeruid=(.*)\ ")
+cldata_invoker = re.compile(r"invokerid=\d*\ invokername=(.*)\ invokeruid=(.*)\ reasonmsg")
 
 
 def add_connect(clid, nick, logdatetime):
