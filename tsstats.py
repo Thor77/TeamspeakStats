@@ -1,5 +1,6 @@
 import re
 import sys
+import glob
 import json
 import configparser
 from os.path import exists
@@ -135,37 +136,40 @@ def check_client(clid, nick):
         clients[clid] = {}
     clients[clid]['nick'] = nick
 
-
-with open(log_path, 'r') as f:
-    today = datetime.utcnow()
-    for line in f:
-        parts = line.split('|')
-        logdatetime = datetime.strptime(parts[0], '%Y-%m-%d %H:%M:%S.%f')
-        sid = int(parts[3].strip())
-        data = '|'.join(parts[4:]).strip()
-        if data.startswith('client'):
-            r = cldata.findall(data)[0]
-            nick = r[0]
-            clid = r[1]
-            if clid in id_map:
-                clid = id_map[clid]
-            if data.startswith('client connected'):
-                add_connect(clid, nick, logdatetime)
-            elif data.startswith('client disconnected'):
-                add_disconnect(clid, nick, logdatetime)
-                if 'bantime' in data:
-                    add_pban(clid, nick)
-                elif 'invokerid' in data:
-                    add_pkick(clid, nick)
-                    r = cldata_invoker.findall(data)[0]
-                    nick = r[0]
-                    cluid = r[1]
-                    add_kick(cluid, nick)
-        elif data.startswith('ban added') and 'cluid' in data:
-            r = cldata_ban.findall(data)[0]
-            nick = r[0]
-            clid = r[1]
-            add_ban(clid, nick)
+log_files = [file_name for file_name in glob.glob(log_path)]
+log_lines = []
+for log_file in log_files:
+    for line in open(log_file, 'r'):
+        log_lines.append(line)
+today = datetime.utcnow()
+for line in log_lines:
+    parts = line.split('|')
+    logdatetime = datetime.strptime(parts[0], '%Y-%m-%d %H:%M:%S.%f')
+    sid = int(parts[3].strip())
+    data = '|'.join(parts[4:]).strip()
+    if data.startswith('client'):
+        r = cldata.findall(data)[0]
+        nick = r[0]
+        clid = r[1]
+        if clid in id_map:
+            clid = id_map[clid]
+        if data.startswith('client connected'):
+            add_connect(clid, nick, logdatetime)
+        elif data.startswith('client disconnected'):
+            add_disconnect(clid, nick, logdatetime)
+            if 'bantime' in data:
+                add_pban(clid, nick)
+            elif 'invokerid' in data:
+                add_pkick(clid, nick)
+                r = cldata_invoker.findall(data)[0]
+                nick = r[0]
+                cluid = r[1]
+                add_kick(cluid, nick)
+    elif data.startswith('ban added') and 'cluid' in data:
+        r = cldata_ban.findall(data)[0]
+        nick = r[0]
+        clid = r[1]
+        add_ban(clid, nick)
 
 for clid in clients:
     if 'connected' not in clients[clid]:
