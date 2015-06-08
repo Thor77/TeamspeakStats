@@ -1,56 +1,128 @@
 import re
-import sys
 import glob
 import json
+import logging
+import datetime
 import configparser
-from os.path import exists
-from telnetlib import Telnet
-from time import mktime, sleep
-from datetime import datetime, timedelta
+from sys import argv
+from time import mktime
+from os.path import exists, abspath
 from jinja2 import Environment, FileSystemLoader
 
+# logging
+log = logging.getLogger()
+log.setLevel(logging.DEBUG)
+# create handler
+file_handler = logging.FileHandler('debug.txt', 'w', 'UTF-8')
+file_handler.setFormatter(logging.Formatter('[%(asctime)s] %(message)s', '%d.%m.%Y %H:%M:%S'))
+file_handler.setLevel(logging.DEBUG)
 
-def exit(error):
-    print('FATAL ERROR:', error)
-    import sys
-    sys.exit(1)
+stream_handler = logging.StreamHandler()
+stream_handler.setLevel(logging.INFO)
+# add handler
+log.addHandler(file_handler)
+log.addHandler(stream_handler)
 
-# get path
-arg = sys.argv[0]
-arg_find = arg.rfind('/')
-if arg_find == -1:
-    path = '.'
-else:
-    path = arg[:arg_find]
-path += '/'
 
-config_path = path + 'config.ini'
-id_map_path = path + 'id_map.json'
+class Clients:
 
-# exists config-file
+    def __init__(self):
+        self.clients_by_id = {}
+        self.clients_by_uid = {}
+
+    def is_id(self, id_or_uid):
+        try:
+            int(id_or_uid)
+            return True
+        except ValueError:
+            return False
+
+    def __add__(self, id_or_uid):
+        if self.is_id(id_or_uid):
+            if id_or_uid not in self.clients_by_id:
+                self.clients_by_id[id_or_uid] = Client(id_or_uid)
+        else:
+            if id_or_uid not in self.clients_by_uid:
+                self.clients_by_uid[id_or_uid] = Client(id_or_uid)
+        return self
+
+    def __getitem__(self, id_or_uid):
+        if self.is_id(id_or_uid):
+            if id_or_uid not in self.clients_by_id:
+                self += id_or_uid
+            return self.clients_by_id[id_or_uid]
+        else:
+            if id_or_uid not in self.clients_by_uid:
+                self += id_or_uid
+            return self.clients_by_uid[id_or_uid]
+
+clients = Clients()
+
+
+class Client:
+
+    def __init__(self, identifier):
+        # public
+        self.identifier = identifier
+        self.nick = None
+        self.connected = False
+        self.onlinetime = datetime.timedelta()
+        self.kicks = 0
+        self.pkicks = 0
+        self.bans = 0
+        self.pbans = 0
+        # private
+        self._last_connect = 0
+
+    def connect(self, timestamp):
+        '''
+        client connects at "timestamp"
+        '''
+        logging.debug('CONNECT {}'.format(str(self)))
+        self.connected = True
+        self._last_connect = timestamp
+
+    def disconnect(self, timestamp):
+        '''
+        client disconnects at "timestamp"
+        '''
+        logging.debug('DISCONNECT {}'.format(str(self)))
+        if not self.connected:
+            raise Exception('WTF did just happen?! A client disconnected before connecting!')
+        self.connected = False
+        session_time = timestamp - self._last_connect
+        self.onlinetime += session_time
+
+    def kick(self, target):
+        '''
+        client kicks "target" (Client-obj)
+        '''
+        logging.debug('KICK {} -> {}'.format(str(self), str(target)))
+        target.pkicks += 1
+        self.kicks += 1
+
+    def ban(self, target):
+        '''
+        client bans "target" (Client-obj)
+        '''
+        logging.debug('BAN {} -> {}'.format(str(self), str(target)))
+        target.pbans += 1
+        self.bans += 1
+
+    def __str__(self):
+        return '<{},{}>'.format(self.identifier, self.nick)
+
+    def __format__(self):
+        return self.__str__()
+
+# check cmdline-args
+config_path = argv[1] if len(argv) >= 2 else 'config.ini'
+config_path = abspath(config_path)
+id_map_path = argv[2] if len(argv) >= 3 else 'id_map.json'
+id_map_path = abspath(id_map_path)
+
 if not exists(config_path):
-    exit('Couldn\'t find config-file at {}'.format(config_path))
-
-# parse config
-config = configparser.ConfigParser()
-config.read(config_path)
-# check keys
-if 'General' not in config or 'HTML' not in config:
-    exit('Invalid config!')
-general = config['General']
-html = config['HTML']
-if ('logfile' not in general or 'outputfile' not in general) or ('title' not in html):
-    exit('Invalid config!')
-log_path = general['logfile']
-if not exists(log_path):
-    exit('Couldn\'t access log-file!')
-output_path = general['outputfile']
-title = html['title']
-show_onlinetime = html.get('onlinetime', True)
-show_kicks = html.get('kicks', True)
-show_pkicks = html.get('pkicks', True)
-show_bans = html.get('bans', True)
-show_pbans = html.get('pbans', True)
+    raise Exception('Couldn\'t find config-file at {}'.format(config_path))
 
 if exists(id_map_path):
     # read id_map
@@ -58,176 +130,83 @@ if exists(id_map_path):
 else:
     id_map = {}
 
-generation_start = datetime.now()
-clients = {}  # clid: {'nick': ..., 'onlinetime': ..., 'kicks': ..., 'pkicks': ..., 'bans': ..., 'last_connect': ..., 'connected': ...}
-kicks = {}
+# parse config
+config = configparser.ConfigParser()
+config.read(config_path)
+# check keys
+if 'General' not in config:
+    raise Exception('Invalid config! Section "General" missing!')
+general = config['General']
+html = config['HTML'] if 'HTML' in config.sections() else {}
+if not ('logfile' in general or 'outputfile' in general):
+    raise Exception('Invalid config! "logfile" and/or "outputfile" missing!')
+log_path = general['logfile']
+if not exists(log_path):
+    raise Exception('Couldn\'t access log-file!')
+output_path = general['outputfile']
+title = html.get('title', 'TeamspeakStats')
 
-cldata = re.compile(r"'(.*)'\(id:(\d*)\)")
-cldata_ban = re.compile(r"by\ client\ '(.*)'\(id:(\d*)\)")
-cldata_invoker = re.compile(r"invokerid=\d*\ invokername=(.*)\ invokeruid=(.*)\ reasonmsg")
+generation_start = datetime.datetime.now()
 
+re_dis_connect = re.compile(r"'(.*)'\(id:(\d*)\)")
+re_disconnect_invoker = re.compile(r"invokername=(.*)\ invokeruid=(.*)\ reasonmsg")
 
-def add_connect(clid, nick, logdatetime):
-    check_client(clid, nick)
-    clients[clid]['last_connect'] = mktime(logdatetime.timetuple())
-    clients[clid]['connected'] = True
-
-
-def add_disconnect(clid, nick, logdatetime, set_connected=True):
-    check_client(clid, nick)
-    connect = datetime.fromtimestamp(clients[clid]['last_connect'])
-    delta = logdatetime - connect
-    minutes = delta.seconds // 60
-    increase_onlinetime(clid, minutes)
-    if set_connected:
-        clients[clid]['connected'] = False
-
-
-def add_ban(clid, nick):
-    check_client(clid, nick)
-    if 'bans' in clients[clid]:
-        clients[clid]['bans'] += 1
-    else:
-        clients[clid]['bans'] = 1
-
-
-def add_pban(clid, nick):
-    check_client(clid, nick)
-    if 'pbans' in clients[clid]:
-        clients[clid]['pbans'] += 1
-    else:
-        clients[clid]['pbans'] = 1
-
-
-####
-#
-#
-#  TODO
-#
-#
-###
-def add_kick(cluid, nick):
-    if cluid not in kicks:
-        kicks[cluid] = {}
-    if 'kicks' in kicks[cluid]:
-        kicks[cluid]['kicks'] += 1
-    else:
-        kicks[cluid]['kicks'] = 1
-    kicks[cluid]['nick'] = nick
-
-
-def add_pkick(clid, nick):
-    check_client(clid, nick)
-    if 'pkicks' in clients[clid]:
-        clients[clid]['pkicks'] += 1
-    else:
-        clients[clid]['pkicks'] = 1
-
-
-def increase_onlinetime(clid, onlinetime):
-    if 'onlinetime' in clients[clid]:
-        clients[clid]['onlinetime'] += onlinetime
-    else:
-        clients[clid]['onlinetime'] = onlinetime
-
-
-def check_client(clid, nick):
-    if clid not in clients:
-        clients[clid] = {}
-    clients[clid]['nick'] = nick
-
+# find all log-files and collect lines
 log_files = [file_name for file_name in glob.glob(log_path)]
 log_lines = []
 for log_file in log_files:
     for line in open(log_file, 'r'):
         log_lines.append(line)
-today = datetime.utcnow()
+
+# process lines
 for line in log_lines:
     parts = line.split('|')
-    logdatetime = datetime.strptime(parts[0], '%Y-%m-%d %H:%M:%S.%f')
-    sid = int(parts[3].strip())
-    data = '|'.join(parts[4:]).strip()
+    logdatetime = datetime.datetime.strptime(parts[0], '%Y-%m-%d %H:%M:%S.%f')
+    data = parts[4].strip()
     if data.startswith('client'):
-        r = cldata.findall(data)[0]
-        nick = r[0]
-        clid = r[1]
+        nick, clid = re_dis_connect.findall(data)[0]
         if clid in id_map:
             clid = id_map[clid]
+        client = clients[clid]
+        client.nick = nick
         if data.startswith('client connected'):
-            add_connect(clid, nick, logdatetime)
+            client.connect(logdatetime)
         elif data.startswith('client disconnected'):
-            add_disconnect(clid, nick, logdatetime)
-            if 'bantime' in data:
-                add_pban(clid, nick)
-            elif 'invokerid' in data:
-                add_pkick(clid, nick)
-                r = cldata_invoker.findall(data)[0]
-                nick = r[0]
-                cluid = r[1]
-                add_kick(cluid, nick)
-    elif data.startswith('ban added') and 'cluid' in data:
-        r = cldata_ban.findall(data)[0]
-        nick = r[0]
-        clid = r[1]
-        add_ban(clid, nick)
+            client.disconnect(logdatetime)
+            if 'invokeruid' in data:
+                re_disconnect_data = re_disconnect_invoker.findall(data)
+                invokernick, invokeruid = re_disconnect_data[0]
+                invoker = clients[invokeruid]
+                invoker.nick = invokernick
+                if 'bantime' in data:
+                    invoker.ban(client)
+                else:
+                    invoker.kick(client)
 
-for clid in clients:
-    if 'connected' not in clients[clid]:
-        clients[clid]['connected'] = False
-    if clients[clid]['connected']:
-        add_disconnect(clid, clients[clid]['nick'], today, set_connected=False)
-
-
-generation_end = datetime.now()
+generation_end = datetime.datetime.now()
 generation_delta = generation_end - generation_start
 
+# render template
+template = Environment(loader=FileSystemLoader(abspath('.'))).get_template('template.html')
+# sort all values desc
+cl_by_id = clients.clients_by_id
+cl_by_uid = clients.clients_by_uid
+clients_onlinetime_ = sorted([(client, client.onlinetime) for client in cl_by_id.values()], key=lambda data: data[1], reverse=True)
+clients_onlinetime = []
+for client, onlinetime in clients_onlinetime_:
+    minutes, seconds = divmod(client.onlinetime.seconds, 60)
+    hours, minutes = divmod(minutes, 60)
+    hours = str(hours) + 'h ' if hours != 0 else ''
+    minutes = str(minutes) + 'm ' if minutes != 0 else ''
+    seconds = str(seconds) + 's' if seconds != 0 else ''
+    clients_onlinetime.append((client, hours + minutes + seconds))
+clients_kicks = sorted([(client, client.kicks) for client in cl_by_uid.values() if client.kicks > 0], key=lambda data: data[1], reverse=True)
+clients_pkicks = sorted([(client, client.pkicks) for client in cl_by_id.values() if client.pkicks > 0], key=lambda data: data[1], reverse=True)
+clients_bans = sorted([(client, client.bans) for client in cl_by_uid.values() if client.bans > 0], key=lambda data: data[1], reverse=True)
+clients_pbans = sorted([(client, client.pbans) for client in cl_by_id.values() if client.pbans > 0], key=lambda data: data[1], reverse=True)
+objs = [('Onlinetime', clients_onlinetime), ('Kicks', clients_kicks),
+        ('passive Kicks', clients_pkicks),
+        ('Bans', clients_bans), ('passive Bans', clients_pbans)]  # (headline, list)
 
-# helper functions
-def desc(key, data_dict=clients):
-    r = []
-    values = {}
-    for clid in data_dict:
-        if key in data_dict[clid]:
-            values[clid] = data_dict[clid][key]
-    for clid in sorted(values, key=values.get, reverse=True):
-        value = values[clid]
-        r.append((clid, data_dict[clid]['nick'], value))
-    return r
-
-
-def render_template():
-    env = Environment(loader=FileSystemLoader(path))
-    template = env.get_template('template.html')
-    # format onlinetime
-    onlinetime_desc = desc('onlinetime')
-    for idx, (clid, nick, onlinetime) in enumerate(onlinetime_desc):
-        if onlinetime > 60:
-            onlinetime_str = str(onlinetime // 60) + 'h'
-            m = onlinetime % 60
-            if m > 0:
-                onlinetime_str += ' ' + str(m) + 'm'
-        else:
-            onlinetime_str = str(onlinetime) + 'm'
-        onlinetime_desc[idx] = (clid, nick, onlinetime_str, clients[clid]['connected'])
-
-    kicks_desc = desc('kicks', data_dict=kicks)
-    pkicks_desc = desc('pkicks')
-    bans_desc = desc('bans')
-    pbans_desc = desc('pbans')
-    show_kicks = len(kicks_desc) > 0
-    show_pkicks = len(pkicks_desc) > 0
-    show_bans = len(bans_desc) > 0
-    show_pbans = len(pbans_desc) > 0
-    with open(output_path, 'w+') as f:
-        f.write(template.render(title=title, onlinetime=onlinetime_desc, kicks=kicks_desc, pkicks=pkicks_desc, bans=bans_desc, pbans=pbans_desc, seconds='{}.{}'.format(generation_delta.seconds, generation_delta.microseconds),
-                date=generation_end.strftime('%d.%m.%Y %H:%M'),
-                show_onlinetime=show_onlinetime,
-                show_kicks=show_kicks,
-                show_pkicks=show_pkicks,
-                show_bans=show_bans,
-                show_pbans=show_pbans))
-
-if len(clients) < 1:
-    print('Not enough data!')
-else:
-    render_template()
+with open(output_path, 'w') as f:
+    f.write(template.render(title=title, objs=objs, generation_time='{}.{}'.format(generation_delta.seconds, generation_delta.microseconds), time=generation_end.strftime('%d.%m.%Y %H:%M')))
