@@ -11,12 +11,15 @@
 </head>
 <body>
 <div id="container">
+{% if debug %}
+  <div class="alert alert-danger" role="alert" style="text-align: center;"><b>DEBUG</b></div>
+{% endif %}
 {% for headline, list in objs %}
   {% if list|length > 0 %}
   <h1>{{ headline }}</h2>
   <ul class="list-group">
     {% for client, value in list %}
-    <li class="list-group-item{{ ' list-group-item-success' if client.connected else loop.cycle('" style="background-color: #eee;', '') }}">{{ client.nick }}<span class="badge">{{ value }}</span></li>
+    <li class="list-group-item{{ ' list-group-item-success' if client.connected else loop.cycle('" style="background-color: #eee;', '') }}">{{ client.nick }}{{ " (" + client.identifier + ")" if debug }}<span class="badge">{{ value }}</span></li>
     {% endfor %}
   </ul>
   {% endif %}

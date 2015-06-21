@@ -14,7 +14,7 @@ log = logging.getLogger()
 log.setLevel(logging.DEBUG)
 # create handler
 file_handler = logging.FileHandler('debug.txt', 'w', 'UTF-8')
-file_handler.setFormatter(logging.Formatter('[%(asctime)s] %(message)s', '%d.%m.%Y %H:%M:%S'))
+file_handler.setFormatter(logging.Formatter('%(message)s'))
 file_handler.setLevel(logging.DEBUG)
 
 stream_handler = logging.StreamHandler()
@@ -144,7 +144,10 @@ log_path = general['logfile']
 if not exists(log_path):
     raise Exception('Couldn\'t access log-file!')
 output_path = general['outputfile']
+debug = general.get('debug', 'true') in ['true', 'True']
 title = html.get('title', 'TeamspeakStats')
+if not debug:
+    logging.disable(logging.DEBUG)
 
 generation_start = datetime.datetime.now()
 
@@ -209,4 +212,4 @@ objs = [('Onlinetime', clients_onlinetime), ('Kicks', clients_kicks),
         ('Bans', clients_bans), ('passive Bans', clients_pbans)]  # (headline, list)
 
 with open(output_path, 'w') as f:
-    f.write(template.render(title=title, objs=objs, generation_time='{}.{}'.format(generation_delta.seconds, generation_delta.microseconds), time=generation_end.strftime('%d.%m.%Y %H:%M')))
+    f.write(template.render(title=title, objs=objs, generation_time='{}.{}'.format(generation_delta.seconds, generation_delta.microseconds), time=generation_end.strftime('%d.%m.%Y %H:%M'), debug=debug))
