@@ -9,20 +9,6 @@ from time import mktime
 from os.path import exists, abspath
 from jinja2 import Environment, FileSystemLoader
 
-# logging
-log = logging.getLogger()
-log.setLevel(logging.DEBUG)
-# create handler
-file_handler = logging.FileHandler('debug.txt', 'w', 'UTF-8')
-file_handler.setFormatter(logging.Formatter('%(message)s'))
-file_handler.setLevel(logging.DEBUG)
-
-stream_handler = logging.StreamHandler()
-stream_handler.setLevel(logging.INFO)
-# add handler
-log.addHandler(file_handler)
-log.addHandler(stream_handler)
-
 
 class Clients:
 
@@ -145,8 +131,22 @@ log_path = general['logfile']
 output_path = general['outputfile']
 debug = general.get('debug', 'true') in ['true', 'True']
 title = html.get('title', 'TeamspeakStats')
-if not debug:
-    logging.disable(logging.DEBUG)
+
+
+# setup logging
+log = logging.getLogger()
+log.setLevel(logging.DEBUG)
+# create handler
+if debug:
+    file_handler = logging.FileHandler('debug.txt', 'w', 'UTF-8')
+    file_handler.setFormatter(logging.Formatter('%(message)s'))
+    file_handler.setLevel(logging.DEBUG)
+    log.addHandler(file_handler)
+
+# stream handler
+stream_handler = logging.StreamHandler()
+stream_handler.setLevel(logging.INFO)
+log.addHandler(stream_handler)
 
 generation_start = datetime.datetime.now()
 
