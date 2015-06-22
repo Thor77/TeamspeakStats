@@ -129,15 +129,15 @@ if not ('logfile' in general or 'outputfile' in general):
     raise Exception('Invalid config! "logfile" and/or "outputfile" missing!')
 log_path = general['logfile']
 output_path = general['outputfile']
-debug = general.get('debug', 'true') in ['true', 'True']
+debug = general.get('debug', 'false') in ['true', 'True']
+debug_file = general.get('debugfile', str(debug)) in ['true', 'True']
 title = html.get('title', 'TeamspeakStats')
 
 
 # setup logging
 log = logging.getLogger()
-log.setLevel(logging.DEBUG)
 # create handler
-if debug:
+if debug and debug_file:
     file_handler = logging.FileHandler('debug.txt', 'w', 'UTF-8')
     file_handler.setFormatter(logging.Formatter('%(message)s'))
     file_handler.setLevel(logging.DEBUG)
