@@ -160,6 +160,14 @@ for log_file in log_files:
     for line in open(log_file, 'r'):
         log_lines.append(line)
 
+
+def get_client(clid):
+    if clid in id_map:
+        clid = id_map[clid]
+    client = clients[clid]
+    client.nick = nick
+    return client
+
 # process lines
 for line in log_lines:
     parts = line.split('|')
@@ -167,13 +175,11 @@ for line in log_lines:
     data = '|'.join(parts[4:]).strip()
     if data.startswith('client'):
         nick, clid = re_dis_connect.findall(data)[0]
-        if clid in id_map:
-            clid = id_map[clid]
-        client = clients[clid]
-        client.nick = nick
         if data.startswith('client connected'):
+            client = get_client(clid)
             client.connect(logdatetime)
         elif data.startswith('client disconnected'):
+            client = get_client(clid)
             client.disconnect(logdatetime)
             if 'invokeruid' in data:
                 re_disconnect_data = re_disconnect_invoker.findall(data)
