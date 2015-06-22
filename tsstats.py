@@ -141,8 +141,6 @@ html = config['HTML'] if 'HTML' in config.sections() else {}
 if not ('logfile' in general or 'outputfile' in general):
     raise Exception('Invalid config! "logfile" and/or "outputfile" missing!')
 log_path = general['logfile']
-if not exists(log_path):
-    raise Exception('Couldn\'t access log-file!')
 output_path = general['outputfile']
 debug = general.get('debug', 'true') in ['true', 'True']
 title = html.get('title', 'TeamspeakStats')
@@ -155,7 +153,7 @@ re_dis_connect = re.compile(r"'(.*)'\(id:(\d*)\)")
 re_disconnect_invoker = re.compile(r"invokername=(.*)\ invokeruid=(.*)\ reasonmsg")
 
 # find all log-files and collect lines
-log_files = [file_name for file_name in glob.glob(log_path)]
+log_files = [file_name for file_name in glob.glob(log_path) if exists(file_name)]
 log_lines = []
 for log_file in log_files:
     for line in open(log_file, 'r'):
