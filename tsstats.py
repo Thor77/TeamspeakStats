@@ -113,7 +113,7 @@ if not exists(config_path):
 
 if exists(id_map_path):
     # read id_map
-    id_map = json.load(open(path + 'id_map.json'))
+    id_map = json.load(open(id_map_path))
 else:
     id_map = {}
 
