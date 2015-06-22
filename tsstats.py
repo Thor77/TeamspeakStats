@@ -102,6 +102,18 @@ class Client:
     def __format__(self):
         return self.__str__()
 
+    def __getitem__(self, item):
+        return {
+            'identifier': self.identifier,
+            'nick': self.nick,
+            'connected': self.connected,
+            'onlinetime': self.onlinetime,
+            'kicks': self.kicks,
+            'pkicks': self.pkicks,
+            'bans': self.bans,
+            'pbans': self.pbans,
+        }[item]
+
 # check cmdline-args
 config_path = argv[1] if len(argv) >= 2 else 'config.ini'
 config_path = abspath(config_path)
@@ -133,9 +145,9 @@ debug = general.get('debug', 'false') in ['true', 'True']
 debug_file = general.get('debugfile', str(debug)) in ['true', 'True']
 title = html.get('title', 'TeamspeakStats')
 
-
 # setup logging
 log = logging.getLogger()
+log.setLevel(logging.DEBUG)
 # create handler
 if debug and debug_file:
     file_handler = logging.FileHandler('debug.txt', 'w', 'UTF-8')
@@ -196,22 +208,31 @@ generation_delta = generation_end - generation_start
 
 # render template
 template = Environment(loader=FileSystemLoader(abspath('.'))).get_template('template.html')
+
 # sort all values desc
 cl_by_id = clients.clients_by_id
 cl_by_uid = clients.clients_by_uid
-clients_onlinetime_ = sorted([(client, client.onlinetime) for client in cl_by_id.values()], key=lambda data: data[1], reverse=True)
+
+clients_onlinetime_ = sorted([(client, client['onlinetime'].seconds) for client in cl_by_id.values() if client['onlinetime'].seconds > 0], key=lambda data: data[1], reverse=True)
 clients_onlinetime = []
 for client, onlinetime in clients_onlinetime_:
     minutes, seconds = divmod(client.onlinetime.seconds, 60)
     hours, minutes = divmod(minutes, 60)
-    hours = str(hours) + 'h ' if hours != 0 else ''
-    minutes = str(minutes) + 'm ' if minutes != 0 else ''
-    seconds = str(seconds) + 's' if seconds != 0 else ''
+    print(client.nick, ': ', client.onlinetime.seconds, '=> ', hours, minutes, seconds)
+    hours = str(hours) + 'h ' if hours > 0 else ''
+    minutes = str(minutes) + 'm ' if minutes > 0 else ''
+    seconds = str(seconds) + 's' if seconds > 0 else ''
     clients_onlinetime.append((client, hours + minutes + seconds))
-clients_kicks = sorted([(client, client.kicks) for client in cl_by_uid.values() if client.kicks > 0], key=lambda data: data[1], reverse=True)
-clients_pkicks = sorted([(client, client.pkicks) for client in cl_by_id.values() if client.pkicks > 0], key=lambda data: data[1], reverse=True)
-clients_bans = sorted([(client, client.bans) for client in cl_by_uid.values() if client.bans > 0], key=lambda data: data[1], reverse=True)
-clients_pbans = sorted([(client, client.pbans) for client in cl_by_id.values() if client.pbans > 0], key=lambda data: data[1], reverse=True)
+
+
+def get_sorted(key, uid):
+    clients = cl_by_uid.values() if uid else cl_by_id.values()
+    return sorted([(client, client[key]) for client in clients if client[key] > 0], key=lambda data: data[1], reverse=True)
+
+clients_kicks = get_sorted('kicks', True)
+clients_pkicks = get_sorted('pkicks', False)
+clients_bans = get_sorted('bans', True)
+clients_pbans = get_sorted('pbans', False)
 objs = [('Onlinetime', clients_onlinetime), ('Kicks', clients_kicks),
         ('passive Kicks', clients_pkicks),
         ('Bans', clients_bans), ('passive Bans', clients_pbans)]  # (headline, list)
