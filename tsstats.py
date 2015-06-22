@@ -65,7 +65,7 @@ class Client:
         # public
         self.identifier = identifier
         self.nick = None
-        self.connected = False
+        self.connected = 0
         self.onlinetime = datetime.timedelta()
         self.kicks = 0
         self.pkicks = 0
@@ -79,7 +79,7 @@ class Client:
         client connects at "timestamp"
         '''
         logging.debug('CONNECT {}'.format(str(self)))
-        self.connected = True
+        self.connected += 1
         self._last_connect = timestamp
 
     def disconnect(self, timestamp):
@@ -88,8 +88,9 @@ class Client:
         '''
         logging.debug('DISCONNECT {}'.format(str(self)))
         if not self.connected:
-            raise Exception('WTF did just happen?! A client disconnected before connecting!')
-        self.connected = False
+            logging.debug('^ disconnect before connect')
+            raise Exception('disconnect before connect!')
+        self.connected -= 1
         session_time = timestamp - self._last_connect
         self.onlinetime += session_time
 
@@ -163,7 +164,7 @@ for log_file in log_files:
 for line in log_lines:
     parts = line.split('|')
     logdatetime = datetime.datetime.strptime(parts[0], '%Y-%m-%d %H:%M:%S.%f')
-    data = parts[4].strip()
+    data = '|'.join(parts[4:]).strip()
     if data.startswith('client'):
         nick, clid = re_dis_connect.findall(data)[0]
         if clid in id_map:
