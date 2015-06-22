@@ -52,7 +52,7 @@ class Client:
         self.identifier = identifier
         self.nick = None
         self.connected = 0
-        self.onlinetime = datetime.timedelta()
+        self.onlinetime = 0
         self.kicks = 0
         self.pkicks = 0
         self.bans = 0
@@ -183,7 +183,7 @@ def get_client(clid):
 # process lines
 for line in log_lines:
     parts = line.split('|')
-    logdatetime = datetime.datetime.strptime(parts[0], '%Y-%m-%d %H:%M:%S.%f')
+    logdatetime = int(datetime.datetime.strptime(parts[0], '%Y-%m-%d %H:%M:%S.%f').timestamp())
     data = '|'.join(parts[4:]).strip()
     if data.startswith('client'):
         nick, clid = re_dis_connect.findall(data)[0]
@@ -213,21 +213,21 @@ template = Environment(loader=FileSystemLoader(abspath('.'))).get_template('temp
 cl_by_id = clients.clients_by_id
 cl_by_uid = clients.clients_by_uid
 
-clients_onlinetime_ = sorted([(client, client['onlinetime'].seconds) for client in cl_by_id.values() if client['onlinetime'].seconds > 0], key=lambda data: data[1], reverse=True)
+
+def get_sorted(key, uid):
+    clients = cl_by_uid.values() if uid else cl_by_id.values()
+    return sorted([(client, client[key]) for client in clients if client[key] > 0], key=lambda data: data[1], reverse=True)
+
+clients_onlinetime_ = get_sorted('onlinetime', False)
 clients_onlinetime = []
 for client, onlinetime in clients_onlinetime_:
-    minutes, seconds = divmod(client.onlinetime.seconds, 60)
+    minutes, seconds = divmod(client.onlinetime, 60)
     hours, minutes = divmod(minutes, 60)
-    print(client.nick, ': ', client.onlinetime.seconds, '=> ', hours, minutes, seconds)
     hours = str(hours) + 'h ' if hours > 0 else ''
     minutes = str(minutes) + 'm ' if minutes > 0 else ''
     seconds = str(seconds) + 's' if seconds > 0 else ''
     clients_onlinetime.append((client, hours + minutes + seconds))
 
-
-def get_sorted(key, uid):
-    clients = cl_by_uid.values() if uid else cl_by_id.values()
-    return sorted([(client, client[key]) for client in clients if client[key] > 0], key=lambda data: data[1], reverse=True)
 
 clients_kicks = get_sorted('kicks', True)
 clients_pkicks = get_sorted('pkicks', False)
