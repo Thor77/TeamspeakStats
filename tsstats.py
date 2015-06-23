@@ -3,10 +3,11 @@ import glob
 import json
 import logging
 import datetime
+from os import sep
 import configparser
 from sys import argv
 from time import mktime
-from os.path import exists, abspath
+from os.path import exists
 from jinja2 import Environment, FileSystemLoader
 
 
@@ -115,10 +116,11 @@ class Client:
         }[item]
 
 # check cmdline-args
+abspath = sep.join(__file__.split(sep)[:-1]) + sep
 config_path = argv[1] if len(argv) >= 2 else 'config.ini'
-config_path = abspath(config_path)
+config_path = abspath + config_path
 id_map_path = argv[2] if len(argv) >= 3 else 'id_map.json'
-id_map_path = abspath(id_map_path)
+id_map_path = abspath + id_map_path
 
 if not exists(config_path):
     raise Exception('Couldn\'t find config-file at {}'.format(config_path))
@@ -207,7 +209,7 @@ generation_end = datetime.datetime.now()
 generation_delta = generation_end - generation_start
 
 # render template
-template = Environment(loader=FileSystemLoader(abspath('.'))).get_template('template.html')
+template = Environment(loader=FileSystemLoader(abspath)).get_template('template.html')
 
 # sort all values desc
 cl_by_id = clients.clients_by_id
