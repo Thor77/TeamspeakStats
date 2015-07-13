@@ -13,9 +13,10 @@ from jinja2 import Environment, FileSystemLoader
 
 class Clients:
 
-    def __init__(self):
+    def __init__(self, ident_map={}):
         self.clients_by_id = {}
         self.clients_by_uid = {}
+        self.ident_map = ident_map
 
     def is_id(self, id_or_uid):
         try:
@@ -25,6 +26,8 @@ class Clients:
             return False
 
     def __add__(self, id_or_uid):
+        if id_or_uid in self.ident_map:
+            id_or_uid = self.ident_map[id_or_uid]
         if self.is_id(id_or_uid):
             if id_or_uid not in self.clients_by_id:
                 self.clients_by_id[id_or_uid] = Client(id_or_uid)
@@ -42,8 +45,6 @@ class Clients:
             if id_or_uid not in self.clients_by_uid:
                 self += id_or_uid
             return self.clients_by_uid[id_or_uid]
-
-clients = Clients()
 
 
 class Client:
@@ -138,7 +139,8 @@ def _format_seconds(seconds):
     return hours + minutes + seconds
 
 
-def parse_logs(logpath, file_log=False):
+def parse_logs(log_path, ident_map={}, file_log=False):
+    clients = Clients(ident_map)
     # setup logging
     log = logging.getLogger()
     log.setLevel(logging.DEBUG)
@@ -160,13 +162,6 @@ def parse_logs(logpath, file_log=False):
         for line in open(log_file, 'r'):
             log_lines.append(line)
 
-    def get_client(clid, nick):
-        if clid in id_map:
-            clid = id_map[clid]
-        client = clients[clid]
-        client.nick = nick
-        return client
-
     # process lines
     for line in log_lines:
         parts = line.split('|')
@@ -175,10 +170,12 @@ def parse_logs(logpath, file_log=False):
         if data.startswith('client'):
             nick, clid = re_dis_connect.findall(data)[0]
             if data.startswith('client connected'):
-                client = get_client(clid, nick)
+                client = clients[clid]
+                client.nick = nick
                 client.connect(logdatetime)
             elif data.startswith('client disconnected'):
-                client = get_client(clid, nick)
+                client = clients[clid]
+                client.nick = nick
                 client.disconnect(logdatetime)
                 if 'invokeruid' in data:
                     re_disconnect_data = re_disconnect_invoker.findall(data)
@@ -189,9 +186,10 @@ def parse_logs(logpath, file_log=False):
                         invoker.ban(client)
                     else:
                         invoker.kick(client)
+    return clients
 
 
-def render_template(output, template_name='template.html', title='TeamspeakStats', debug=False):
+def render_template(clients, output, template_name='template.html', title='TeamspeakStats', debug=False):
     # render template
     template = Environment(loader=FileSystemLoader(abspath)).get_template('template.html')
 
@@ -241,7 +239,7 @@ def main():
 
     log_path, output_path, debug, debug_file = parse_config(config_path)
 
-    render_template(output=output_path, debug=debug)
+    render_template(parse_logs(log_path, ident_map=id_map), output=output_path, debug=debug)
 
 if __name__ == '__main__':
     main()
