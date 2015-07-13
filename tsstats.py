@@ -124,6 +124,20 @@ if len(path_split) > 0:
     abspath += sep
 
 
+def _get_sorted(stor, key):
+    clients = stor.values()
+    return sorted([(client, client[key]) for client in clients if client[key] > 0], key=lambda data: data[1], reverse=True)
+
+
+def _format_seconds(seconds):
+    minutes, seconds = divmod(seconds, 60)
+    hours, minutes = divmod(minutes, 60)
+    hours = str(hours) + 'h ' if hours > 0 else ''
+    minutes = str(minutes) + 'm ' if minutes > 0 else ''
+    seconds = str(seconds) + 's' if seconds > 0 else ''
+    return hours + minutes + seconds
+
+
 def parse_logs(logpath, file_log=False):
     # setup logging
     log = logging.getLogger()
@@ -180,33 +194,20 @@ def parse_logs(logpath, file_log=False):
 def render_template(output, template_name='template.html', title='TeamspeakStats', debug=False):
     # render template
     template = Environment(loader=FileSystemLoader(abspath)).get_template('template.html')
-    cl_by_id = clients.clients_by_id
-    cl_by_uid = clients.clients_by_uid
 
-    def get_sorted(key, uid):
-        clients = cl_by_uid.values() if uid else cl_by_id.values()
-        return sorted([(client, client[key]) for client in clients if client[key] > 0], key=lambda data: data[1], reverse=True)
+    clients_onlinetime_ = _get_sorted(clients.clients_by_id, 'onlinetime')
+    clients_onlinetime = [(client, _format_seconds(onlinetime)) for client, onlinetime in clients_onlinetime_]
 
-    clients_onlinetime_ = get_sorted('onlinetime', False)
-    clients_onlinetime = []
-    for client, onlinetime in clients_onlinetime_:
-        minutes, seconds = divmod(client.onlinetime, 60)
-        hours, minutes = divmod(minutes, 60)
-        hours = str(hours) + 'h ' if hours > 0 else ''
-        minutes = str(minutes) + 'm ' if minutes > 0 else ''
-        seconds = str(seconds) + 's' if seconds > 0 else ''
-        clients_onlinetime.append((client, hours + minutes + seconds))
+    clients_kicks = _get_sorted(clients.clients_by_uid, 'kicks')
+    clients_pkicks = _get_sorted(clients.clients_by_id, 'pkicks')
+    clients_bans = _get_sorted(clients.clients_by_uid, 'bans')
+    clients_pbans = _get_sorted(clients.clients_by_id, 'pbans')
+    objs = [('Onlinetime', clients_onlinetime), ('Kicks', clients_kicks),
+            ('passive Kicks', clients_pkicks),
+            ('Bans', clients_bans), ('passive Bans', clients_pbans)]  # (headline, list)
 
-        clients_kicks = get_sorted('kicks', True)
-        clients_pkicks = get_sorted('pkicks', False)
-        clients_bans = get_sorted('bans', True)
-        clients_pbans = get_sorted('pbans', False)
-        objs = [('Onlinetime', clients_onlinetime), ('Kicks', clients_kicks),
-                ('passive Kicks', clients_pkicks),
-                ('Bans', clients_bans), ('passive Bans', clients_pbans)]  # (headline, list)
-
-        with open(output_path, 'w') as f:
-            f.write(template.render(title=title, objs=objs, debug=debug))
+    with open(output, 'w') as f:
+        f.write(template.render(title=title, objs=objs, debug=debug))
 
 
 def main():
