@@ -162,8 +162,6 @@ stream_handler = logging.StreamHandler()
 stream_handler.setLevel(logging.INFO)
 log.addHandler(stream_handler)
 
-generation_start = datetime.datetime.now()
-
 re_dis_connect = re.compile(r"'(.*)'\(id:(\d*)\)")
 re_disconnect_invoker = re.compile(r"invokername=(.*)\ invokeruid=(.*)\ reasonmsg")
 
@@ -205,9 +203,6 @@ for line in log_lines:
                 else:
                     invoker.kick(client)
 
-generation_end = datetime.datetime.now()
-generation_delta = generation_end - generation_start
-
 # render template
 template = Environment(loader=FileSystemLoader(abspath)).get_template('template.html')
 
@@ -240,4 +235,4 @@ objs = [('Onlinetime', clients_onlinetime), ('Kicks', clients_kicks),
         ('Bans', clients_bans), ('passive Bans', clients_pbans)]  # (headline, list)
 
 with open(output_path, 'w') as f:
-    f.write(template.render(title=title, objs=objs, generation_time='{}.{}'.format(generation_delta.seconds, generation_delta.microseconds), time=generation_end.strftime('%d.%m.%Y %H:%M'), debug=debug))
+    f.write(template.render(title=title, objs=objs, debug=debug))
