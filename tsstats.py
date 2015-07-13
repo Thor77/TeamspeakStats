@@ -115,124 +115,130 @@ class Client:
             'pbans': self.pbans,
         }[item]
 
-# check cmdline-args
-abspath = sep.join(__file__.split(sep)[:-1]) + sep
-config_path = argv[1] if len(argv) >= 2 else 'config.ini'
-config_path = abspath + config_path
-id_map_path = argv[2] if len(argv) >= 3 else 'id_map.json'
-id_map_path = abspath + id_map_path
-
-if not exists(config_path):
-    raise Exception('Couldn\'t find config-file at {}'.format(config_path))
-
-if exists(id_map_path):
-    # read id_map
-    id_map = json.load(open(id_map_path))
-else:
-    id_map = {}
-
-# parse config
-config = configparser.ConfigParser()
-config.read(config_path)
-# check keys
-if 'General' not in config:
-    raise Exception('Invalid config! Section "General" missing!')
-general = config['General']
-html = config['HTML'] if 'HTML' in config.sections() else {}
-if not ('logfile' in general or 'outputfile' in general):
-    raise Exception('Invalid config! "logfile" and/or "outputfile" missing!')
-log_path = general['logfile']
-output_path = general['outputfile']
-debug = general.get('debug', 'false') in ['true', 'True']
-debug_file = general.get('debugfile', str(debug)) in ['true', 'True']
-title = html.get('title', 'TeamspeakStats')
-
-# setup logging
-log = logging.getLogger()
-log.setLevel(logging.DEBUG)
-# create handler
-if debug and debug_file:
-    file_handler = logging.FileHandler('debug.txt', 'w', 'UTF-8')
-    file_handler.setFormatter(logging.Formatter('%(message)s'))
-    file_handler.setLevel(logging.DEBUG)
-    log.addHandler(file_handler)
-
-# stream handler
-stream_handler = logging.StreamHandler()
-stream_handler.setLevel(logging.INFO)
-log.addHandler(stream_handler)
 
 re_dis_connect = re.compile(r"'(.*)'\(id:(\d*)\)")
 re_disconnect_invoker = re.compile(r"invokername=(.*)\ invokeruid=(.*)\ reasonmsg")
-
-# find all log-files and collect lines
-log_files = [file_name for file_name in glob.glob(log_path) if exists(file_name)]
-log_lines = []
-for log_file in log_files:
-    for line in open(log_file, 'r'):
-        log_lines.append(line)
+abspath = sep.join(__file__.split(sep)[:-1]) + sep
 
 
-def get_client(clid):
-    if clid in id_map:
-        clid = id_map[clid]
-    client = clients[clid]
-    client.nick = nick
-    return client
+def parse_logs(logpath, file_log=False):
+    # setup logging
+    log = logging.getLogger()
+    log.setLevel(logging.DEBUG)
+    if file_log:
+        # file logger
+        file_handler = logging.FileHandler('debug.txt', 'w', 'UTF-8')
+        file_handler.setFormatter(logging.Formatter('%(message)s'))
+        file_handler.setLevel(logging.DEBUG)
+        log.addHandler(file_handler)
+    # stream logger (unused)
+    stream_handler = logging.StreamHandler()
+    stream_handler.setLevel(logging.INFO)
+    log.addHandler(stream_handler)
 
-# process lines
-for line in log_lines:
-    parts = line.split('|')
-    logdatetime = int(datetime.datetime.strptime(parts[0], '%Y-%m-%d %H:%M:%S.%f').timestamp())
-    data = '|'.join(parts[4:]).strip()
-    if data.startswith('client'):
-        nick, clid = re_dis_connect.findall(data)[0]
-        if data.startswith('client connected'):
-            client = get_client(clid)
-            client.connect(logdatetime)
-        elif data.startswith('client disconnected'):
-            client = get_client(clid)
-            client.disconnect(logdatetime)
-            if 'invokeruid' in data:
-                re_disconnect_data = re_disconnect_invoker.findall(data)
-                invokernick, invokeruid = re_disconnect_data[0]
-                invoker = clients[invokeruid]
-                invoker.nick = invokernick
-                if 'bantime' in data:
-                    invoker.ban(client)
-                else:
-                    invoker.kick(client)
+    # find all log-files and collect lines
+    log_files = [file_name for file_name in glob.glob(log_path) if exists(file_name)]
+    log_lines = []
+    for log_file in log_files:
+        for line in open(log_file, 'r'):
+            log_lines.append(line)
 
-# render template
-template = Environment(loader=FileSystemLoader(abspath)).get_template('template.html')
+    def get_client(clid, nick):
+        if clid in id_map:
+            clid = id_map[clid]
+        client = clients[clid]
+        client.nick = nick
+        return client
 
-# sort all values desc
-cl_by_id = clients.clients_by_id
-cl_by_uid = clients.clients_by_uid
-
-
-def get_sorted(key, uid):
-    clients = cl_by_uid.values() if uid else cl_by_id.values()
-    return sorted([(client, client[key]) for client in clients if client[key] > 0], key=lambda data: data[1], reverse=True)
-
-clients_onlinetime_ = get_sorted('onlinetime', False)
-clients_onlinetime = []
-for client, onlinetime in clients_onlinetime_:
-    minutes, seconds = divmod(client.onlinetime, 60)
-    hours, minutes = divmod(minutes, 60)
-    hours = str(hours) + 'h ' if hours > 0 else ''
-    minutes = str(minutes) + 'm ' if minutes > 0 else ''
-    seconds = str(seconds) + 's' if seconds > 0 else ''
-    clients_onlinetime.append((client, hours + minutes + seconds))
+    # process lines
+    for line in log_lines:
+        parts = line.split('|')
+        logdatetime = int(datetime.datetime.strptime(parts[0], '%Y-%m-%d %H:%M:%S.%f').timestamp())
+        data = '|'.join(parts[4:]).strip()
+        if data.startswith('client'):
+            nick, clid = re_dis_connect.findall(data)[0]
+            if data.startswith('client connected'):
+                client = get_client(clid, nick)
+                client.connect(logdatetime)
+            elif data.startswith('client disconnected'):
+                client = get_client(clid, nick)
+                client.disconnect(logdatetime)
+                if 'invokeruid' in data:
+                    re_disconnect_data = re_disconnect_invoker.findall(data)
+                    invokernick, invokeruid = re_disconnect_data[0]
+                    invoker = clients[invokeruid]
+                    invoker.nick = invokernick
+                    if 'bantime' in data:
+                        invoker.ban(client)
+                    else:
+                        invoker.kick(client)
 
 
-clients_kicks = get_sorted('kicks', True)
-clients_pkicks = get_sorted('pkicks', False)
-clients_bans = get_sorted('bans', True)
-clients_pbans = get_sorted('pbans', False)
-objs = [('Onlinetime', clients_onlinetime), ('Kicks', clients_kicks),
-        ('passive Kicks', clients_pkicks),
-        ('Bans', clients_bans), ('passive Bans', clients_pbans)]  # (headline, list)
+def render_template(output, template_name='template.html', title='TeamspeakStats', debug=False):
+    # render template
+    template = Environment(loader=FileSystemLoader(abspath)).get_template('template.html')
+    cl_by_id = clients.clients_by_id
+    cl_by_uid = clients.clients_by_uid
 
-with open(output_path, 'w') as f:
-    f.write(template.render(title=title, objs=objs, debug=debug))
+    def get_sorted(key, uid):
+        clients = cl_by_uid.values() if uid else cl_by_id.values()
+        return sorted([(client, client[key]) for client in clients if client[key] > 0], key=lambda data: data[1], reverse=True)
+
+    clients_onlinetime_ = get_sorted('onlinetime', False)
+    clients_onlinetime = []
+    for client, onlinetime in clients_onlinetime_:
+        minutes, seconds = divmod(client.onlinetime, 60)
+        hours, minutes = divmod(minutes, 60)
+        hours = str(hours) + 'h ' if hours > 0 else ''
+        minutes = str(minutes) + 'm ' if minutes > 0 else ''
+        seconds = str(seconds) + 's' if seconds > 0 else ''
+        clients_onlinetime.append((client, hours + minutes + seconds))
+
+        clients_kicks = get_sorted('kicks', True)
+        clients_pkicks = get_sorted('pkicks', False)
+        clients_bans = get_sorted('bans', True)
+        clients_pbans = get_sorted('pbans', False)
+        objs = [('Onlinetime', clients_onlinetime), ('Kicks', clients_kicks),
+                ('passive Kicks', clients_pkicks),
+                ('Bans', clients_bans), ('passive Bans', clients_pbans)]  # (headline, list)
+
+        with open(output_path, 'w') as f:
+            f.write(template.render(title=title, objs=objs, debug=debug))
+
+
+def main():
+    # check cmdline-args
+    config_path = argv[1] if len(argv) >= 2 else 'config.ini'
+    config_path = abspath + config_path
+    id_map_path = argv[2] if len(argv) >= 3 else 'id_map.json'
+    id_map_path = abspath + id_map_path
+
+    if not exists(config_path):
+        raise Exception('Couldn\'t find config-file at {}'.format(config_path))
+
+    if exists(id_map_path):
+        # read id_map
+        id_map = json.load(open(id_map_path))
+    else:
+        id_map = {}
+
+    # parse config
+    config = configparser.ConfigParser()
+    config.read(config_path)
+    # check keys
+    if 'General' not in config:
+        raise Exception('Invalid config! Section "General" missing!')
+    general = config['General']
+    html = config['HTML'] if 'HTML' in config.sections() else {}
+    if not ('logfile' in general or 'outputfile' in general):
+        raise Exception('Invalid config! "logfile" and/or "outputfile" missing!')
+    log_path = general['logfile']
+    output_path = general['outputfile']
+    debug = general.get('debug', 'false') in ['true', 'True']
+    debug_file = general.get('debugfile', str(debug)) in ['true', 'True']
+    title = html.get('title', 'TeamspeakStats')
+
+    render_template(output=output_path, title=title, debug=debug)
+
+if __name__ == '__main__':
+    main()
