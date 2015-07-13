@@ -1,0 +1,11 @@
+2015-05-18 15:52:52.685612|INFO    |VirtualServerBase|  3| client connected 'Client1'(id:1) from 1.2.3.4:1234
+2015-05-18 15:54:13.966536|INFO    |VirtualServerBase|  3| client connected 'Client2'(id:2) from 5.6.7.8:5678
+2015-05-18 15:54:25.055304|INFO    |VirtualServerBase|  3| client disconnected 'Client2'(id:2) reason 'invokerid=1 invokername=Client1 invokeruid=UIDClient1 reasonmsg'
+2015-05-18 15:54:30.053231|INFO    |VirtualServerBase|  3| client connected 'Client2'(id:2) from 5.6.7.8:5678
+2015-05-18 15:54:38.723364|INFO    |VirtualServer |  3| ban added reason='' cluid='UIDClient2' bantime=0 by client 'Client1'(id:1)
+2015-05-18 15:54:38.724012|INFO    |VirtualServer |  3| ban added reason='' ip='5.6.7.8:5678' bantime=0 by client 'Client1'(id:1)
+2015-05-18 15:54:38.724107|INFO    |VirtualServerBase|  3| client disconnected 'Client2'(id:2) reason 'invokerid=1 invokername=Client1 invokeruid=UIDClient1 reasonmsg bantime=0'
+2015-05-18 15:54:43.340308|INFO    |VirtualServerBase|  3| client disconnected 'Client1'(id:1) reason 'reasonmsg=ByeBye!'
+2015-05-18 15:55:23.456679|INFO    |VirtualServerBase|  3| client connected 'Client1'(id:1) from 1.2.3.4:1234
+2015-05-18 16:00:14.951191|INFO    |VirtualServerBase|  3| client disconnected 'Client1'(id:1) reason 'reasonmsg=ByeBye!'
+2015-05-18 16:00:38.802524|INFO    |VirtualServerBase|  3| client connected 'Client1'(id:1) from 1.2.3.4:1234
