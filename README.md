@@ -9,6 +9,10 @@ A simple Teamspeak stat-generator - based on server-logs
 # Usage
 Run `tsstats.py` and point your web-server to the generated .html-file, now you will see some stats for your Teamspeak-Server parsed from the logs.
 
+# Tests
+- Install nose `pip3 install nose`
+- Run `nosetests`
+
 # Configuration
 
 ###Configname
