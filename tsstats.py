@@ -239,7 +239,7 @@ def main():
 
     log_path, output_path, debug, debug_file = parse_config(config_path)
 
-    render_template(parse_logs(log_path, ident_map=id_map), output=output_path, debug=debug)
+    render_template(parse_logs(log_path, ident_map=id_map, file_log=debug_file), output=output_path, debug=debug)
 
 if __name__ == '__main__':
     main()
