@@ -15,8 +15,11 @@ Run `tsstats.py` and point your web-server to the generated .html-file, now you 
 `config.ini`
 #### Keys
 `[General]`
-- logfile `Path to TS3Server-logfile`
+- logpath `Path to TS3Server-logfile` (supports [globbing](https://docs.python.org/3/library/glob.html))
 - outputfile `Path to the location, where the generator will put the generated .html-file`
+- debug `Enable debug-mode`
+- debugfile `Enable debug-log to file`  
+
 `[HTML]`
 - title `HTML-Title`
 
@@ -24,7 +27,7 @@ Run `tsstats.py` and point your web-server to the generated .html-file, now you 
 ## Example
 ```
 [General]
-logfile = /usr/local/bin/teamspeak-server/logs/ts3server_2015-03-02__14_01_43.110983_1.log
+logfile = /usr/local/bin/teamspeak-server/logs/ts3server*_1.log
 outputfile = /var/www/html/stats.html
 ```
 
