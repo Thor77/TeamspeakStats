@@ -227,10 +227,8 @@ def parse_config(config_path):
 
 def main():
     # check cmdline-args
-    config_path = argv[1] if len(argv) >= 2 else 'config.ini'
-    config_path = abspath + config_path
-    id_map_path = argv[2] if len(argv) >= 3 else 'id_map.json'
-    id_map_path = abspath + id_map_path
+    config_path = abspath + (argv[1] if len(argv) >= 2 else 'config.ini')
+    id_map_path = abspath + (argv[2] if len(argv) >= 3 else 'id_map.json')
 
     if not exists(config_path):
         raise Exception('Couldn\'t find config-file at {}'.format(config_path))
