@@ -118,7 +118,10 @@ class Client:
 
 re_dis_connect = re.compile(r"'(.*)'\(id:(\d*)\)")
 re_disconnect_invoker = re.compile(r"invokername=(.*)\ invokeruid=(.*)\ reasonmsg")
-abspath = sep.join(__file__.split(sep)[:-1]) + sep
+path_split = __file__.split(sep)[:-1]
+abspath = sep.join(path_split)
+if len(path_split) > 0:
+    abspath += sep
 
 
 def parse_logs(logpath, file_log=False):
