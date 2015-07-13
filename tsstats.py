@@ -210,6 +210,21 @@ def render_template(output, template_name='template.html', title='TeamspeakStats
         f.write(template.render(title=title, objs=objs, debug=debug))
 
 
+def parse_config(config_path):
+    config = configparser.ConfigParser()
+    config.read(config_path)
+    if 'General' not in config or not \
+            ('logfile' in config['General'] or 'outputfile' in config['General']):
+        raise Exception('Invalid config!')
+
+    general = config['General']
+    log_path = general['logfile'] if general['logfile'].startswith(sep) else abspath + general['logfile']
+    output_path = general['outputfile'] if general['outputfile'].startswith(sep) else abspath + general['outputfile']
+    debug = general.get('debug', 'false') in ['true', 'True']
+    debug_file = True if general.get('debugfile', 'false') in ['true', 'True'] and debug else False
+    return log_path, output_path, debug, debug_file
+
+
 def main():
     # check cmdline-args
     config_path = argv[1] if len(argv) >= 2 else 'config.ini'
@@ -226,23 +241,9 @@ def main():
     else:
         id_map = {}
 
-    # parse config
-    config = configparser.ConfigParser()
-    config.read(config_path)
-    # check keys
-    if 'General' not in config:
-        raise Exception('Invalid config! Section "General" missing!')
-    general = config['General']
-    html = config['HTML'] if 'HTML' in config.sections() else {}
-    if not ('logfile' in general or 'outputfile' in general):
-        raise Exception('Invalid config! "logfile" and/or "outputfile" missing!')
-    log_path = general['logfile']
-    output_path = general['outputfile']
-    debug = general.get('debug', 'false') in ['true', 'True']
-    debug_file = general.get('debugfile', str(debug)) in ['true', 'True']
-    title = html.get('title', 'TeamspeakStats')
+    log_path, output_path, debug, debug_file = parse_config(config_path)
 
-    render_template(output=output_path, title=title, debug=debug)
+    render_template(output=output_path, debug=debug)
 
 if __name__ == '__main__':
     main()
