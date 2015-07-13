@@ -1,6 +1,11 @@
 # TeamspeakStats
 A simple Teamspeak stat-generator - based on server-logs
 
+# Installation
+- Install [Python](https://python.org)
+- Clone this repo `git clone https://github.com/Thor77/TeamspeakStats`
+- Install requirements `pip3 install -r requirements.txt`
+
 # Usage
 Run `tsstats.py` and point your web-server to the generated .html-file, now you will see some stats for your Teamspeak-Server parsed from the logs.
 
