@@ -190,9 +190,7 @@ def parse_logs(log_path, ident_map={}, file_log=False):
 
 
 def render_template(clients, output, template_name='template.html', title='TeamspeakStats', debug=False):
-    # render template
-    template = Environment(loader=FileSystemLoader(abspath)).get_template('template.html')
-
+    # prepare clients
     clients_onlinetime_ = _get_sorted(clients.clients_by_id, 'onlinetime')
     clients_onlinetime = [(client, _format_seconds(onlinetime)) for client, onlinetime in clients_onlinetime_]
 
@@ -204,6 +202,8 @@ def render_template(clients, output, template_name='template.html', title='Teams
             ('passive Kicks', clients_pkicks),
             ('Bans', clients_bans), ('passive Bans', clients_pbans)]  # (headline, list)
 
+    # render
+    template = Environment(loader=FileSystemLoader(abspath)).get_template(template_name)
     with open(output, 'w') as f:
         f.write(template.render(title=title, objs=objs, debug=debug))
 
