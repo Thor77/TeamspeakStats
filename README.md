@@ -1,4 +1,4 @@
-# TeamspeakStats
+# TeamspeakStats [![Build Status](https://drone.io/github.com/Thor77/TeamspeakStats/status.png)](https://drone.io/github.com/Thor77/TeamspeakStats/latest)
 A simple Teamspeak stat-generator - based on server-logs
 
 # Installation
