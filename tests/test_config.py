@@ -1,47 +1,43 @@
 import configparser
 from os import remove
 from os.path import exists
-import tsstats
+from tsstats import parse_config, exceptions, gen_abspath
 from nose.tools import raises, with_setup
+
+configpath = gen_abspath('tests/res/test.cfg')
 
 
 def create_config(values, key='General'):
     config = configparser.ConfigParser()
     config[key] = values
-    with open('config.ini', 'w') as configfile:
+    with open(configpath, 'w') as configfile:
         config.write(configfile)
 
 
 def clean_config():
-    if exists('config.ini'):
-        remove('config.ini')
-
-
-def clean_result():
-    if exists('output.html'):
-        remove('output.html')
+    if exists(configpath):
+        remove(configpath)
 
 
 @with_setup(clean_config, clean_config)
-@raises(Exception)
+@raises(exceptions.InvalidConfig)
 def test_invalid_config():
-    config = configparser.ConfigParser()
     create_config({
-        'logfile': 'tests/res/test.log',
-        'outputfile': '',
-        'deebug': 'false',
+        'loggfile': 'tests/res/test.log',
+        'outputfile': ''
     })
-    _, _, _, _ = parse_config(config_path)
+    _, _, _, _ = parse_config(configpath)
 
 
 @with_setup(clean_config, clean_config)
-@raises(Exception)
-def test_debug_without_debugfile():
-    config = configparser.ConfigParser()
+def test_config():
     create_config({
         'logfile': 'tests/res/test.log',
-        'debug': 'true',
-        'debugfile': 'false',
+        'outputfile': 'output.html',
+        'debug': 'true'
     })
-    _, _, _, _ = parse_config(config_path)
-    open('debug.txt', 'r')
+    log_path, output_path, debug, debug_file = parse_config(configpath)
+    assert log_path == gen_abspath('tests/res/test.log')
+    assert output_path == gen_abspath('output.html')
+    assert debug
+    assert not debug_file
