@@ -2,6 +2,7 @@ import re
 import glob
 import json
 import logging
+import argparse
 import datetime
 from os import sep
 import configparser
@@ -240,10 +241,10 @@ def parse_config(config_path):
     return log_path, output_path, debug, debug_file
 
 
-def main():
+def main(config_path='config.ini', id_map_path='id_map.json'):
     # check cmdline-args
-    config_path = gen_abspath(argv[1] if len(argv) >= 2 else 'config.ini')
-    id_map_path = gen_abspath(argv[2] if len(argv) >= 3 else 'id_map.json')
+    config_path = gen_abspath(config_path)
+    id_map_path = gen_abspath(id_map_path)
 
     if not exists(config_path):
         raise exceptions.ConfigNotFound(config_path)
@@ -259,4 +260,8 @@ def main():
     render_template(parse_logs(log_path, ident_map=id_map, file_log=debug_file), output=output_path, debug=debug)
 
 if __name__ == '__main__':
-    main()
+    parser = argparse.ArgumentParser(description='A simple Teamspeak stats-generator - based on server-logs')
+    parser.add_argument('--config', type=str, help='path to config', default='config.ini')
+    parser.add_argument('--idmap', type=str, help='path to id_map', default='id_map.json')
+    args = parser.parse_args()
+    main(args.config, args.idmap)
