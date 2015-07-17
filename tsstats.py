@@ -11,6 +11,19 @@ from os.path import exists
 from jinja2 import Environment, FileSystemLoader
 
 
+class Exceptions:
+    class ConfigNotFound(Exception):
+        pass
+
+    class InvalidConfig(Exception):
+        pass
+
+    class InvalidLog(Exception):
+        pass
+
+exceptions = Exceptions
+
+
 class Clients:
 
     def __init__(self, ident_map={}):
@@ -77,7 +90,7 @@ class Client:
         logging.debug('DISCONNECT {}'.format(str(self)))
         if not self.connected:
             logging.debug('^ disconnect before connect')
-            raise Exception('disconnect before connect!')
+            raise exceptions.InvalidLog('disconnect before connect!')
         self.connected -= 1
         session_time = timestamp - self._last_connect
         self.onlinetime += session_time
@@ -123,6 +136,10 @@ path_split = __file__.split(sep)[:-1]
 abspath = sep.join(path_split)
 if len(path_split) > 0:
     abspath += sep
+
+
+def gen_abspath(filename):
+    return filename if filename.startswith(sep) else abspath + filename
 
 
 def _get_sorted(stor, key):
@@ -212,12 +229,12 @@ def parse_config(config_path):
     config = configparser.ConfigParser()
     config.read(config_path)
     if 'General' not in config or not \
-            ('logfile' in config['General'] or 'outputfile' in config['General']):
-        raise Exception('Invalid config!')
+            ('logfile' in config['General'] and 'outputfile' in config['General']):
+        raise exceptions.InvalidConfig
 
     general = config['General']
-    log_path = general['logfile'] if general['logfile'].startswith(sep) else abspath + general['logfile']
-    output_path = general['outputfile'] if general['outputfile'].startswith(sep) else abspath + general['outputfile']
+    log_path = gen_abspath(general['logfile'])
+    output_path = gen_abspath(general['outputfile'])
     debug = general.get('debug', 'false') in ['true', 'True']
     debug_file = True if general.get('debugfile', 'false') in ['true', 'True'] and debug else False
     return log_path, output_path, debug, debug_file
@@ -225,11 +242,11 @@ def parse_config(config_path):
 
 def main():
     # check cmdline-args
-    config_path = abspath + (argv[1] if len(argv) >= 2 else 'config.ini')
-    id_map_path = abspath + (argv[2] if len(argv) >= 3 else 'id_map.json')
+    config_path = gen_abspath(argv[1] if len(argv) >= 2 else 'config.ini')
+    id_map_path = gen_abspath(argv[2] if len(argv) >= 3 else 'id_map.json')
 
     if not exists(config_path):
-        raise Exception('Couldn\'t find config-file at {}'.format(config_path))
+        raise exceptions.ConfigNotFound(config_path)
 
     if exists(id_map_path):
         # read id_map
