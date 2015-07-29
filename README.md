@@ -1,4 +1,4 @@
-# TeamspeakStats [![Build Status](https://drone.io/github.com/Thor77/TeamspeakStats/status.png)](https://drone.io/github.com/Thor77/TeamspeakStats/latest)
+# TeamspeakStats [![Build Status](https://drone.io/github.com/Thor77/TeamspeakStats/status.png)](https://drone.io/github.com/Thor77/TeamspeakStats/latest) [![Coverage Status](https://coveralls.io/repos/Thor77/TeamspeakStats/badge.svg?branch=master&service=github)](https://coveralls.io/github/Thor77/TeamspeakStats?branch=master)
 A simple Teamspeak stat-generator - based on server-logs
 
 # Installation
