@@ -1,2 +1,4 @@
 [report]
 include = tsstats.py
+exclude_lines =
+    if __name__ == .__main__.:
