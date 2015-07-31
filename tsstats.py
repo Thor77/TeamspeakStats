@@ -115,9 +115,6 @@ class Client:
     def __str__(self):
         return '<{},{}>'.format(self.identifier, self.nick)
 
-    def __format__(self):
-        return self.__str__()
-
     def __getitem__(self, item):
         return {
             'identifier': self.identifier,
