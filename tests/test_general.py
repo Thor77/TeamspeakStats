@@ -1,5 +1,5 @@
 from tsstats import parse_logs
-from sys import stderr
+from os import remove
 
 clients = parse_logs('tests/res/test.log')
 
@@ -34,3 +34,9 @@ def test_parse_bans():
 
 def test_parse_pbans():
     assert clients['2'].pbans == 1
+
+
+def test_debug_log():
+    clients = parse_logs('tests/res/test.log', file_log=True)
+    open('debug.txt')
+    remove('debug.txt')
