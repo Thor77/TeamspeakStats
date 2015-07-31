@@ -1,5 +1,6 @@
 from tsstats import parse_logs
 from os import remove
+from nose.tools import raises
 
 clients = parse_logs('tests/res/test.log')
 
@@ -34,6 +35,10 @@ def test_parse_bans():
 
 def test_parse_pbans():
     assert clients['2'].pbans == 1
+
+
+def test_client_repr():
+    assert str(clients['1']) == '<1,Client1>'
 
 
 def test_debug_log():
