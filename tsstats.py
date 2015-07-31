@@ -40,8 +40,6 @@ class Clients:
             return False
 
     def __add__(self, id_or_uid):
-        if id_or_uid in self.ident_map:
-            id_or_uid = self.ident_map[id_or_uid]
         if self.is_id(id_or_uid):
             if id_or_uid not in self.clients_by_id:
                 self.clients_by_id[id_or_uid] = Client(id_or_uid)
@@ -51,6 +49,8 @@ class Clients:
         return self
 
     def __getitem__(self, id_or_uid):
+        if id_or_uid in self.ident_map:
+            id_or_uid = self.ident_map[id_or_uid]
         if self.is_id(id_or_uid):
             if id_or_uid not in self.clients_by_id:
                 self += id_or_uid
