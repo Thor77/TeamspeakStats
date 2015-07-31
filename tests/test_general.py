@@ -1,8 +1,12 @@
-from tsstats import parse_logs
+from tsstats import parse_logs, main
 from os import remove
 from nose.tools import raises
 
 clients = parse_logs('tests/res/test.log')
+
+
+def test_main():
+    main(config_path='tests/res/config.ini')
 
 
 def test_length():
