@@ -24,4 +24,5 @@ class TestTemplate:
         render_template(clients, output_path)
         soup = BeautifulSoup(open(output_path), 'html.parser')
         # check onlinetime-data
-        assert _format_seconds(clients['1'].onlinetime) == soup.find('span').text
+        assert _format_seconds(clients['1'].onlinetime) == \
+            soup.find('span').text

@@ -15,7 +15,8 @@ def test_main_config_not_found():
 
 
 def test_main_idmap_load():
-    main(config_path='tests/res/config.ini', id_map_path='tests/res/id_map.json')
+    main(config_path='tests/res/config.ini',
+         id_map_path='tests/res/id_map.json')
 
 
 def test_length():
