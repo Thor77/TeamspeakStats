@@ -129,7 +129,9 @@ class Client:
 
 
 re_dis_connect = re.compile(r"'(.*)'\(id:(\d*)\)")
-re_disconnect_invoker = re.compile(r"invokername=(.*)\ invokeruid=(.*)\ reasonmsg")
+re_disconnect_invoker = re.compile(
+    r"invokername=(.*)\ invokeruid=(.*)\ reasonmsg"
+)
 path_split = __file__.split(sep)[:-1]
 abspath = sep.join(path_split)
 if len(path_split) > 0:
@@ -142,7 +144,8 @@ def gen_abspath(filename):
 
 def _get_sorted(stor, key):
     clients = stor.values()
-    return sorted([(client, client[key]) for client in clients if client[key] > 0], key=lambda data: data[1], reverse=True)
+    cl_data = [(client, client[key]) for client in clients if client[key] > 0]
+    return sorted(cl_data, key=lambda data: data[1], reverse=True)
 
 
 def _format_seconds(seconds):
@@ -171,7 +174,7 @@ def parse_logs(log_path, ident_map={}, file_log=False):
     log.addHandler(stream_handler)
 
     # find all log-files and collect lines
-    log_files = [file_name for file_name in glob.glob(log_path) if exists(file_name)]
+    log_files = [file_name for file_name in glob.glob(log_path)]
     log_lines = []
     for log_file in log_files:
         for line in open(log_file, 'r'):
@@ -180,7 +183,9 @@ def parse_logs(log_path, ident_map={}, file_log=False):
     # process lines
     for line in log_lines:
         parts = line.split('|')
-        logdatetime = int(datetime.datetime.strptime(parts[0], '%Y-%m-%d %H:%M:%S.%f').timestamp())
+        log_format = '%Y-%m-%d %H:%M:%S.%f'
+        stripped_time = datetime.datetime.strptime(parts[0], log_format)
+        logdatetime = int(stripped_time.timestamp())
         data = '|'.join(parts[4:]).strip()
         if data.startswith('client'):
             nick, clid = re_dis_connect.findall(data)[0]
@@ -204,10 +209,14 @@ def parse_logs(log_path, ident_map={}, file_log=False):
     return clients
 
 
-def render_template(clients, output, template_name='template.html', title='TeamspeakStats', debug=False):
+def render_template(clients, output, template_name='template.html',
+                    title='TeamspeakStats', debug=False):
     # prepare clients
     clients_onlinetime_ = _get_sorted(clients.clients_by_id, 'onlinetime')
-    clients_onlinetime = [(client, _format_seconds(onlinetime)) for client, onlinetime in clients_onlinetime_]
+    clients_onlinetime = [
+        (client, _format_seconds(onlinetime))
+        for client, onlinetime in clients_onlinetime_
+    ]
 
     clients_kicks = _get_sorted(clients.clients_by_uid, 'kicks')
     clients_pkicks = _get_sorted(clients.clients_by_id, 'pkicks')
@@ -215,10 +224,11 @@ def render_template(clients, output, template_name='template.html', title='Teams
     clients_pbans = _get_sorted(clients.clients_by_id, 'pbans')
     objs = [('Onlinetime', clients_onlinetime), ('Kicks', clients_kicks),
             ('passive Kicks', clients_pkicks),
-            ('Bans', clients_bans), ('passive Bans', clients_pbans)]  # (headline, list)
+            ('Bans', clients_bans), ('passive Bans', clients_pbans)]
 
     # render
-    template = Environment(loader=FileSystemLoader(abspath)).get_template(template_name)
+    template_loader = FileSystemLoader(abspath)
+    template = Environment(loader=template_loader).get_template(template_name)
     with open(output, 'w') as f:
         f.write(template.render(title=title, objs=objs, debug=debug))
 
@@ -227,14 +237,16 @@ def parse_config(config_path):
     config = configparser.ConfigParser()
     config.read(config_path)
     if 'General' not in config or not \
-            ('logfile' in config['General'] and 'outputfile' in config['General']):
+            ('logfile' in config['General'] and
+                'outputfile' in config['General']):
         raise exceptions.InvalidConfig
 
     general = config['General']
     log_path = gen_abspath(general['logfile'])
     output_path = gen_abspath(general['outputfile'])
     debug = general.get('debug', 'false') in ['true', 'True']
-    debug_file = True if general.get('debugfile', 'false') in ['true', 'True'] and debug else False
+    debug_file = general.get('debugfile', 'false') in ['true', 'True']
+    debug_file = debug_file and debug
     return log_path, output_path, debug, debug_file
 
 
@@ -253,12 +265,18 @@ def main(config_path='config.ini', id_map_path='id_map.json'):
         id_map = {}
 
     log_path, output_path, debug, debug_file = parse_config(config_path)
-
-    render_template(parse_logs(log_path, ident_map=id_map, file_log=debug_file), output=output_path, debug=debug)
+    clients = parse_logs(log_path, ident_map=id_map, file_log=debug_file)
+    render_template(clients, output=output_path, debug=debug)
 
 if __name__ == '__main__':
-    parser = argparse.ArgumentParser(description='A simple Teamspeak stats-generator - based on server-logs')
-    parser.add_argument('--config', type=str, help='path to config', default='config.ini')
-    parser.add_argument('--idmap', type=str, help='path to id_map', default='id_map.json')
+    parser = argparse.ArgumentParser(
+        description='A simple Teamspeak stats-generator - based on server-logs'
+    )
+    parser.add_argument(
+        '--config', type=str, help='path to config', default='config.ini'
+    )
+    parser.add_argument(
+        '--idmap', type=str, help='path to id_map', default='id_map.json'
+    )
     args = parser.parse_args()
     main(args.config, args.idmap)
