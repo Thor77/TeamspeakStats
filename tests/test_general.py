@@ -11,7 +11,7 @@ def test_main():
 
 @raises(exceptions.ConfigNotFound)
 def test_main_config_not_found():
-    main()
+    main(config_path='/some/where/no/conf.ini')
 
 
 def test_main_idmap_load():
