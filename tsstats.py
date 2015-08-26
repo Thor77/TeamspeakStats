@@ -60,6 +60,12 @@ class Clients:
                 self += id_or_uid
             return self.clients_by_uid[id_or_uid]
 
+    def __iter__(self):
+        for id_client in self.clients_by_id.values():
+            yield id_client
+        for uid_client in self.clients_by_uid.values():
+            yield uid_client
+
 
 class Client:
 
