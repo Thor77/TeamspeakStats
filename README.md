@@ -13,6 +13,21 @@ Run `tsstats.py` and point your web-server to the generated .html-file, now you 
 - Install testing-requirements `pip3 install -r testing_requirements.txt`
 - Run `nosetests`
 
+# CMD-Arguments
+```
+usage: tsstats.py [-h] [--config CONFIG] [--idmap IDMAP] [--debug]
+                  [--debugfile]
+
+A simple Teamspeak stats-generator - based on server-logs
+
+optional arguments:
+  -h, --help       show this help message and exit
+  --config CONFIG  path to config
+  --idmap IDMAP    path to id_map
+  --debug          debug mode
+  --debugfile      write debug-log to file
+```
+
 # Configuration
 
 ###Configname
