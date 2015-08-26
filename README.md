@@ -21,8 +21,6 @@ Run `tsstats.py` and point your web-server to the generated .html-file, now you 
 `[General]`
 - logpath `Path to TS3Server-logfile` (supports [globbing](https://docs.python.org/3/library/glob.html))
 - outputfile `Path to the location, where the generator will put the generated .html-file`
-- debug `Enable debug-mode`
-- debugfile `Enable debug-log to file`  
 
 `[HTML]`
 - title `HTML-Title`
