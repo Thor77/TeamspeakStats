@@ -36,8 +36,6 @@ def test_config():
         'outputfile': 'output.html',
         'debug': 'true'
     })
-    log_path, output_path, debug, debug_file = parse_config(configpath)
+    log_path, output_path = parse_config(configpath)
     assert log_path == gen_abspath('tests/res/test.log')
     assert output_path == gen_abspath('output.html')
-    assert debug
-    assert not debug_file

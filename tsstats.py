@@ -250,13 +250,11 @@ def parse_config(config_path):
     general = config['General']
     log_path = gen_abspath(general['logfile'])
     output_path = gen_abspath(general['outputfile'])
-    debug = general.get('debug', 'false') in ['true', 'True']
-    debug_file = general.get('debugfile', 'false') in ['true', 'True']
-    debug_file = debug_file and debug
-    return log_path, output_path, debug, debug_file
+    return log_path, output_path
 
 
-def main(config_path='config.ini', id_map_path='id_map.json'):
+def main(config_path='config.ini', id_map_path='id_map.json',
+         debug=False, debugfile=False):
     # check cmdline-args
     config_path = gen_abspath(config_path)
     id_map_path = gen_abspath(id_map_path)
@@ -270,8 +268,8 @@ def main(config_path='config.ini', id_map_path='id_map.json'):
     else:
         id_map = {}
 
-    log_path, output_path, debug, debug_file = parse_config(config_path)
-    clients = parse_logs(log_path, ident_map=id_map, file_log=debug_file)
+    log_path, output_path = parse_config(config_path)
+    clients = parse_logs(log_path, ident_map=id_map, file_log=debugfile)
     render_template(clients, output=output_path, debug=debug)
 
 if __name__ == '__main__':
@@ -284,5 +282,11 @@ if __name__ == '__main__':
     parser.add_argument(
         '--idmap', type=str, help='path to id_map', default='id_map.json'
     )
+    parser.add_argument(
+        '--debug', help='debug mode', action='store_true'
+    )
+    parser.add_argument(
+        '--debugfile', help='write debug-log to file', action='store_true'
+    )
     args = parser.parse_args()
-    main(args.config, args.idmap)
+    main(args.config, args.idmap, args.debug, args.debugfile)
