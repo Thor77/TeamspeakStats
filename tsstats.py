@@ -179,39 +179,39 @@ def parse_logs(log_path, ident_map={}, file_log=False):
     stream_handler.setLevel(logging.INFO)
     log.addHandler(stream_handler)
 
-    # find all log-files and collect lines
-    log_files = [file_name for file_name in glob.glob(log_path)]
-    log_lines = []
-    for log_file in log_files:
-        for line in open(log_file, 'r'):
-            log_lines.append(line)
+    # find all log-files and open them
+    log_files = [open(file_name) for file_name in glob.glob(log_path)]
 
-    # process lines
-    for line in log_lines:
-        parts = line.split('|')
-        log_format = '%Y-%m-%d %H:%M:%S.%f'
-        stripped_time = datetime.datetime.strptime(parts[0], log_format)
-        logdatetime = int(stripped_time.timestamp())
-        data = '|'.join(parts[4:]).strip()
-        if data.startswith('client'):
-            nick, clid = re_dis_connect.findall(data)[0]
-            if data.startswith('client connected'):
-                client = clients[clid]
-                client.nick = nick
-                client.connect(logdatetime)
-            elif data.startswith('client disconnected'):
-                client = clients[clid]
-                client.nick = nick
-                client.disconnect(logdatetime)
-                if 'invokeruid' in data:
-                    re_disconnect_data = re_disconnect_invoker.findall(data)
-                    invokernick, invokeruid = re_disconnect_data[0]
-                    invoker = clients[invokeruid]
-                    invoker.nick = invokernick
-                    if 'bantime' in data:
-                        invoker.ban(client)
-                    else:
-                        invoker.kick(client)
+    for log_file in log_files:
+        # process lines
+        logging.debug('Started parsing of {}'.format(log_file.name))
+        for line in log_file:
+            parts = line.split('|')
+            log_format = '%Y-%m-%d %H:%M:%S.%f'
+            stripped_time = datetime.datetime.strptime(parts[0], log_format)
+            logdatetime = int(stripped_time.timestamp())
+            data = '|'.join(parts[4:]).strip()
+            if data.startswith('client'):
+                nick, clid = re_dis_connect.findall(data)[0]
+                if data.startswith('client connected'):
+                    client = clients[clid]
+                    client.nick = nick
+                    client.connect(logdatetime)
+                elif data.startswith('client disconnected'):
+                    client = clients[clid]
+                    client.nick = nick
+                    client.disconnect(logdatetime)
+                    if 'invokeruid' in data:
+                        re_disconnect_data = re_disconnect_invoker.findall(
+                            data)
+                        invokernick, invokeruid = re_disconnect_data[0]
+                        invoker = clients[invokeruid]
+                        invoker.nick = invokernick
+                        if 'bantime' in data:
+                            invoker.ban(client)
+                        else:
+                            invoker.kick(client)
+        logging.debug('Finished parsing of {}'.format(log_file.name))
     return clients
 
 
