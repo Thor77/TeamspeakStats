@@ -21,7 +21,7 @@
   <h1>{{ headline }}</h2>
   <ul class="list-group">
     {% for client, value in list %}
-    <li id="{{ client.nick }}" class="list-group-item{{ ' list-group-item-success' if client.connected else loop.cycle('" style="background-color: #eee;', '') }}">
+    <li id="{{ client.nick }}" onclick="window.location = '#{{ client.nick }}'" class="list-group-item{{ ' list-group-item-success' if client.connected else loop.cycle('" style="background-color: #eee;', '') }}">
       {{ client.nick }}{{ " (" + client.identifier + ")" if debug }}
       <span class="badge">{{ value }}</span>
     </li>
