@@ -59,3 +59,14 @@ def test_debug_log():
     clients = parse_logs('tests/res/test.log', file_log=True)
     open('debug.txt')
     remove('debug.txt')
+
+
+@raises(exceptions.InvalidLog)
+def test_parse_broken():
+    clients = parse_logs('tests/res/test.log.broken')
+
+
+def test_iter_clients():
+    clients_length = len(clients.clients_by_id) + len(clients.clients_by_uid)
+    clients_iter = [client for client in clients]
+    assert len(clients_iter) == clients_length
