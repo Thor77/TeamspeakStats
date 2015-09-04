@@ -1,4 +1,5 @@
 import pep8
+from pyflakes.api import checkPath
 from glob import glob
 
 
@@ -9,3 +10,9 @@ def test_pep8_comformance():
     files.append('tsstats.py')
     result = pep8style.check_files(files)
     assert result.total_errors == 0
+
+
+def test_pyflakes():
+    ''' Test that at least tsstats.py conforms to PyFlakes '''
+    result = checkPath('tsstats.py')
+    assert result == 0
