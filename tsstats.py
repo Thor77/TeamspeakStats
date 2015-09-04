@@ -183,9 +183,10 @@ def parse_logs(log_path, ident_map={}, file_log=False):
     log.addHandler(stream_handler)
 
     # find all log-files and open them
-    log_files = [open(file_name) for file_name in glob.glob(log_path)]
+    file_paths = sorted([file_path for file_path in glob.glob(log_path)])
 
-    for log_file in log_files:
+    for file_path in file_paths:
+        log_file = open(file_path)
         # process lines
         logging.debug('Started parsing of {}'.format(log_file.name))
         for line in log_file:
