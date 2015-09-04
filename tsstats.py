@@ -79,6 +79,7 @@ class Client:
         self.pkicks = 0
         self.bans = 0
         self.pbans = 0
+        self.last_seen = 0
         # private
         self._last_connect = 0
 
@@ -101,6 +102,7 @@ class Client:
         self.connected -= 1
         session_time = timestamp - self._last_connect
         self.onlinetime += session_time
+        self.last_seen = timestamp
 
     def kick(self, target):
         '''
