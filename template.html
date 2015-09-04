@@ -3,6 +3,7 @@
   <title>{{ title }}</title>
   <meta charset="utf-8">
   <link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/hint.css/1.3.5/hint.min.css">
   <style type="text/css">
     h1, p {
       text-align: center;
@@ -22,7 +23,7 @@
   <ul class="list-group">
     {% for client, value in list %}
     <li id="{{ client.nick }}" onclick="window.location = '#{{ client.nick }}'" class="list-group-item{{ ' list-group-item-success' if client.connected else loop.cycle('" style="background-color: #eee;', '') }}">
-      {{ client.nick }}{{ " (" + client.identifier + ")" if debug }}
+      <span class="hint--right" data-hint="{{ client.last_seen|frmttime }}">{{ client.nick }}{{ " (" + client.identifier + ")" if debug }}</span>
       <span class="badge">{{ value }}</span>
     </li>
     {% endfor %}
