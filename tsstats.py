@@ -1,13 +1,14 @@
-import re
+import argparse
+import configparser
+import datetime
 import glob
 import json
 import logging
-import argparse
-import datetime
+import re
 from os import sep
-import configparser
-from time import strftime, localtime
 from os.path import exists
+from time import localtime, strftime
+
 from jinja2 import Environment, FileSystemLoader
 
 

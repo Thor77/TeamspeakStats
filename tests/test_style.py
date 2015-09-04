@@ -1,6 +1,7 @@
+from glob import glob
+
 import pep8
 from pyflakes.api import checkPath
-from glob import glob
 
 
 def test_pep8_comformance():

@@ -1,6 +1,8 @@
-from tsstats import parse_logs, main, exceptions
 from os import remove
+
 from nose.tools import raises
+
+from tsstats import exceptions, main, parse_logs
 
 clients = parse_logs('tests/res/test.log')
 

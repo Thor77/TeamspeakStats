@@ -1,6 +1,8 @@
-from bs4 import BeautifulSoup
-from tsstats import parse_logs, render_template, _format_seconds
 from os import remove
+
+from bs4 import BeautifulSoup
+
+from tsstats import _format_seconds, parse_logs, render_template
 
 output_path = 'tests/res/output.html'
 clients = parse_logs('tests/res/test.log')

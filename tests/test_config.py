@@ -1,8 +1,10 @@
 import configparser
 from os import remove
 from os.path import exists
-from tsstats import parse_config, exceptions, gen_abspath
+
 from nose.tools import raises, with_setup
+
+from tsstats import exceptions, gen_abspath, parse_config
 
 configpath = gen_abspath('tests/res/test.cfg')
 
