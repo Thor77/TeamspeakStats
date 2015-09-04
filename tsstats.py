@@ -8,6 +8,7 @@ from os import sep
 import configparser
 from sys import argv
 from time import mktime
+from time import strftime, localtime
 from os.path import exists
 from jinja2 import Environment, FileSystemLoader
 
@@ -236,7 +237,12 @@ def render_template(clients, output, template_name='template.html',
 
     # render
     template_loader = FileSystemLoader(abspath)
-    template = Environment(loader=template_loader).get_template(template_name)
+    template_env = Environment(loader=template_loader)
+
+    def frmttime(timestamp):
+        return strftime('%x %X', localtime(int(timestamp)))
+    template_env.filters['frmttime'] = frmttime
+    template = template_env.get_template(template_name)
     with open(output, 'w') as f:
         f.write(template.render(title=title, objs=objs, debug=debug))
 
