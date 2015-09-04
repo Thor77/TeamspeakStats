@@ -23,7 +23,7 @@
   <ul class="list-group">
     {% for client, value in list %}
     <li id="{{ client.nick }}" onclick="window.location = '#{{ client.nick }}'" class="list-group-item{{ ' list-group-item-success' if client.connected else loop.cycle('" style="background-color: #eee;', '') }}">
-      <span class="hint--right" data-hint="{{ client.last_seen|frmttime }}">{{ client.nick }}{{ " (" + client.identifier + ")" if debug }}</span>
+      <span {% if not client.connected %}class="hint--right" data-hint="{{ client.last_seen|frmttime }}"{% endif %}>{{ client.nick }}{{ " (" + client.identifier + ")" if debug }}</span>
       <span class="badge">{{ value }}</span>
     </li>
     {% endfor %}
