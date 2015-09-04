@@ -6,8 +6,6 @@ import argparse
 import datetime
 from os import sep
 import configparser
-from sys import argv
-from time import mktime
 from time import strftime, localtime
 from os.path import exists
 from jinja2 import Environment, FileSystemLoader
