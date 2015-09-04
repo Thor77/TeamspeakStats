@@ -25,4 +25,4 @@ class TestTemplate:
         soup = BeautifulSoup(open(output_path), 'html.parser')
         # check onlinetime-data
         assert _format_seconds(clients['1'].onlinetime) == \
-            soup.find('span').text
+            soup.find('span', class_='badge').text
