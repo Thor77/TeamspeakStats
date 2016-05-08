@@ -1,4 +1,8 @@
-import configparser
+try:
+    from configparser import ConfigParser
+except ImportError:
+    from ConfigParser import ConfigParser
+
 from os import remove
 from os.path import abspath, exists
 
@@ -11,7 +15,7 @@ configpath = abspath('tsstats/tests/res/test.cfg')
 
 
 def create_config(values, key='General'):
-    config = configparser.ConfigParser()
+    config = ConfigParser()
     config[key] = values
     with open(configpath, 'w') as configfile:
         config.write(configfile)
