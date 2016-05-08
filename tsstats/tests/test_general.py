@@ -2,13 +2,15 @@ from os import remove
 
 from nose.tools import raises
 
-from tsstats import exceptions, main, parse_logs
+from tsstats import exceptions
+from tsstats.__main__ import main
+from tsstats.log import parse_logs
 
-clients = parse_logs('tests/res/test.log')
+clients = parse_logs('tsstats/tests/res/test.log')
 
 
 def test_main():
-    main(config_path='tests/res/config.ini')
+    main(config_path='tsstats/tests/res/config.ini')
 
 
 @raises(exceptions.ConfigNotFound)
@@ -17,8 +19,8 @@ def test_main_config_not_found():
 
 
 def test_main_idmap_load():
-    main(config_path='tests/res/config.ini',
-         id_map_path='tests/res/id_map.json')
+    main(config_path='tsstats/tests/res/config.ini',
+         id_map_path='tsstats/tests/res/id_map.json')
 
 
 def test_length():
@@ -58,14 +60,14 @@ def test_client_repr():
 
 
 def test_debug_log():
-    clients = parse_logs('tests/res/test.log', file_log=True)
+    clients = parse_logs('tsstats/tests/res/test.log', file_log=True)
     open('debug.txt')
     remove('debug.txt')
 
 
 @raises(exceptions.InvalidLog)
 def test_parse_broken():
-    clients = parse_logs('tests/res/test.log.broken')
+    clients = parse_logs('tsstats/tests/res/test.log.broken')
 
 
 def test_iter_clients():

@@ -1,12 +1,13 @@
 import configparser
 from os import remove
-from os.path import exists
+from os.path import abspath, exists
 
 from nose.tools import raises, with_setup
 
-from tsstats import exceptions, gen_abspath, parse_config
+from tsstats import exceptions
+from tsstats.config import parse_config
 
-configpath = gen_abspath('tests/res/test.cfg')
+configpath = abspath('tsstats/tests/res/test.cfg')
 
 
 def create_config(values, key='General'):
@@ -25,7 +26,7 @@ def clean_config():
 @raises(exceptions.InvalidConfig)
 def test_invalid_config():
     create_config({
-        'loggfile': 'tests/res/test.log',
+        'loggfile': 'tsstats/tests/res/test.log',
         'outputfile': ''
     })
     _, _, _, _ = parse_config(configpath)
@@ -34,10 +35,10 @@ def test_invalid_config():
 @with_setup(clean_config, clean_config)
 def test_config():
     create_config({
-        'logfile': 'tests/res/test.log',
+        'logfile': 'tsstats/tests/res/test.log',
         'outputfile': 'output.html',
         'debug': 'true'
     })
     log_path, output_path = parse_config(configpath)
-    assert log_path == gen_abspath('tests/res/test.log')
-    assert output_path == gen_abspath('output.html')
+    assert log_path == abspath('tsstats/tests/res/test.log')
+    assert output_path == abspath('output.html')

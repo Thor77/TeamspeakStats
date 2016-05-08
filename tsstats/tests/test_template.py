@@ -2,10 +2,12 @@ from os import remove
 
 from bs4 import BeautifulSoup
 
-from tsstats import _format_seconds, parse_logs, render_template
+from tsstats.utils import seconds_to_text
+from tsstats.log import parse_logs
+from tsstats.template import render_template
 
-output_path = 'tests/res/output.html'
-clients = parse_logs('tests/res/test.log')
+output_path = 'tsstats/tests/res/output.html'
+clients = parse_logs('tsstats/tests/res/test.log')
 
 
 class TestTemplate:
@@ -26,5 +28,5 @@ class TestTemplate:
         render_template(clients, output_path)
         soup = BeautifulSoup(open(output_path), 'html.parser')
         # check onlinetime-data
-        assert _format_seconds(clients['1'].onlinetime) == \
+        assert seconds_to_text(clients['1'].onlinetime) == \
             soup.find('span', class_='badge').text

@@ -1,4 +1,4 @@
-from tsstats import Clients
+from tsstats.client import Clients
 
 ident_map = {
     '1': '2',
