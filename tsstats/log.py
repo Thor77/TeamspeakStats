@@ -38,7 +38,8 @@ def parse_logs(log_path, ident_map={}, file_log=False):
             parts = line.split('|')
             log_format = '%Y-%m-%d %H:%M:%S.%f'
             stripped_time = datetime.strptime(parts[0], log_format)
-            logdatetime = int(stripped_time.timestamp())
+            logdatetime = int((stripped_time - datetime(1970, 1, 1))
+                              .total_seconds())
             data = '|'.join(parts[4:]).strip()
             if data.startswith('client'):
                 nick, clid = re_dis_connect.findall(data)[0]
