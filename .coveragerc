@@ -1,4 +1,4 @@
 [report]
-include = tsstats.py
+include = tsstats/*.py
 exclude_lines =
     if __name__ == .__main__.:
