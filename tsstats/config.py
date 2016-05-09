@@ -11,9 +11,9 @@ except ImportError:
 def parse_config(config_path):
     config = ConfigParser()
     config.read(config_path)
-    if 'General' not in config or not \
-            ('logfile' in config['General'] and
-                'outputfile' in config['General']):
+    if not config.has_section('General') or not \
+        (config.has_option('General', 'logfile') and
+         config.has_option('General', 'outputfile')):
         raise InvalidConfig
 
     general = config['General']
