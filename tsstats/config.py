@@ -16,7 +16,6 @@ def parse_config(config_path):
          config.has_option('General', 'outputfile')):
         raise InvalidConfig
 
-    general = config['General']
-    log_path = abspath(general['logfile'])
-    output_path = abspath(general['outputfile'])
+    log_path = abspath(config.get('General', 'logfile'))
+    output_path = abspath(config.get('General', 'outputfile'))
     return log_path, output_path
