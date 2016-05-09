@@ -16,7 +16,9 @@ configpath = abspath('tsstats/tests/res/test.cfg')
 
 def create_config(values, key='General'):
     config = ConfigParser()
-    config[key] = values
+    config.add_section('General')
+    for option, value in values.items():
+        config.set('General', option, value)
     with open(configpath, 'w') as configfile:
         config.write(configfile)
 
