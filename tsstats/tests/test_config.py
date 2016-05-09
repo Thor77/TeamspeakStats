@@ -6,7 +6,7 @@ except ImportError:
 from os import remove
 from os.path import abspath, exists
 
-from nose.tools import raises, with_setup
+import pytest
 
 from tsstats import exceptions
 from tsstats.config import parse_config
@@ -23,23 +23,24 @@ def create_config(values, key='General'):
         config.write(configfile)
 
 
-def clean_config():
-    if exists(configpath):
-        remove(configpath)
+@pytest.fixture
+def config(request):
+    def clean():
+        if exists(configpath):
+            remove(configpath)
+    request.addfinalizer(clean)
 
 
-@with_setup(clean_config, clean_config)
-@raises(exceptions.InvalidConfig)
-def test_invalid_config():
+def test_invalid_config(config):
     create_config({
         'loggfile': 'tsstats/tests/res/test.log',
         'outputfile': ''
     })
-    _, _, _, _ = parse_config(configpath)
+    with pytest.raises(exceptions.InvalidConfig):
+        _, _, _, _ = parse_config(configpath)
 
 
-@with_setup(clean_config, clean_config)
-def test_config():
+def test_config(config):
     create_config({
         'logfile': 'tsstats/tests/res/test.log',
         'outputfile': 'output.html',

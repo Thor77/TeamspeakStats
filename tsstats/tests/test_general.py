@@ -1,6 +1,6 @@
 from os import remove
 
-from nose.tools import raises
+import pytest
 
 from tsstats import exceptions
 from tsstats.__main__ import main
@@ -9,16 +9,23 @@ from tsstats.log import parse_logs
 clients = parse_logs('tsstats/tests/res/test.log')
 
 
-def test_main():
+@pytest.fixture
+def output(request):
+    def clean():
+        remove('tsstats/tests/res/output.html')
+    request.addfinalizer(clean)
+
+
+def test_main(output):
     main(config_path='tsstats/tests/res/config.ini')
 
 
-@raises(exceptions.ConfigNotFound)
 def test_main_config_not_found():
-    main(config_path='/some/where/no/conf.ini')
+    with pytest.raises(exceptions.ConfigNotFound):
+        main(config_path='/some/where/no/conf.ini')
 
 
-def test_main_idmap_load():
+def test_main_idmap_load(output):
     main(config_path='tsstats/tests/res/config.ini',
          id_map_path='tsstats/tests/res/id_map.json')
 
@@ -60,14 +67,14 @@ def test_client_repr():
 
 
 def test_debug_log():
-    clients = parse_logs('tsstats/tests/res/test.log', file_log=True)
+    parse_logs('tsstats/tests/res/test.log', file_log=True)
     open('debug.txt')
     remove('debug.txt')
 
 
-@raises(exceptions.InvalidLog)
 def test_parse_broken():
-    clients = parse_logs('tsstats/tests/res/test.log.broken')
+    with pytest.raises(exceptions.InvalidLog):
+        parse_logs('tsstats/tests/res/test.log.broken')
 
 
 def test_iter_clients():
