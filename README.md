@@ -2,21 +2,21 @@
 A simple Teamspeak stat-generator - based on server-logs
 
 # Installation
-- Install [Python](https://python.org)
+- Install a supported [Python](https://python.org)-version (`2.7`, `3.x`)
 - Clone this repo `git clone https://github.com/Thor77/TeamspeakStats`
 - Install requirements `pip3 install -r requirements.txt`
 
 # Usage
-Run `tsstats.py` and point your web-server to the generated .html-file, now you will see some stats for your Teamspeak-Server parsed from the logs.
+- Create a config (see [Configuration](https://github.com/Thor77/TeamspeakStats#configuration))
+- Run the module `python -m tsstats`
 
 # Tests
-- Install testing-requirements `pip3 install -r testing_requirements.txt`
-- Run `nosetests`
+- Install testing-requirements `pip install -r testing_requirements.txt`
+- Run `py.test tsstats/`
 
 # CMD-Arguments
 ```
-usage: tsstats.py [-h] [--config CONFIG] [--idmap IDMAP] [--debug]
-                  [--debugfile]
+usage: python -m tsstats [-h] [--config CONFIG] [--idmap IDMAP] [--debug]
 
 A simple Teamspeak stats-generator - based on server-logs
 
@@ -25,27 +25,27 @@ optional arguments:
   --config CONFIG  path to config
   --idmap IDMAP    path to id_map
   --debug          debug mode
-  --debugfile      write debug-log to file
 ```
 
 # Configuration
 
-###Configname
-`config.ini`
-#### Keys
-`[General]`
-- logpath `Path to TS3Server-logfile` (supports [globbing](https://docs.python.org/3/library/glob.html))
-- outputfile `Path to the location, where the generator will put the generated .html-file`
+#### [General]
+| Key | Description |
+|-----|-------------|
+| log | Path to TS3Server-logfile(s) (supports [globbing](https://docs.python.org/3/library/glob.html)) |
+| output | Path to the location, where the generator will put the generated `.html`-file |
 
-`[HTML]`
-- title `HTML-Title`
+#### [HTML]
+| Key | Description |
+|-----|-------------|
+| title | HTML-Title of the generated `.html`-file
 
 
 ## Example
 ```
 [General]
-logfile = /usr/local/bin/teamspeak-server/logs/ts3server*_1.log
-outputfile = /var/www/html/stats.html
+log = /usr/local/bin/teamspeak-server/logs/ts3server*_1.log
+output = /var/www/html/stats.html
 ```
 
 # ID-Mapping
