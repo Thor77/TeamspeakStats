@@ -42,10 +42,9 @@ def test_invalid_config(config):
 
 def test_config(config):
     create_config({
-        'logfile': 'tsstats/tests/res/test.log',
-        'outputfile': 'output.html',
-        'debug': 'true'
+        'log': 'tsstats/tests/res/test.log',
+        'output': 'output.html',
     })
-    log_path, output_path = parse_config(configpath)
-    assert log_path == abspath('tsstats/tests/res/test.log')
-    assert output_path == abspath('output.html')
+    log, output = parse_config(configpath)
+    assert log == abspath('tsstats/tests/res/test.log')
+    assert output == abspath('output.html')

@@ -12,10 +12,8 @@ def parse_config(config_path):
     config = ConfigParser()
     config.read(config_path)
     if not config.has_section('General') or not \
-        (config.has_option('General', 'logfile') and
-         config.has_option('General', 'outputfile')):
+        (config.has_option('General', 'log') and
+         config.has_option('General', 'output')):
         raise InvalidConfig
-
-    log_path = abspath(config.get('General', 'logfile'))
-    output_path = abspath(config.get('General', 'outputfile'))
-    return log_path, output_path
+    return (abspath(config.get('General', 'log')),
+            abspath(config.get('General', 'output')))

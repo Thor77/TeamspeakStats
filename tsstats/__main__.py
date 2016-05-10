@@ -25,9 +25,9 @@ def main(config_path='config.ini', id_map_path='id_map.json'):
     else:
         id_map = {}
 
-    log_path, output_path = parse_config(config_path)
-    clients = parse_logs(log_path, ident_map=id_map)
-    render_template(clients, output=output_path)
+    log, output = parse_config(config_path)
+    clients = parse_logs(log, ident_map=id_map)
+    render_template(clients, output=output)
 
 
 if __name__ == '__main__':
