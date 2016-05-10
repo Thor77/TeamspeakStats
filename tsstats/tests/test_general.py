@@ -1,3 +1,4 @@
+import logging
 from os import remove
 
 import pytest
@@ -7,6 +8,9 @@ from tsstats.__main__ import main
 from tsstats.log import parse_logs
 
 clients = parse_logs('tsstats/tests/res/test.log')
+
+
+logger = logging.getLogger('tsstats')
 
 
 @pytest.fixture
@@ -67,7 +71,9 @@ def test_client_repr():
 
 
 def test_debug_log():
-    parse_logs('tsstats/tests/res/test.log', file_log=True)
+    logger.setLevel(logging.DEBUG)
+    parse_logs('tsstats/tests/res/test.log')
+    logger.setLevel(logging.INFO)
     open('debug.txt')
     remove('debug.txt')
 

@@ -11,21 +11,11 @@ re_disconnect_invoker = re.compile(
 )
 
 
-def parse_logs(log_path, ident_map={}, file_log=False):
+logger = logging.getLogger('tsstats')
+
+
+def parse_logs(log_path, ident_map={}):
     clients = Clients(ident_map)
-    # setup logging
-    log = logging.getLogger()
-    log.setLevel(logging.DEBUG)
-    if file_log:
-        # file logger
-        file_handler = logging.FileHandler('debug.txt', 'w', 'UTF-8')
-        file_handler.setFormatter(logging.Formatter('%(message)s'))
-        file_handler.setLevel(logging.DEBUG)
-        log.addHandler(file_handler)
-    # stream logger (unused)
-    stream_handler = logging.StreamHandler()
-    stream_handler.setLevel(logging.INFO)
-    log.addHandler(stream_handler)
 
     # find all log-files and open them TODO: move this into main
     file_paths = sorted([file_path for file_path in glob(log_path)])
@@ -33,7 +23,7 @@ def parse_logs(log_path, ident_map={}, file_log=False):
     for file_path in file_paths:
         log_file = open(file_path)
         # process lines
-        logging.debug('Started parsing of {}'.format(log_file.name))
+        logger.debug('Started parsing of {}'.format(log_file.name))
         for line in log_file:
             parts = line.split('|')
             log_format = '%Y-%m-%d %H:%M:%S.%f'
@@ -61,5 +51,5 @@ def parse_logs(log_path, ident_map={}, file_log=False):
                             invoker.ban(client)
                         else:
                             invoker.kick(client)
-        logging.debug('Finished parsing of {}'.format(log_file.name))
+        logger.debug('Finished parsing of {}'.format(log_file.name))
     return clients

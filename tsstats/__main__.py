@@ -1,5 +1,6 @@
 import argparse
 import json
+import logging
 from os.path import abspath, exists
 
 from tsstats.config import parse_config
@@ -7,9 +8,10 @@ from tsstats.exceptions import ConfigNotFound
 from tsstats.log import parse_logs
 from tsstats.template import render_template
 
+logger = logging.getLogger('tsstats')
 
-def main(config_path='config.ini', id_map_path='id_map.json',
-         debug=False, debugfile=False):
+
+def main(config_path='config.ini', id_map_path='id_map.json'):
     # check cmdline-args
     config_path = abspath(config_path)
     id_map_path = abspath(id_map_path)
@@ -24,8 +26,8 @@ def main(config_path='config.ini', id_map_path='id_map.json',
         id_map = {}
 
     log_path, output_path = parse_config(config_path)
-    clients = parse_logs(log_path, ident_map=id_map, file_log=debugfile)
-    render_template(clients, output=output_path, debug=debug)
+    clients = parse_logs(log_path, ident_map=id_map)
+    render_template(clients, output=output_path)
 
 
 if __name__ == '__main__':
@@ -41,8 +43,7 @@ if __name__ == '__main__':
     parser.add_argument(
         '--debug', help='debug mode', action='store_true'
     )
-    parser.add_argument(
-        '--debugfile', help='write debug-log to file', action='store_true'
-    )
     args = parser.parse_args()
-    main(args.config, args.idmap, args.debug, args.debugfile)
+    if args.debug:
+        logger.setLevel(logging.DEBUG)
+    main(args.config, args.idmap)

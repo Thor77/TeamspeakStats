@@ -2,6 +2,8 @@ import logging
 
 from tsstats.exceptions import InvalidLog
 
+logger = logging.getLogger('tsstats')
+
 
 class Clients:
 
@@ -65,7 +67,7 @@ class Client:
         '''
         client connects at "timestamp"
         '''
-        logging.debug('CONNECT {}'.format(str(self)))
+        logger.debug('CONNECT {}'.format(str(self)))
         self.connected += 1
         self._last_connect = timestamp
 
@@ -73,9 +75,9 @@ class Client:
         '''
         client disconnects at "timestamp"
         '''
-        logging.debug('DISCONNECT {}'.format(str(self)))
+        logger.debug('DISCONNECT {}'.format(str(self)))
         if not self.connected:
-            logging.debug('^ disconnect before connect')
+            logger.debug('^ disconnect before connect')
             raise InvalidLog('disconnect before connect!')
         self.connected -= 1
         session_time = timestamp - self._last_connect
@@ -86,7 +88,7 @@ class Client:
         '''
         client kicks "target" (Client-obj)
         '''
-        logging.debug('KICK {} -> {}'.format(str(self), str(target)))
+        logger.debug('KICK {} -> {}'.format(str(self), str(target)))
         target.pkicks += 1
         self.kicks += 1
 
@@ -94,7 +96,7 @@ class Client:
         '''
         client bans "target" (Client-obj)
         '''
-        logging.debug('BAN {} -> {}'.format(str(self), str(target)))
+        logger.debug('BAN {} -> {}'.format(str(self), str(target)))
         target.pbans += 1
         self.bans += 1
 

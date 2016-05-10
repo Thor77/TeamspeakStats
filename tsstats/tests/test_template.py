@@ -1,3 +1,4 @@
+import logging
 from os import remove
 
 import pytest
@@ -10,6 +11,8 @@ from tsstats.utils import seconds_to_text
 output_path = 'tsstats/tests/res/output.html'
 clients = parse_logs('tsstats/tests/res/test.log')
 
+logger = logging.getLogger('tsstats')
+
 
 @pytest.fixture
 def output(request):
@@ -19,7 +22,9 @@ def output(request):
 
 
 def test_debug(output):
-    render_template(clients, output_path, debug=True)
+    logger.setLevel(logging.DEBUG)
+    render_template(clients, output_path)
+    logger.setLevel(logging.INFO)
     soup = BeautifulSoup(open(output_path), 'html.parser')
     # check red label
     assert soup.find_all(class_='alert alert-danger')

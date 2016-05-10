@@ -1,3 +1,4 @@
+import logging
 from os.path import abspath
 from time import localtime, strftime
 
@@ -5,9 +6,11 @@ from jinja2 import Environment, FileSystemLoader
 
 from tsstats.utils import seconds_to_text, sort_clients
 
+logger = logging.getLogger('tsstats')
+
 
 def render_template(clients, output, template_name='tsstats/template.html',
-                    title='TeamspeakStats', debug=False):
+                    title='TeamspeakStats'):
     # prepare clients
     clients_onlinetime_ = sort_clients(clients.clients_by_id, 'onlinetime')
     clients_onlinetime = [
@@ -32,4 +35,5 @@ def render_template(clients, output, template_name='tsstats/template.html',
     template_env.filters['frmttime'] = fmttime
     template = template_env.get_template(template_name)
     with open(output, 'w') as f:
-        f.write(template.render(title=title, objs=objs, debug=debug))
+        f.write(template.render(title=title, objs=objs,
+                                debug=logger.level <= logging.DEBUG))
