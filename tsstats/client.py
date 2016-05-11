@@ -5,7 +5,7 @@ from tsstats.exceptions import InvalidLog
 logger = logging.getLogger('tsstats')
 
 
-class Clients:
+class Clients(object):
 
     def __init__(self, ident_map={}):
         self.clients_by_id = {}
@@ -47,7 +47,7 @@ class Clients:
             yield uid_client
 
 
-class Client:
+class Client(object):
 
     def __init__(self, identifier):
         # public
