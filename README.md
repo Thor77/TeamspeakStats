@@ -1,6 +1,8 @@
 # TeamspeakStats [![Build Status](https://travis-ci.org/Thor77/TeamspeakStats.svg?branch=master)](https://travis-ci.org/Thor77/TeamspeakStats) [![Coverage Status](https://coveralls.io/repos/Thor77/TeamspeakStats/badge.svg?branch=master&service=github)](https://coveralls.io/github/Thor77/TeamspeakStats?branch=master) [![Code Health](https://landscape.io/github/Thor77/TeamspeakStats/master/landscape.svg?style=flat)](https://landscape.io/github/Thor77/TeamspeakStats/master) [![Requirements Status](https://requires.io/github/Thor77/TeamspeakStats/requirements.svg?branch=master)](https://requires.io/github/Thor77/TeamspeakStats/requirements/?branch=master)
 A simple Teamspeak stat-generator - based on server-logs
 
+![screenshot](screenshot.png)
+
 # Installation
 - Install a supported [Python](https://python.org)-version (`2.7`, `3.x`)
 - Clone this repo `git clone https://github.com/Thor77/TeamspeakStats`
