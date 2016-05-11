@@ -67,7 +67,7 @@ class Client:
         '''
         client connects at "timestamp"
         '''
-        logger.debug('CONNECT {}'.format(str(self)))
+        logger.debug('CONNECT %s', self)
         self.connected += 1
         self._last_connect = timestamp
 
@@ -75,7 +75,7 @@ class Client:
         '''
         client disconnects at "timestamp"
         '''
-        logger.debug('DISCONNECT {}'.format(str(self)))
+        logger.debug('DISCONNECT %s', self)
         if not self.connected:
             logger.debug('^ disconnect before connect')
             raise InvalidLog('disconnect before connect!')
@@ -88,7 +88,7 @@ class Client:
         '''
         client kicks "target" (Client-obj)
         '''
-        logger.debug('KICK {} -> {}'.format(str(self), str(target)))
+        logger.debug('KICK %s -> %s', self, target)
         target.pkicks += 1
         self.kicks += 1
 
@@ -96,7 +96,7 @@ class Client:
         '''
         client bans "target" (Client-obj)
         '''
-        logger.debug('BAN {} -> {}'.format(str(self), str(target)))
+        logger.debug('BAN %s -> %s', self, target)
         target.pbans += 1
         self.bans += 1
 

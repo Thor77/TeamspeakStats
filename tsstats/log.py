@@ -23,7 +23,7 @@ def parse_logs(log_path, ident_map={}):
     for file_path in file_paths:
         log_file = open(file_path)
         # process lines
-        logger.debug('Started parsing of {}'.format(log_file.name))
+        logger.debug('Started parsing of %s', log_file.name)
         for line in log_file:
             parts = line.split('|')
             log_format = '%Y-%m-%d %H:%M:%S.%f'
@@ -51,5 +51,5 @@ def parse_logs(log_path, ident_map={}):
                             invoker.ban(client)
                         else:
                             invoker.kick(client)
-        logger.debug('Finished parsing of {}'.format(log_file.name))
+        logger.debug('Finished parsing of %s', log_file.name)
     return clients
