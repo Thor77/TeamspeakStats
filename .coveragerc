@@ -1,6 +1,8 @@
 [report]
 exclude_lines =
     if __name__ == .__main__.:
+    except ImportError
+    def cli
 
 [run]
 omit = tsstats/tests/*
