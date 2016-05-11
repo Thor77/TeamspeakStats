@@ -11,6 +11,25 @@ from tsstats.template import render_template
 logger = logging.getLogger('tsstats')
 
 
+def cli():
+    parser = argparse.ArgumentParser(
+        description='A simple Teamspeak stats-generator - based on server-logs'
+    )
+    parser.add_argument(
+        '--config', type=str, help='path to config', default='config.ini'
+    )
+    parser.add_argument(
+        '--idmap', type=str, help='path to id_map', default='id_map.json'
+    )
+    parser.add_argument(
+        '--debug', help='debug mode', action='store_true'
+    )
+    args = parser.parse_args()
+    if args.debug:
+        logger.setLevel(logging.DEBUG)
+    main(args.config, args.idmap)
+
+
 def main(config_path='config.ini', id_map_path='id_map.json'):
     # check cmdline-args
     config_path = abspath(config_path)
@@ -31,19 +50,4 @@ def main(config_path='config.ini', id_map_path='id_map.json'):
 
 
 if __name__ == '__main__':
-    parser = argparse.ArgumentParser(
-        description='A simple Teamspeak stats-generator - based on server-logs'
-    )
-    parser.add_argument(
-        '--config', type=str, help='path to config', default='config.ini'
-    )
-    parser.add_argument(
-        '--idmap', type=str, help='path to id_map', default='id_map.json'
-    )
-    parser.add_argument(
-        '--debug', help='debug mode', action='store_true'
-    )
-    args = parser.parse_args()
-    if args.debug:
-        logger.setLevel(logging.DEBUG)
-    main(args.config, args.idmap)
+    cli()
