@@ -4,13 +4,11 @@ A simple Teamspeak stat-generator - based on server-logs
 ![screenshot](screenshot.png)
 
 # Installation
-- Install a supported [Python](https://python.org)-version (`2.7`, `3.x`)
-- Clone this repo `git clone https://github.com/Thor77/TeamspeakStats`
-- Install requirements `pip3 install -r requirements.txt`
+- Install the package via PyPi `pip install tsstats`
 
 # Usage
 - Create a config (see [Configuration](https://github.com/Thor77/TeamspeakStats#configuration))
-- Run the module `python -m tsstats`
+- Run the script `tsstats [-h]`
 
 # Tests
 - Install testing-requirements `pip install -r testing_requirements.txt`
@@ -18,7 +16,7 @@ A simple Teamspeak stat-generator - based on server-logs
 
 # CMD-Arguments
 ```
-usage: python -m tsstats [-h] [--config CONFIG] [--idmap IDMAP] [--debug]
+usage: tsstats [-h] [--config CONFIG] [--idmap IDMAP] [--debug]
 
 A simple Teamspeak stats-generator - based on server-logs
 
