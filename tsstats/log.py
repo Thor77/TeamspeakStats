@@ -3,7 +3,7 @@ import re
 from datetime import datetime
 from glob import glob
 
-from tsstats.client import Clients
+from tsstats.client import Client, Clients
 
 re_dis_connect = re.compile(r"'(.*)'\(id:(\d*)\)")
 re_disconnect_invoker = re.compile(
@@ -34,18 +34,19 @@ def parse_logs(log_path, ident_map={}):
             if data.startswith('client'):
                 nick, clid = re_dis_connect.findall(data)[0]
                 if data.startswith('client connected'):
-                    client = clients[clid]
+                    client = clients.setdefault(clid, Client(clid))
                     client.nick = nick
                     client.connect(logdatetime)
                 elif data.startswith('client disconnected'):
-                    client = clients[clid]
+                    client = clients.setdefault(clid, Client(clid))
                     client.nick = nick
                     client.disconnect(logdatetime)
                     if 'invokeruid' in data:
                         re_disconnect_data = re_disconnect_invoker.findall(
                             data)
                         invokernick, invokeruid = re_disconnect_data[0]
-                        invoker = clients[invokeruid]
+                        invoker = clients.setdefault(invokeruid,
+                                                     Client(invokeruid))
                         invoker.nick = invokernick
                         if 'bantime' in data:
                             invoker.ban(client)

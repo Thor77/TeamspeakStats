@@ -1,5 +1,4 @@
-def sort_clients(stor, key):
-    clients = stor.values()
+def sort_clients(clients, key):
     cl_data = [(client, client[key]) for client in clients if client[key] > 0]
     return sorted(cl_data, key=lambda data: data[1], reverse=True)
 

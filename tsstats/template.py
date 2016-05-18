@@ -12,16 +12,16 @@ logger = logging.getLogger('tsstats')
 def render_template(clients, output, template_name='tsstats/template.html',
                     title='TeamspeakStats'):
     # prepare clients
-    clients_onlinetime_ = sort_clients(clients.clients_by_id, 'onlinetime')
+    clients_onlinetime_ = sort_clients(clients, 'onlinetime')
     clients_onlinetime = [
         (client, seconds_to_text(onlinetime))
         for client, onlinetime in clients_onlinetime_
     ]
 
-    clients_kicks = sort_clients(clients.clients_by_uid, 'kicks')
-    clients_pkicks = sort_clients(clients.clients_by_id, 'pkicks')
-    clients_bans = sort_clients(clients.clients_by_uid, 'bans')
-    clients_pbans = sort_clients(clients.clients_by_id, 'pbans')
+    clients_kicks = sort_clients(clients, 'kicks')
+    clients_pkicks = sort_clients(clients, 'pkicks')
+    clients_bans = sort_clients(clients, 'bans')
+    clients_pbans = sort_clients(clients, 'pbans')
     objs = [('Onlinetime', clients_onlinetime), ('Kicks', clients_kicks),
             ('passive Kicks', clients_pkicks),
             ('Bans', clients_bans), ('passive Bans', clients_pbans)]

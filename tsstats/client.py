@@ -1,76 +1,53 @@
 import logging
 
 from tsstats.exceptions import InvalidLog
+from collections import MutableMapping
 
 logger = logging.getLogger('tsstats')
 
 
-class Clients(object):
+class Clients(MutableMapping):
     '''
-    Clients provides high-level-access to multiple Client-objects
+    A high-level-interface to multiple Client-objects
     '''
-
-    def __init__(self, ident_map={}):
+    def __init__(self, ident_map=None, *args, **kwargs):
         '''
         Initialize a new Client-collection
 
         :param ident_map: Identity-map (see :ref:`IdentMap`)
         :type ident_map: dict
         '''
-        self.clients_by_id = {}
-        self.clients_by_uid = {}
-        self.ident_map = ident_map
+        self.ident_map = ident_map or {}
 
-    def is_id(self, id_or_uid):
-        try:
-            int(id_or_uid)
-            return True
-        except ValueError:
-            return False
+        self.store = dict()
+        self.update(dict(*args, **kwargs))
 
-    def __add__(self, id_or_uid):
+    def __add__(self, client):
         '''
         Add a Client to the collection
 
-        :param id_or_uid: id or uid of the Client
-        :type id_or_uid: int or str
+        :param client: Client to add to the collection
+        :type id_or_uid: Client
         '''
-        if self.is_id(id_or_uid):
-            if id_or_uid not in self.clients_by_id:
-                self.clients_by_id[id_or_uid] = Client(id_or_uid)
-        else:
-            if id_or_uid not in self.clients_by_uid:
-                self.clients_by_uid[id_or_uid] = Client(id_or_uid)
-        return self
-
-    def __getitem__(self, id_or_uid):
-        '''
-        Get a Client from the collection
-
-        :param id_or_uid: id or uid of the Client
-        :type id_or_uid: int or str
-        '''
-        if id_or_uid in self.ident_map:
-            id_or_uid = self.ident_map[id_or_uid]
-        if self.is_id(id_or_uid):
-            if id_or_uid not in self.clients_by_id:
-                self += id_or_uid
-            return self.clients_by_id[id_or_uid]
-        else:
-            if id_or_uid not in self.clients_by_uid:
-                self += id_or_uid
-            return self.clients_by_uid[id_or_uid]
+        self.store[client.identifier] = client
 
     def __iter__(self):
         '''
         Yield all Client-objects from the collection
-
-        clients by uid following clients by id
         '''
-        for id_client in self.clients_by_id.values():
-            yield id_client
-        for uid_client in self.clients_by_uid.values():
-            yield uid_client
+        return iter(self.store.values())
+
+    def __getitem__(self, key):
+        return self.store[key]
+
+    def __delitem__(self, key):
+        del self.store[key]
+
+    def __len__(self):
+        return len(self.store)
+
+    def __setitem__(self, key, value):
+        self.store[key] = value
 
 
 class Client(object):
@@ -151,6 +128,9 @@ class Client(object):
         return '<{},{}>'.format(self.identifier, self.nick)
 
     def __getitem__(self, item):
+        '''
+        DEPRECATED
+        '''
         return {
             'identifier': self.identifier,
             'nick': self.nick,
