@@ -10,8 +10,8 @@ matrix:
         - pip install pyflakes
         - pip install isort
       script:
-        - pyflakes **/*.py
-        - isort -c **/*.py
+        - pyflakes tsstats/**/*.py
+        - isort -c tsstats/**/*.py
 
 install:
   - pip install -r requirements.txt
