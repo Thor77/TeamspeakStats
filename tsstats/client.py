@@ -6,8 +6,17 @@ logger = logging.getLogger('tsstats')
 
 
 class Clients(object):
+    '''
+    Clients provides high-level-access to multiple Client-objects
+    '''
 
     def __init__(self, ident_map={}):
+        '''
+        Initialize a new Client-collection
+
+        :param ident_map: Identity-map (see :ref:`IdentMap`)
+        :type ident_map: dict
+        '''
         self.clients_by_id = {}
         self.clients_by_uid = {}
         self.ident_map = ident_map
@@ -20,6 +29,12 @@ class Clients(object):
             return False
 
     def __add__(self, id_or_uid):
+        '''
+        Add a Client to the collection
+
+        :param id_or_uid: id or uid of the Client
+        :type id_or_uid: int or str
+        '''
         if self.is_id(id_or_uid):
             if id_or_uid not in self.clients_by_id:
                 self.clients_by_id[id_or_uid] = Client(id_or_uid)
@@ -29,6 +44,12 @@ class Clients(object):
         return self
 
     def __getitem__(self, id_or_uid):
+        '''
+        Get a Client from the collection
+
+        :param id_or_uid: id or uid of the Client
+        :type id_or_uid: int or str
+        '''
         if id_or_uid in self.ident_map:
             id_or_uid = self.ident_map[id_or_uid]
         if self.is_id(id_or_uid):
@@ -41,6 +62,11 @@ class Clients(object):
             return self.clients_by_uid[id_or_uid]
 
     def __iter__(self):
+        '''
+        Yield all Client-objects from the collection
+
+        clients by uid following clients by id
+        '''
         for id_client in self.clients_by_id.values():
             yield id_client
         for uid_client in self.clients_by_uid.values():
@@ -48,8 +74,17 @@ class Clients(object):
 
 
 class Client(object):
+    '''
+    Client provides high-level-access to a Teamspeak-Client
+    '''
 
     def __init__(self, identifier):
+        '''
+        Initialize a new Client
+
+        :param identifier: Identifier of the client
+        :type identifier: int or str
+        '''
         # public
         self.identifier = identifier
         self.nick = None
@@ -65,7 +100,10 @@ class Client(object):
 
     def connect(self, timestamp):
         '''
-        client connects at "timestamp"
+        Connect client at `timestamp`
+
+        :param timestamp: time of connect
+        :type timestamp: int
         '''
         logger.debug('CONNECT %s', self)
         self.connected += 1
@@ -73,7 +111,10 @@ class Client(object):
 
     def disconnect(self, timestamp):
         '''
-        client disconnects at "timestamp"
+        Disconnect client at `timestamp`
+
+        :param timestamp: time of disconnect
+        :type timestamp: int
         '''
         logger.debug('DISCONNECT %s', self)
         if not self.connected:
@@ -86,7 +127,10 @@ class Client(object):
 
     def kick(self, target):
         '''
-        client kicks "target" (Client-obj)
+        Let client kick `target`
+
+        :param target: client to kick
+        :type target: Client
         '''
         logger.debug('KICK %s -> %s', self, target)
         target.pkicks += 1
@@ -94,7 +138,10 @@ class Client(object):
 
     def ban(self, target):
         '''
-        client bans "target" (Client-obj)
+        Let client ban `target`
+
+        :param target: client to ban
+        :type target: Client
         '''
         logger.debug('BAN %s -> %s', self, target)
         target.pbans += 1
