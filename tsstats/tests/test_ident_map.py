@@ -1,4 +1,4 @@
-from tsstats.client import Clients
+from tsstats.client import Client, Clients
 
 ident_map = {
     '1': '2',
@@ -7,13 +7,14 @@ ident_map = {
     'UID5': 'UID2'
 }
 clients = Clients(ident_map)
+cl = Client('2', 'Client2')
+uidcl = Client('UID2', 'Client2++')
+clients += cl
+clients += uidcl
 
 
-def test_get_id():
-    assert clients['1'].identifier == '2'
-    assert clients['5'].identifier == '2'
-
-
-def test_get_uid():
-    assert clients['UID1'].identifier == 'UID2'
-    assert clients['UID5'].identifier == 'UID2'
+def test_ident_map():
+    assert clients['1'] == cl
+    assert clients['5'] == cl
+    assert clients['UID1'] == uidcl
+    assert clients['UID5'] == uidcl
