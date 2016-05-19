@@ -34,12 +34,10 @@ def parse_logs(log_path, ident_map={}):
             if data.startswith('client'):
                 nick, clid = re_dis_connect.findall(data)[0]
                 if data.startswith('client connected'):
-                    client = clients.setdefault(clid, Client(clid))
-                    client.nick = nick
+                    client = clients.setdefault(clid, Client(clid, nick))
                     client.connect(logdatetime)
                 elif data.startswith('client disconnected'):
-                    client = clients.setdefault(clid, Client(clid))
-                    client.nick = nick
+                    client = clients.setdefault(clid, Client(clid, nick))
                     client.disconnect(logdatetime)
                     if 'invokeruid' in data:
                         re_disconnect_data = re_disconnect_invoker.findall(
