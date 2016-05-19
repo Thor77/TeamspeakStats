@@ -14,7 +14,7 @@ re_disconnect_invoker = re.compile(
 logger = logging.getLogger('tsstats')
 
 
-def parse_logs(log_path, ident_map={}):
+def parse_logs(log_path, ident_map=None):
     clients = Clients(ident_map)
 
     # find all log-files and open them TODO: move this into main
