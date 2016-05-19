@@ -8,8 +8,7 @@ def clients():
 
 
 def test_log_client_count(clients):
-    assert len(clients.clients_by_id) == 2
-    assert len(clients.clients_by_uid) == 1
+    assert len(clients) == 3
 
 
 def test_log_onlinetime(clients):
