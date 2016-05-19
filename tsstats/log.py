@@ -34,6 +34,7 @@ def parse_logs(log_path, ident_map=None):
             if data.startswith('client'):
                 nick, clid = re_dis_connect.findall(data)[0]
                 client = clients.setdefault(clid, Client(clid, nick))
+                client.nick = nick  # set nick to display changes
                 if data.startswith('client connected'):
                     client.connect(logdatetime)
                 elif data.startswith('client disconnected'):
