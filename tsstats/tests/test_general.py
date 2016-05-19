@@ -40,8 +40,3 @@ def test_debug_log():
     logger.setLevel(logging.INFO)
     open('debug.txt')
     remove('debug.txt')
-
-
-def test_parse_broken():
-    with pytest.raises(exceptions.InvalidLog):
-        parse_logs('tsstats/tests/res/test.log.broken')

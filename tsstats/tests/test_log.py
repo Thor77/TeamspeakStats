@@ -1,4 +1,6 @@
 import pytest
+
+from tsstats.exceptions import InvalidLog
 from tsstats.log import parse_logs
 
 
@@ -30,3 +32,8 @@ def test_log_bans(clients):
 
 def test_log_pbans(clients):
     assert clients['2'].pbans == 1
+
+
+def test_log_invalid():
+    with pytest.raises(InvalidLog):
+        parse_logs('tsstats/tests/res/test.log.broken')
