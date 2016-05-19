@@ -1,22 +1,26 @@
-from tsstats.client import Clients
+import pytest
+
+from tsstats.client import Client, Clients
 
 clients = Clients()
-clients += 1
-clients += 2
-clients += 'UID1'
-clients += 'UID2'
+cl1 = Client('1')
+cl2 = Client('2')
+clients += cl1
+clients += cl2
+uidcl1 = Client('UID1')
+uidcl2 = Client('UID2')
+clients += uidcl1
+clients += uidcl2
 
 
 def test_client_get():
-    '''
-    Currently not testable because of tsstats.client.Clients add-behaviour
-    '''
-    pass
-
-
-def test_client_seperation():
-    assert len(clients.clients_by_id) == 2
-    assert len(clients.clients_by_uid) == 2
+    assert clients['1'] == cl1
+    assert clients['2'] == cl2
+    assert clients['UID1'] == uidcl1
+    assert clients['UID2'] == uidcl2
+    with pytest.raises(KeyError):
+        clients['3']
+        clients['UID3']
 
 
 def test_client_repr():
@@ -27,6 +31,8 @@ def test_client_repr():
 
 
 def test_clients_iter():
-    clients_length = len(clients.clients_by_id) + len(clients.clients_by_uid)
-    clients_iter = [client for client in clients]
-    assert len(clients_iter) == clients_length
+    client_list = list(iter(clients))
+    assert cl1 in client_list
+    assert cl2 in client_list
+    assert uidcl1 in client_list
+    assert uidcl2 in client_list
