@@ -130,16 +130,4 @@ class Client(object):
         return '<{},{}>'.format(self.identifier, self.nick)
 
     def __getitem__(self, item):
-        '''
-        DEPRECATED
-        '''
-        return {
-            'identifier': self.identifier,
-            'nick': self.nick,
-            'connected': self.connected,
-            'onlinetime': self.onlinetime,
-            'kicks': self.kicks,
-            'pkicks': self.pkicks,
-            'bans': self.bans,
-            'pbans': self.pbans,
-        }[item]
+        return self.__getattribute__(item)
