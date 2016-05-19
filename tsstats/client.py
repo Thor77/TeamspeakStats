@@ -56,7 +56,7 @@ class Client(object):
     Client provides high-level-access to a Teamspeak-Client
     '''
 
-    def __init__(self, identifier):
+    def __init__(self, identifier, nick=None):
         '''
         Initialize a new Client
 
@@ -65,7 +65,7 @@ class Client(object):
         '''
         # public
         self.identifier = identifier
-        self.nick = None
+        self.nick = nick
         self.connected = 0
         self.onlinetime = 0
         self.kicks = 0
