@@ -38,7 +38,7 @@ class Clients(MutableMapping):
         return iter(self.store.values())
 
     def __getitem__(self, key):
-        return self.store[key]
+        return self.store[self.ident_map.get(key, key)]
 
     def __delitem__(self, key):
         del self.store[key]
