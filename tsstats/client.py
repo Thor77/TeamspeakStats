@@ -30,6 +30,7 @@ class Clients(MutableMapping):
         :type id_or_uid: Client
         '''
         self.store[client.identifier] = client
+        return self
 
     def __iter__(self):
         '''
