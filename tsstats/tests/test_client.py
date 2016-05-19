@@ -36,3 +36,8 @@ def test_clients_iter():
     assert cl2 in client_list
     assert uidcl1 in client_list
     assert uidcl2 in client_list
+
+
+def test_clients_delete():
+    del clients['1']
+    assert cl1 not in clients
