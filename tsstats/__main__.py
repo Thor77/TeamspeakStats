@@ -22,6 +22,13 @@ def cli():
         '--idmap', type=str, help='path to id_map', default='id_map.json'
     )
     parser.add_argument(
+        '--log', type=str, help='path to your logfile(s)'
+    )
+    parser.add_argument(
+        '--output', type=str, help='path to the output-file',
+        default='stats.html'
+    )
+    parser.add_argument(
         '--debug', help='debug mode', action='store_true'
     )
     args = parser.parse_args()
