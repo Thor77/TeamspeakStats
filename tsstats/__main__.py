@@ -39,14 +39,16 @@ def cli():
 
 
 def main(config=None, idmap=None, log=None, output=None, debug=False):
+    if debug:
+        logger.setLevel(logging.DEBUG)
+
     if config:
         config = abspath(config)
         if not exists(config):
             logger.fatal('config not found (%s)', config)
         idmap, log, output, debug = parse_config(config)
-
-    if debug:
-        logger.setLevel(logging.DEBUG)
+        if debug:
+            logger.setLevel(logging.DEBUG)
 
     if idmap:
         idmap = abspath(idmap)
