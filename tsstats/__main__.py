@@ -17,10 +17,10 @@ def cli():
     )
     parser.add_argument(
         '-c', '--config',
-        type=str, help='path to config', default='config.ini'
+        type=str, help='path to config'
     )
     parser.add_argument(
-        '--idmap', type=str, help='path to id_map', default='id_map.json'
+        '--idmap', type=str, help='path to id_map'
     )
     parser.add_argument(
         '-l', '--log',
