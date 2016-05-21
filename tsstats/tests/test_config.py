@@ -8,7 +8,6 @@ from os.path import abspath, exists
 
 import pytest
 
-from tsstats import exceptions
 from tsstats.config import parse_config
 
 configpath = abspath('tsstats/tests/res/test.cfg')
@@ -31,20 +30,15 @@ def config(request):
     request.addfinalizer(clean)
 
 
-def test_invalid_config(config):
-    create_config({
-        'loggfile': 'tsstats/tests/res/test.log',
-        'outputfile': ''
-    })
-    with pytest.raises(exceptions.InvalidConfig):
-        _, _, _, _ = parse_config(configpath)
-
-
 def test_config(config):
     create_config({
+        'idmap': 'tsstats/tests/res/id_map.json',
         'log': 'tsstats/tests/res/test.log',
         'output': 'output.html',
+        'debug': 'true'
     })
-    log, output = parse_config(configpath)
-    assert log == abspath('tsstats/tests/res/test.log')
-    assert output == abspath('output.html')
+    idmap, log, output, debug = parse_config(configpath)
+    assert idmap == 'tsstats/tests/res/id_map.json'
+    assert log == 'tsstats/tests/res/test.log'
+    assert output == 'output.html'
+    assert debug is True
