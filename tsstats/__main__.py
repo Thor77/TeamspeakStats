@@ -4,7 +4,7 @@ import logging
 from os.path import abspath, exists
 
 from tsstats.config import parse_config
-from tsstats.exceptions import ConfigNotFound
+from tsstats.exceptions import InvalidConfig
 from tsstats.log import parse_logs
 from tsstats.template import render_template
 
@@ -35,28 +35,33 @@ def cli():
         help='debug mode', action='store_true'
     )
     args = parser.parse_args()
-    if args.debug:
+    main(**vars(args))
+
+
+def main(config=None, idmap=None, log=None, output=None, debug=False):
+    if config:
+        config = abspath(config)
+        if not exists(config):
+            logger.fatal('config not found (%s)', config)
+        idmap, log, output, debug = parse_config(config)
+
+    if debug:
         logger.setLevel(logging.DEBUG)
-    main(args.config, args.idmap)
 
-
-def main(config_path='config.ini', id_map_path='id_map.json'):
-    # check cmdline-args
-    config_path = abspath(config_path)
-    id_map_path = abspath(id_map_path)
-
-    if not exists(config_path):
-        raise ConfigNotFound(config_path)
-
-    if exists(id_map_path):
+    if idmap:
+        idmap = abspath(idmap)
+        if not exists(idmap):
+            logger.fatal('identmap not found (%s)', idmap)
         # read id_map
-        id_map = json.load(open(id_map_path))
+        identmap = json.load(open(idmap))
     else:
-        id_map = {}
+        identmap = None
 
-    log, output = parse_config(config_path)
-    clients = parse_logs(log, ident_map=id_map)
-    render_template(clients, output=output)
+    if not log or not output:
+        raise InvalidConfig('log or output missing')
+
+    clients = parse_logs(log, ident_map=identmap)
+    render_template(clients, output=abspath(output))
 
 
 if __name__ == '__main__':
