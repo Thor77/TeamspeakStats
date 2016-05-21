@@ -16,20 +16,23 @@ def cli():
         description='A simple Teamspeak stats-generator - based on server-logs'
     )
     parser.add_argument(
-        '--config', type=str, help='path to config', default='config.ini'
+        '-c', '--config',
+        type=str, help='path to config', default='config.ini'
     )
     parser.add_argument(
         '--idmap', type=str, help='path to id_map', default='id_map.json'
     )
     parser.add_argument(
-        '--log', type=str, help='path to your logfile(s)'
+        '-l', '--log',
+        type=str, help='path to your logfile(s)'
     )
     parser.add_argument(
-        '--output', type=str, help='path to the output-file',
-        default='stats.html'
+        '-o', '--output',
+        type=str, help='path to the output-file', default='stats.html'
     )
     parser.add_argument(
-        '--debug', help='debug mode', action='store_true'
+        '-d', '--debug',
+        help='debug mode', action='store_true'
     )
     args = parser.parse_args()
     if args.debug:
