@@ -4,12 +4,12 @@ from os import remove
 import pytest
 from bs4 import BeautifulSoup
 
-from tsstats.log import parse_logs
+from tsstats.log import parse_log
 from tsstats.template import render_template
 from tsstats.utils import seconds_to_text
 
 output_path = 'tsstats/tests/res/output.html'
-clients = parse_logs('tsstats/tests/res/test.log')
+clients = parse_log('tsstats/tests/res/test.log')
 
 logger = logging.getLogger('tsstats')
 

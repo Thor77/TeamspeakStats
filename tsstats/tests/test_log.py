@@ -1,12 +1,12 @@
 import pytest
 
 from tsstats.exceptions import InvalidLog
-from tsstats.log import parse_logs
+from tsstats.log import parse_log
 
 
 @pytest.fixture
 def clients():
-    return parse_logs('tsstats/tests/res/test.log')
+    return parse_log('tsstats/tests/res/test.log')
 
 
 def test_log_client_count(clients):
@@ -36,4 +36,4 @@ def test_log_pbans(clients):
 
 def test_log_invalid():
     with pytest.raises(InvalidLog):
-        parse_logs('tsstats/tests/res/test.log.broken')
+        parse_log('tsstats/tests/res/test.log.broken')
