@@ -1,7 +1,7 @@
 import pytest
 
 from tsstats.exceptions import InvalidLog
-from tsstats.log import parse_log
+from tsstats.log import parse_log, parse_logs
 
 
 @pytest.fixture
@@ -37,3 +37,8 @@ def test_log_pbans(clients):
 def test_log_invalid():
     with pytest.raises(InvalidLog):
         parse_log('tsstats/tests/res/test.log.broken')
+
+
+def test_log_multiple():
+    assert len(parse_log('tsstats/tests/res/test.log')) == \
+        len(parse_logs('tsstats/tests/res/test.log'))
