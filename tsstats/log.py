@@ -15,12 +15,15 @@ logger = logging.getLogger('tsstats')
 
 
 def parse_logs(log_glob, ident_map=None):
-    for log_file in sorted(log_file for log_file in glob(log_glob)):
-        parse_log(log_file, ident_map)
-
-
-def parse_log(log_path, ident_map=None):
     clients = Clients(ident_map)
+    for log_file in sorted(log_file for log_file in glob(log_glob)):
+        clients = parse_log(log_file, ident_map, clients)
+    return clients
+
+
+def parse_log(log_path, ident_map=None, clients=None):
+    if not clients:
+        clients = Clients(ident_map)
     log_file = open(log_path)
     # process lines
     logger.debug('Started parsing of %s', log_file.name)
