@@ -13,6 +13,8 @@ re_disconnect_invoker = re.compile(
     r'invokername=(.*)\ invokeruid=(.*)\ reasonmsg'
 )
 
+log_timestamp_format = '%Y-%m-%d %H:%M:%S.%f'
+
 
 logger = logging.getLogger('tsstats')
 
@@ -36,8 +38,8 @@ def parse_log(log_path, ident_map=None, clients=None):
             logger.debug('No match: "%s"', line)
             continue
         match = match.groupdict()
-        log_format = '%Y-%m-%d %H:%M:%S.%f'
-        stripped_time = datetime.strptime(match['timestamp'], log_format)
+        stripped_time = datetime.strptime(match['timestamp'],
+                                          log_timestamp_format)
         logdatetime = int((stripped_time - datetime(1970, 1, 1))
                           .total_seconds())
         message = match['message']
