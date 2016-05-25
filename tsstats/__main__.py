@@ -4,7 +4,7 @@ import logging
 from os.path import abspath, exists
 
 from tsstats.config import parse_config
-from tsstats.exceptions import InvalidConfig
+from tsstats.exceptions import InvalidConfiguration
 from tsstats.log import parse_logs
 from tsstats.template import render_template
 
@@ -60,7 +60,7 @@ def main(config=None, idmap=None, log=None, output=None, debug=False):
         identmap = None
 
     if not log or not output:
-        raise InvalidConfig('log or output missing')
+        raise InvalidConfiguration('log or output missing')
 
     clients = parse_logs(log, ident_map=identmap)
     render_template(clients, output=abspath(output))

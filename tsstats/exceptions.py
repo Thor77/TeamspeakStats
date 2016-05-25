@@ -1,4 +1,4 @@
-class InvalidConfig(Exception):
+class InvalidConfiguration(Exception):
     pass
 
 
