@@ -4,7 +4,3 @@ class InvalidConfig(Exception):
 
 class InvalidLog(Exception):
     pass
-
-
-class ConfigNotFound(Exception):
-    pass
