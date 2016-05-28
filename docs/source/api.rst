@@ -11,3 +11,6 @@ API
 
   .. automethod:: tsstats.client.Clients.__init__
   .. automethod:: tsstats.client.Clients.__iter__
+
+.. automodule:: tsstats.exceptions
+  :members:
