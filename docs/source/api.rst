@@ -1,6 +1,8 @@
 API
 ***
 
+Client
+======
 .. autoclass:: tsstats.client.Client
   :members:
 
@@ -12,5 +14,7 @@ API
   .. automethod:: tsstats.client.Clients.__init__
   .. automethod:: tsstats.client.Clients.__iter__
 
+Exceptions
+==========
 .. automodule:: tsstats.exceptions
   :members:
