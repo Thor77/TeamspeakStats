@@ -20,6 +20,18 @@ logger = logging.getLogger('tsstats')
 
 
 def parse_logs(log_glob, ident_map=None):
+    '''
+    parse logs specified by globbing pattern `log_glob`
+
+    :param log_glob: path to log-files (supports globbing)
+    :param ident_map: :ref:`IdentMap`
+
+    :type log_glob: str
+    :type ident_map: dict
+
+    :return: parsed clients
+    :rtype: tsstats.client.Clients
+    '''
     clients = Clients(ident_map)
     for log_file in sorted(log_file for log_file in glob(log_glob)):
         clients = parse_log(log_file, ident_map, clients)
@@ -27,6 +39,20 @@ def parse_logs(log_glob, ident_map=None):
 
 
 def parse_log(log_path, ident_map=None, clients=None):
+    '''
+    parse log-file at `log_path`
+
+    :param log_path: path to log-file
+    :param ident_map: :ref:`IdentMap`
+    :param clients: clients-object to add parsing-results to
+
+    :type log_path: str
+    :type ident_map: dict
+    :type clients: tsstats.client.Clients
+
+    :return: parsed clients
+    :rtype: tsstats.client.Clients
+    '''
     if not clients:
         clients = Clients(ident_map)
     log_file = open(log_path)

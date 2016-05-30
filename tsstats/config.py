@@ -9,6 +9,15 @@ logger = logging.getLogger('tsstats')
 
 
 def parse_config(config_path):
+    '''
+    parse config at `config_path`
+
+    :param config_path: path to config-file
+    :type config_path: str
+
+    :return: values of config
+    :rtype: tuple
+    '''
     logger.debug('reading config')
     config = ConfigParser()
     config.read(config_path)

@@ -11,6 +11,19 @@ logger = logging.getLogger('tsstats')
 
 def render_template(clients, output, template_name='tsstats/template.html',
                     title='TeamspeakStats'):
+    '''
+    render template with `clients`
+
+    :param clients: clients to fill template with
+    :param output: path to output-file
+    :param template_name: path to template-file
+    :param title: title of the resulting html-document
+
+    :type clients: tsstats.client.Clients
+    :type output: str
+    :type template_name: str
+    :type title: str
+    '''
     # prepare clients
     clients_onlinetime_ = sort_clients(clients, 'onlinetime')
     clients_onlinetime = [
