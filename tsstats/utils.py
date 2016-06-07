@@ -1,3 +1,6 @@
+# -*- coding: utf-8 -*-
+
+
 def sort_clients(clients, key):
     '''
     sort `clients` by `key`

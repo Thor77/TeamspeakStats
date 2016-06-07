@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 import logging
 from os.path import abspath
 from time import localtime, strftime
