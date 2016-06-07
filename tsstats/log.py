@@ -6,8 +6,8 @@ from glob import glob
 from tsstats.client import Client, Clients
 
 re_log_entry = re.compile('(?P<timestamp>\d{4}-\d\d-\d\d\ \d\d:\d\d:\d\d.\d+)'
-                          '\|(?P<level>\w+)\ +\|(?P<component>\w+)'
-                          '\|\ +(?P<sid>\d+)\|\ (?P<message>.*)')
+                          '\|\ *(?P<level>\w+)\ *\|\ *(?P<component>\w+)\ *'
+                          '\|\ *(?P<sid>\d+)\ *\|\ *(?P<message>.*)')
 re_dis_connect = re.compile(r"'(.*)'\(id:(\d*)\)")
 re_disconnect_invoker = re.compile(
     r'invokername=(.*)\ invokeruid=(.*)\ reasonmsg'
