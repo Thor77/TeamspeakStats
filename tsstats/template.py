@@ -1,18 +1,17 @@
 # -*- coding: utf-8 -*-
 
 import logging
-from os.path import abspath
+from os.path import dirname
 from time import localtime, strftime
 
-from jinja2 import Environment, FileSystemLoader
+from jinja2 import ChoiceLoader, Environment, FileSystemLoader, PackageLoader
 
 from tsstats.utils import seconds_to_text, sort_clients
 
 logger = logging.getLogger('tsstats')
 
 
-def render_template(clients, output, template_name='tsstats/template.html',
-                    title='TeamspeakStats'):
+def render_template(clients, output, title='TeamspeakStats'):
     '''
     render template with `clients`
 
@@ -42,13 +41,16 @@ def render_template(clients, output, template_name='tsstats/template.html',
             ('Bans', clients_bans), ('passive Bans', clients_pbans)]
 
     # render
-    template_loader = FileSystemLoader(abspath('.'))
+    template_loader = ChoiceLoader([
+        PackageLoader(__package__, ''),
+        FileSystemLoader(dirname(__file__))
+    ])
     template_env = Environment(loader=template_loader)
 
     def fmttime(timestamp):
         return strftime('%x %X', localtime(int(timestamp)))
     template_env.filters['frmttime'] = fmttime
-    template = template_env.get_template(template_name)
+    template = template_env.get_template('template.html')
     with open(output, 'w') as f:
         f.write(template.render(title=title, objs=objs,
                                 debug=logger.level <= logging.DEBUG))
