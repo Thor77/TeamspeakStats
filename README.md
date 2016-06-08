@@ -16,15 +16,19 @@ A simple Teamspeak stat-generator - based on server-logs
 
 # CMD-Arguments
 ```
-usage: tsstats [-h] [--config CONFIG] [--idmap IDMAP] [--debug]
+usage: tsstats [-h] [-c CONFIG] [--idmap IDMAP] [-l LOG] [-o OUTPUT] [-d]
 
 A simple Teamspeak stats-generator - based on server-logs
 
 optional arguments:
-  -h, --help       show this help message and exit
-  --config CONFIG  path to config
-  --idmap IDMAP    path to id_map
-  --debug          debug mode
+  -h, --help            show this help message and exit
+  -c CONFIG, --config CONFIG
+                        path to config
+  --idmap IDMAP         path to id_map
+  -l LOG, --log LOG     path to your logfile(s)
+  -o OUTPUT, --output OUTPUT
+                        path to the output-file
+  -d, --debug           debug mode
 ```
 
 # Configuration
@@ -34,11 +38,8 @@ optional arguments:
 |-----|-------------|
 | log | Path to TS3Server-logfile(s) (supports [globbing](https://docs.python.org/3/library/glob.html)) |
 | output | Path to the location, where the generator will put the generated `.html`-file |
-
-#### [HTML]
-| Key | Description |
-|-----|-------------|
-| title | HTML-Title of the generated `.html`-file
+| idmap | Path to [IdentMap](http://teamspeakstats.readthedocs.io/en/latest/identmap.html) |
+| debug | debug mode |
 
 
 ## Example
