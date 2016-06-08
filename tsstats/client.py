@@ -16,7 +16,7 @@ class Clients(MutableMapping):
         '''
         Initialize a new Client-collection
 
-        :param ident_map: Identity-map (see :ref:`IdentMap`)
+        :param ident_map: Identity-map (see :doc:`identmap`)
         :type ident_map: dict
         '''
         self.ident_map = ident_map or {}

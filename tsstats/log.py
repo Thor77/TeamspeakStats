@@ -26,7 +26,7 @@ def parse_logs(log_glob, ident_map=None):
     parse logs specified by globbing pattern `log_glob`
 
     :param log_glob: path to log-files (supports globbing)
-    :param ident_map: :ref:`IdentMap`
+    :param ident_map: :doc:`identmap`
 
     :type log_glob: str
     :type ident_map: dict
@@ -45,7 +45,7 @@ def parse_log(log_path, ident_map=None, clients=None):
     parse log-file at `log_path`
 
     :param log_path: path to log-file
-    :param ident_map: :ref:`IdentMap`
+    :param ident_map: :doc:`identmap`
     :param clients: clients-object to add parsing-results to
 
     :type log_path: str
