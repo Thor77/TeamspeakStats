@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 
 import logging
+from collections import MutableMapping
 
 from tsstats.exceptions import InvalidLog
-from collections import MutableMapping
 
 logger = logging.getLogger('tsstats')
 
