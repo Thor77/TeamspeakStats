@@ -32,12 +32,14 @@ def test_debug(output):
     render_template(clients, output_path)
     logger.setLevel(logging.INFO)
     soup = BeautifulSoup(open(output_path), 'html.parser')
-    # check red label
+    # check debug-label presence
     assert soup.find_all(class_='alert alert-danger')
-    # check ident present after nick
-    li = soup.find('li')
-    assert li
-    assert '(' in li.text.split()[1]
+    for client_item in soup.find_all('li'):
+        nick = client_item.find('span').text
+        # check for right identifier
+        nick, encl_identifier = nick.split()
+        identifier = encl_identifier.replace('(', '').replace(')', '')
+        assert clients[identifier].nick == nick
 
 
 def test_onlinetime(soup):
