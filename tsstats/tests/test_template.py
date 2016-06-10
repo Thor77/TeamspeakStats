@@ -21,6 +21,12 @@ def output(request):
     request.addfinalizer(clean)
 
 
+@pytest.fixture
+def soup(output):
+    render_template(clients, output_path)
+    return BeautifulSoup(open(output_path), 'html.parser')
+
+
 def test_debug(output):
     logger.setLevel(logging.DEBUG)
     render_template(clients, output_path)
@@ -34,9 +40,6 @@ def test_debug(output):
     assert '(' in li.text.split()[1]
 
 
-def test_data(output):
-    render_template(clients, output_path)
-    soup = BeautifulSoup(open(output_path), 'html.parser')
-    # check onlinetime-data
+def test_onlinetime(soup):
     assert seconds_to_text(clients['1'].onlinetime) == \
         soup.find('span', class_='badge').text
