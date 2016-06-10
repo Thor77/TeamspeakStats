@@ -43,5 +43,19 @@ def test_debug(output):
 
 
 def test_onlinetime(soup):
-    assert seconds_to_text(clients['1'].onlinetime) == \
-        soup.find('span', class_='badge').text
+    # move this into a (parameterized) fixture or function
+    items = soup.find('ul', id='onlinetime').find_all('li')
+    nick_data = {}
+    for item in items:
+        nick, data = item.find_all('span')
+        nick_data[nick.text] = data.text
+    # seperate between uuid and id-clients or merge them some way
+    # => assert len(items) == len(clients.id)
+    assert len(items) == 2
+    for client in clients:
+        if client.nick in nick_data and client.onlinetime > 0:
+            # remove this clause after splitting cients
+            # (uuid-clients will never have a online-time, because
+            #  they're only used for bans and kicks)
+            assert nick_data[client.nick] == \
+                seconds_to_text(client.onlinetime)
