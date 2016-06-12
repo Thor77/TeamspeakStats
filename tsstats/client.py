@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+import datetime
 import logging
 from collections import MutableMapping
 
@@ -70,12 +71,12 @@ class Client(object):
         self.identifier = identifier
         self.nick = nick
         self.connected = 0
-        self.onlinetime = 0
+        self.onlinetime = datetime.timedelta()
         self.kicks = 0
         self.pkicks = 0
         self.bans = 0
         self.pbans = 0
-        self.last_seen = 0
+        self.last_seen = None
         # private
         self._last_connect = 0
 

@@ -68,10 +68,8 @@ def parse_log(log_path, ident_map=None, clients=None, online_dc=True):
             logger.debug('No match: "%s"', line)
             continue
         match = match.groupdict()
-        stripped_time = datetime.strptime(match['timestamp'],
-                                          log_timestamp_format)
-        logdatetime = int((stripped_time - datetime(1970, 1, 1))
-                          .total_seconds())
+        logdatetime = datetime.strptime(match['timestamp'],
+                                        log_timestamp_format)
         message = match['message']
         if message.startswith('client'):
             nick, clid = re_dis_connect.findall(message)[0]
@@ -95,10 +93,7 @@ def parse_log(log_path, ident_map=None, clients=None, online_dc=True):
     if online_dc:
         for client in clients:
             if client.connected:
-                client.disconnect(
-                    int((datetime.utcnow() - datetime(1970, 1, 1))
-                        .total_seconds())
-                )
+                client.disconnect(datetime.utcnow())
                 client.connected += 1
     logger.debug('Finished parsing of %s', log_file.name)
     return clients
