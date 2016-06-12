@@ -29,7 +29,7 @@ def render_template(clients, output, title='TeamspeakStats'):
         clients, lambda c: c.onlinetime.total_seconds()
     )
     clients_onlinetime = [
-        (client, seconds_to_text(onlinetime))
+        (client, seconds_to_text(int(onlinetime)))
         for client, onlinetime in clients_onlinetime_
     ]
 
