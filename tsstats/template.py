@@ -27,7 +27,7 @@ def render_template(clients, output, title='TeamspeakStats'):
     '''
     # prepare clients
     clients_onlinetime_ = sort_clients(
-        clients, lambda c: c.onlinetime
+        clients, lambda c: c.onlinetime.total_seconds()
     )
     clients_onlinetime = [
         (client, seconds_to_text(onlinetime))
