@@ -5,10 +5,12 @@ import pytest
 from tsstats.exceptions import InvalidLog
 from tsstats.log import parse_log, parse_logs
 
+testlog_path = 'tsstats/tests/res/test.log'
+
 
 @pytest.fixture
 def clients():
-    return parse_log('tsstats/tests/res/test.log')
+    return parse_log(testlog_path)
 
 
 def test_log_client_count(clients):
@@ -42,14 +44,14 @@ def test_log_invalid():
 
 
 def test_log_multiple():
-    assert len(parse_log('tsstats/tests/res/test.log')) == \
-        len(parse_logs('tsstats/tests/res/test.log'))
+    assert len(parse_log(testlog_path)) == \
+        len(parse_logs(testlog_path))
 
 
 @pytest.mark.slowtest
 def test_log_client_online():
-    clients = parse_log('tsstats/tests/res/test.log')
+    clients = parse_log(testlog_path)
     assert clients['1'].onlinetime == 402
     sleep(2)
-    clients = parse_log('tsstats/tests/res/test.log')
+    clients = parse_log(testlog_path)
     assert clients['1'].onlinetime == 404
