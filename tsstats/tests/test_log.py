@@ -1,3 +1,5 @@
+from time import sleep
+
 import pytest
 
 from tsstats.exceptions import InvalidLog
@@ -42,3 +44,12 @@ def test_log_invalid():
 def test_log_multiple():
     assert len(parse_log('tsstats/tests/res/test.log')) == \
         len(parse_logs('tsstats/tests/res/test.log'))
+
+
+@pytest.mark.slowtest
+def test_log_client_online():
+    clients = parse_log('tsstats/tests/res/test.log')
+    assert clients['1'].onlinetime == 402
+    sleep(2)
+    clients = parse_log('tsstats/tests/res/test.log')
+    assert clients['1'].onlinetime == 404
