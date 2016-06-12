@@ -40,17 +40,19 @@ def parse_logs(log_glob, ident_map=None):
     return clients
 
 
-def parse_log(log_path, ident_map=None, clients=None):
+def parse_log(log_path, ident_map=None, clients=None, online_dc=True):
     '''
     parse log-file at `log_path`
 
     :param log_path: path to log-file
     :param ident_map: :doc:`identmap`
     :param clients: clients-object to add parsing-results to
+    :param online_cd: disconnect online clients after parsing
 
     :type log_path: str
     :type ident_map: dict
     :type clients: tsstats.client.Clients
+    :type online_cd: bool
 
     :return: parsed clients
     :rtype: tsstats.client.Clients
@@ -90,5 +92,10 @@ def parse_log(log_path, ident_map=None, clients=None):
                         invoker.ban(client)
                     else:
                         invoker.kick(client)
+    if online_dc:
+        for client in clients:
+            if client.connected:
+                client.disconnect(int(datetime.utcnow().timestamp()))
+                client.connected += 1
     logger.debug('Finished parsing of %s', log_file.name)
     return clients
