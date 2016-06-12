@@ -21,7 +21,7 @@ log_timestamp_format = '%Y-%m-%d %H:%M:%S.%f'
 logger = logging.getLogger('tsstats')
 
 
-def parse_logs(log_glob, ident_map=None):
+def parse_logs(log_glob, ident_map=None, *args, **kwargs):
     '''
     parse logs specified by globbing pattern `log_glob`
 
@@ -36,7 +36,7 @@ def parse_logs(log_glob, ident_map=None):
     '''
     clients = Clients(ident_map)
     for log_file in sorted(log_file for log_file in glob(log_glob)):
-        clients = parse_log(log_file, ident_map, clients)
+        clients = parse_log(log_file, ident_map, clients, *args, **kwargs)
     return clients
 
 
