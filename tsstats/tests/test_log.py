@@ -1,3 +1,4 @@
+from datetime import timedelta
 from time import sleep
 
 import pytest
@@ -18,8 +19,8 @@ def test_log_client_count(clients):
 
 
 def test_log_onlinetime(clients):
-    assert clients['1'].onlinetime == 402
-    assert clients['2'].onlinetime == 20
+    assert clients['1'].onlinetime == timedelta(0, 402, 149208)
+    assert clients['2'].onlinetime == timedelta(0, 19, 759644)
 
 
 def test_log_kicks(clients):
@@ -51,7 +52,7 @@ def test_log_multiple():
 @pytest.mark.slowtest
 def test_log_client_online():
     clients = parse_log(testlog_path)
-    old_onlinetime = clients['1'].onlinetime
+    old_onlinetime = int(clients['1'].onlinetime.total_seconds())
     sleep(2)
     clients = parse_log(testlog_path)
-    assert clients['1'].onlinetime == old_onlinetime + 2
+    assert int(clients['1'].onlinetime.total_seconds()) == old_onlinetime + 2
