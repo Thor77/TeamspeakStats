@@ -49,9 +49,9 @@ def render_template(clients, output, title='TeamspeakStats'):
     ])
     template_env = Environment(loader=template_loader)
 
-    def fmttime(timestamp):
+    def frmttime(timestamp):
         return strftime('%x %X', localtime(int(timestamp)))
-    template_env.filters['frmttime'] = fmttime
+    template_env.filters['frmttime'] = frmttime
     template = template_env.get_template('template.html')
     with open(output, 'w') as f:
         f.write(template.render(title=title, objs=objs,
