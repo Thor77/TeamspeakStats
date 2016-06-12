@@ -10,7 +10,7 @@ testlog_path = 'tsstats/tests/res/test.log'
 
 @pytest.fixture
 def clients():
-    return parse_log(testlog_path)
+    return parse_log(testlog_path, online_dc=False)
 
 
 def test_log_client_count(clients):
@@ -44,14 +44,14 @@ def test_log_invalid():
 
 
 def test_log_multiple():
-    assert len(parse_log(testlog_path)) == \
-        len(parse_logs(testlog_path))
+    assert len(parse_log(testlog_path, online_dc=False)) == \
+        len(parse_logs(testlog_path, online_dc=False))
 
 
 @pytest.mark.slowtest
 def test_log_client_online():
     clients = parse_log(testlog_path)
-    assert clients['1'].onlinetime == 402
+    old_onlinetime = clients['1'].onlinetime
     sleep(2)
     clients = parse_log(testlog_path)
-    assert clients['1'].onlinetime == 404
+    assert clients['1'].onlinetime == old_onlinetime + 2
