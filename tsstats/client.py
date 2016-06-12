@@ -131,6 +131,3 @@ class Client(object):
 
     def __str__(self):
         return '<{},{}>'.format(self.identifier, self.nick)
-
-    def __getitem__(self, item):
-        return self.__getattribute__(item)
