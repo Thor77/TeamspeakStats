@@ -4,6 +4,7 @@ from os import remove
 import pytest
 from bs4 import BeautifulSoup
 
+from datetime import timedelta
 from tsstats.log import parse_log
 from tsstats.template import render_template
 from tsstats.utils import seconds_to_text
@@ -53,9 +54,9 @@ def test_onlinetime(soup):
     # => assert len(items) == len(clients.id)
     assert len(items) == 2
     for client in clients:
-        if client.nick in nick_data and client.onlinetime > 0:
+        if client.nick in nick_data and client.onlinetime > timedelta(0):
             # remove this clause after splitting cients
             # (uuid-clients will never have a online-time, because
             #  they're only used for bans and kicks)
             assert nick_data[client.nick] == \
-                seconds_to_text(client.onlinetime)
+                seconds_to_text(int(client.onlinetime.total_seconds()))
