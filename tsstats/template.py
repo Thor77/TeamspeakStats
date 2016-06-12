@@ -2,7 +2,6 @@
 
 import logging
 from os.path import dirname
-from time import localtime, strftime
 
 from jinja2 import ChoiceLoader, Environment, FileSystemLoader, PackageLoader
 
@@ -50,7 +49,9 @@ def render_template(clients, output, title='TeamspeakStats'):
     template_env = Environment(loader=template_loader)
 
     def frmttime(timestamp):
-        return strftime('%x %X', localtime(int(timestamp)))
+        if not timestamp:
+            return ''
+        return timestamp.strftime('%x %X')
     template_env.filters['frmttime'] = frmttime
     template = template_env.get_template('template.html')
     with open(output, 'w') as f:
