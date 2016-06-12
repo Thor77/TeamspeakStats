@@ -2,7 +2,7 @@ from setuptools import setup
 
 setup(
     name='tsstats',
-    version='0.6.8',
+    version='0.7.0',
     author='Thor77',
     author_email='thor77@thor77.org',
     description='A simple Teamspeak stats-generator',

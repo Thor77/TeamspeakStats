@@ -1,20 +1,22 @@
 # -*- coding: utf-8 -*-
 
 
-def sort_clients(clients, key):
+def sort_clients(clients, key_l):
     '''
     sort `clients` by `key`
 
     :param clients: clients to sort
-    :param key: key to sort clients with
+    :param key_l: lambda/function returning the value of `key` for a client
 
     :type clients: tsstats.client.Clients
-    :type key: str
+    :type key_l: function
 
     :return: sorted `clients`
     :rtype: list
     '''
-    cl_data = [(client, client[key]) for client in clients if client[key] > 0]
+    cl_data = [
+        (client, key_l(client)) for client in clients if key_l(client) > 0
+    ]
     return sorted(cl_data, key=lambda data: data[1], reverse=True)
 
 

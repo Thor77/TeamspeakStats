@@ -26,16 +26,18 @@ def render_template(clients, output, title='TeamspeakStats'):
     :type title: str
     '''
     # prepare clients
-    clients_onlinetime_ = sort_clients(clients, 'onlinetime')
+    clients_onlinetime_ = sort_clients(
+        clients, lambda c: c.onlinetime
+    )
     clients_onlinetime = [
         (client, seconds_to_text(onlinetime))
         for client, onlinetime in clients_onlinetime_
     ]
 
-    clients_kicks = sort_clients(clients, 'kicks')
-    clients_pkicks = sort_clients(clients, 'pkicks')
-    clients_bans = sort_clients(clients, 'bans')
-    clients_pbans = sort_clients(clients, 'pbans')
+    clients_kicks = sort_clients(clients, lambda c: c.kicks)
+    clients_pkicks = sort_clients(clients, lambda c: c.pkicks)
+    clients_bans = sort_clients(clients, lambda c: c.bans)
+    clients_pbans = sort_clients(clients, lambda c: c.pbans)
     objs = [('Onlinetime', clients_onlinetime), ('Kicks', clients_kicks),
             ('passive Kicks', clients_pkicks),
             ('Bans', clients_bans), ('passive Bans', clients_pbans)]
