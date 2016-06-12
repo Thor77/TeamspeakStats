@@ -1,10 +1,10 @@
 import logging
+from datetime import timedelta
 from os import remove
 
 import pytest
 from bs4 import BeautifulSoup
 
-from datetime import timedelta
 from tsstats.log import parse_log
 from tsstats.template import render_template
 from tsstats.utils import seconds_to_text
@@ -18,7 +18,7 @@ logger = logging.getLogger('tsstats')
 @pytest.fixture
 def output(request):
     def clean():
-        remove('tsstats/tests/res/output.html')
+        remove(output_path)
     request.addfinalizer(clean)
 
 
