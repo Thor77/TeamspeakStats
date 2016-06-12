@@ -95,7 +95,10 @@ def parse_log(log_path, ident_map=None, clients=None, online_dc=True):
     if online_dc:
         for client in clients:
             if client.connected:
-                client.disconnect(int(datetime.utcnow().timestamp()))
+                client.disconnect(
+                    int((datetime.utcnow() - datetime(1970, 1, 1))
+                        .total_seconds())
+                )
                 client.connected += 1
     logger.debug('Finished parsing of %s', log_file.name)
     return clients
