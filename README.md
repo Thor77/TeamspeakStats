@@ -63,3 +63,4 @@ The online-time of `1` and `3` will be added to the online-time of `2`
 
 # TODO
 - Localization
+- Support for multiple vServers (WIP: [multi_vserver](https://github.com/Thor77/TeamspeakStats/tree/multi_vserver))
