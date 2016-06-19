@@ -27,7 +27,7 @@ TimedLog = namedtuple('TimedLog', ['path', 'timestamp'])
 logger = logging.getLogger('tsstats')
 
 
-def parse_logs(log_glob, ident_map=None, *args, **kwargs):
+def _sort_logfiles(log_glob):
     '''
     parse logs specified by globbing pattern `log_glob`
 
