@@ -29,19 +29,15 @@ logger = logging.getLogger('tsstats')
 
 def _sort_logfiles(log_glob):
     '''
-    parse logs specified by globbing pattern `log_glob`
-
-    basic parsing is done here: extracting sid and splitting
-    and then given to _parse_details
+    collect logfiles from `log_glob` and sort them by date
+    and bundle them by virtualserver-id
 
     :param log_glob: path to log-files (supports globbing)
-    :param ident_map: :doc:`identmap`
 
     :type log_glob: str
-    :type ident_map: dict
 
-    :return: parsed clients
-    :rtype: tsstats.client.Clients
+    :return: log-files sorted by date and bundled virtualserver-id
+    :rtype: dict{str: [TimedLog]}
     '''
     vserver_logfiles = {}  # sid: [/path/to/log1, ..., /path/to/logn]
     for log_file in sorted(log_file for log_file in glob(log_glob)):
