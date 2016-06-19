@@ -2,11 +2,15 @@
 
 import logging
 import re
+from collections import namedtuple
 from datetime import datetime
 from glob import glob
+from os.path import basename
 
 from tsstats.client import Client, Clients
 
+re_log_filename = re.compile(r'ts3server_(?P<date>\d{4}-\d\d-\d\d)'
+                             '__(?P<time>\d\d_\d\d_\d\d.\d+)_(?P<sid>\d).log')
 re_log_entry = re.compile('(?P<timestamp>\d{4}-\d\d-\d\d\ \d\d:\d\d:\d\d.\d+)'
                           '\|\ *(?P<level>\w+)\ *\|\ *(?P<component>\w+)\ *'
                           '\|\ *(?P<sid>\d+)\ *\|\ *(?P<message>.*)')
@@ -17,6 +21,8 @@ re_disconnect_invoker = re.compile(
 
 log_timestamp_format = '%Y-%m-%d %H:%M:%S.%f'
 
+TimedLog = namedtuple('TimedLog', ['path', 'timestamp'])
+
 
 logger = logging.getLogger('tsstats')
 
@@ -26,6 +32,7 @@ def parse_logs(log_glob, ident_map=None, *args, **kwargs):
     parse logs specified by globbing pattern `log_glob`
 
     basic parsing is done here: extracting sid and splitting
+    and then given to _parse_details
 
     :param log_glob: path to log-files (supports globbing)
     :param ident_map: :doc:`identmap`
@@ -36,10 +43,30 @@ def parse_logs(log_glob, ident_map=None, *args, **kwargs):
     :return: parsed clients
     :rtype: tsstats.client.Clients
     '''
-    clients = Clients(ident_map)
+    vserver_logfiles = {}  # sid: [/path/to/log1, ..., /path/to/logn]
     for log_file in sorted(log_file for log_file in glob(log_glob)):
-        clients = parse_log(log_file, ident_map, clients, *args, **kwargs)
-    return clients
+        # try to get date and sid from filename
+        match = re_log_filename.match(basename(log_file))
+        if match:
+            match = match.groupdict()
+            timestamp = datetime.strptime('{0} {1}'.format(
+                match['date'], match['time'].replace('_', ':')))
+            tl = TimedLog(log_file, timestamp)
+            sid = match['sid']
+            if sid in vserver_logfiles:
+                # if already exists, keep list sorted by timestamp
+                vserver_logfiles[sid].apppend(tl)
+                vserver_logfiles[sid] =\
+                    sorted(vserver_logfiles[sid],
+                           key=lambda tl: tl.timestamp)
+            else:
+                # if not exists, just create a list
+                vserver_logfiles[match['sid']] = [tl]
+        else:
+            # fallback to plain sorting
+            vserver_logfiles.setdefault('', [])\
+                .append(TimedLog(log_file, None))
+    return vserver_logfiles
 
 
 def _parse_details(log_path, ident_map=None, clients=None, online_dc=True):
