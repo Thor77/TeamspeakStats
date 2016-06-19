@@ -27,6 +27,20 @@ TimedLog = namedtuple('TimedLog', ['path', 'timestamp'])
 logger = logging.getLogger('tsstats')
 
 
+def parse_logs(log_glob):
+    '''
+    parse logs from `log_glob`
+    '''
+    vserver_clients = {}
+    for virtualserver_id, logs in _sort_logfiles(log_glob):
+        clients = Clients()
+        for log in logs:
+            _parse_details(clients=clients)
+        if len(clients) >= 1:
+            vserver_clients[virtualserver_id] = clients
+    return vserver_clients
+
+
 def _sort_logfiles(log_glob):
     '''
     collect logfiles from `log_glob` and sort them by date
