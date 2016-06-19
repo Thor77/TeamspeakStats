@@ -42,7 +42,7 @@ def parse_logs(log_glob, ident_map=None, *args, **kwargs):
     return clients
 
 
-def parse_log(log_path, ident_map=None, clients=None, online_dc=True):
+def _parse_details(log_path, ident_map=None, clients=None, online_dc=True):
     '''
     extract details from log-files
 
