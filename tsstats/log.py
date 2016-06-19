@@ -25,6 +25,8 @@ def parse_logs(log_glob, ident_map=None, *args, **kwargs):
     '''
     parse logs specified by globbing pattern `log_glob`
 
+    basic parsing is done here: extracting sid and splitting
+
     :param log_glob: path to log-files (supports globbing)
     :param ident_map: :doc:`identmap`
 
@@ -42,7 +44,9 @@ def parse_logs(log_glob, ident_map=None, *args, **kwargs):
 
 def parse_log(log_path, ident_map=None, clients=None, online_dc=True):
     '''
-    parse log-file at `log_path`
+    extract details from log-files
+
+    detailed parsing is done here: onlinetime, kicks, pkicks, bans, pbans
 
     :param log_path: path to log-file
     :param ident_map: :doc:`identmap`
