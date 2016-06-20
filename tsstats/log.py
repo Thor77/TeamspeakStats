@@ -41,27 +41,27 @@ def parse_logs(log_glob):
     return vserver_clients
 
 
-def _sort_logfiles(log_glob):
+def _bundle_logs(logs):
     '''
-    collect logfiles from `log_glob` and sort them by date
-    and bundle them by virtualserver-id
+    bundle `logs` by virtualserver-id
+    and sort by timestamp from filename (if exists)
 
-    :param log_glob: path to log-files (supports globbing)
+    :param logs: list of paths to logfiles
 
-    :type log_glob: str
+    :type logs: list
 
-    :return: log-files sorted by date and bundled virtualserver-id
+    :return: `logs` bundled by virtualserver-id and sorted by timestamp
     :rtype: dict{str: [TimedLog]}
     '''
     vserver_logfiles = {}  # sid: [/path/to/log1, ..., /path/to/logn]
-    for log_file in sorted(log_file for log_file in glob(log_glob)):
+    for log in logs:
         # try to get date and sid from filename
-        match = re_log_filename.match(basename(log_file))
+        match = re_log_filename.match(basename(log))
         if match:
             match = match.groupdict()
             timestamp = datetime.strptime('{0} {1}'.format(
                 match['date'], match['time'].replace('_', ':')))
-            tl = TimedLog(log_file, timestamp)
+            tl = TimedLog(log, timestamp)
             sid = match['sid']
             if sid in vserver_logfiles:
                 # if already exists, keep list sorted by timestamp
@@ -75,7 +75,7 @@ def _sort_logfiles(log_glob):
         else:
             # fallback to plain sorting
             vserver_logfiles.setdefault('', [])\
-                .append(TimedLog(log_file, None))
+                .append(TimedLog(log, None))
     return vserver_logfiles
 
 
