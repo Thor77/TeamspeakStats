@@ -76,6 +76,9 @@ def _bundle_logs(logs):
             # fallback to plain sorting
             vserver_logfiles.setdefault('', [])\
                 .append(TimedLog(log, None))
+            vserver_logfiles[''] =\
+                sorted(vserver_logfiles[''],
+                       key=lambda tl: tl.path)
     return vserver_logfiles
 
 
