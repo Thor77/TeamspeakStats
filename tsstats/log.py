@@ -60,12 +60,13 @@ def _bundle_logs(logs):
         if match:
             match = match.groupdict()
             timestamp = datetime.strptime('{0} {1}'.format(
-                match['date'], match['time'].replace('_', ':')))
+                match['date'], match['time'].replace('_', ':')),
+                log_timestamp_format)
             tl = TimedLog(log, timestamp)
             sid = match['sid']
             if sid in vserver_logfiles:
                 # if already exists, keep list sorted by timestamp
-                vserver_logfiles[sid].apppend(tl)
+                vserver_logfiles[sid].append(tl)
                 vserver_logfiles[sid] =\
                     sorted(vserver_logfiles[sid],
                            key=lambda tl: tl.timestamp)
