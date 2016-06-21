@@ -27,16 +27,16 @@ TimedLog = namedtuple('TimedLog', ['path', 'timestamp'])
 logger = logging.getLogger('tsstats')
 
 
-def parse_logs(log_glob):
+def parse_logs(log_glob, ident_map=None, *args, **kwargs):
     '''
     parse logs from `log_glob`
     '''
     vserver_clients = {}
     for virtualserver_id, logs in\
             _bundle_logs(log_file for log_file in glob(log_glob)).items():
-        clients = Clients()
+        clients = Clients(ident_map)
         for log in logs:
-            _parse_details(clients=clients)
+            _parse_details(clients=clients, *args, **kwargs)
         if len(clients) >= 1:
             vserver_clients[virtualserver_id] = clients
     return vserver_clients
