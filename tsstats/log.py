@@ -30,6 +30,15 @@ logger = logging.getLogger('tsstats')
 def parse_logs(log_glob, ident_map=None, *args, **kwargs):
     '''
     parse logs from `log_glob`
+
+    :param log_glob: path to server-logs (supports globbing)
+    :param ident_map: identmap used for Client-initializations
+
+    :type log_glob: str
+    :type ident_map: dict
+
+    :return: clients bundled by virtual-server
+    :rtype: dict
     '''
     vserver_clients = {}
     for virtualserver_id, logs in\
