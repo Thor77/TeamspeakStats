@@ -67,18 +67,13 @@ def test_log_bundle(logs, bundled):
 
 def test_log_invalid():
     with pytest.raises(InvalidLog):
-        parse_log('tsstats/tests/res/test.log.broken')
-
-
-def test_log_multiple():
-    assert len(parse_log(testlog_path, online_dc=False)) == \
-        len(parse_logs(testlog_path, online_dc=False))
+        _parse_details('tsstats/tests/res/test.log.broken')
 
 
 @pytest.mark.slowtest
 def test_log_client_online():
-    clients = parse_log(testlog_path)
+    clients = _parse_details(testlog_path)
     old_onlinetime = int(clients['1'].onlinetime.total_seconds())
     sleep(2)
-    clients = parse_log(testlog_path)
+    clients = _parse_details(testlog_path)
     assert int(clients['1'].onlinetime.total_seconds()) == old_onlinetime + 2
