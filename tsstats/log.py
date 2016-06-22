@@ -112,7 +112,7 @@ def _parse_details(log_path, ident_map=None, clients=None, online_dc=True):
     :return: parsed clients
     :rtype: tsstats.client.Clients
     '''
-    if not clients:
+    if clients is None:
         clients = Clients(ident_map)
     log_file = open(log_path)
     # process lines
