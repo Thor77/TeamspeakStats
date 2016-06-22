@@ -4,7 +4,7 @@ from time import sleep
 import pytest
 
 from tsstats.exceptions import InvalidLog
-from tsstats.log import TimedLog, _bundle_logs, _parse_details
+from tsstats.log import TimedLog, _bundle_logs, _parse_details, parse_logs
 
 testlog_path = 'tsstats/tests/res/test.log'
 
@@ -77,3 +77,8 @@ def test_log_client_online():
     sleep(2)
     clients = _parse_details(testlog_path)
     assert int(clients['1'].onlinetime.total_seconds()) == old_onlinetime + 2
+
+
+def test_parse_logs():
+    assert len(_parse_details(testlog_path)) ==\
+        len(parse_logs(testlog_path)[''])
