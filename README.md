@@ -17,6 +17,7 @@ A simple Teamspeak stat-generator - based on server-logs
 # CMD-Arguments
 ```
 usage: tsstats [-h] [-c CONFIG] [--idmap IDMAP] [-l LOG] [-o OUTPUT] [-d]
+                   [-nod]
 
 A simple Teamspeak stats-generator - based on server-logs
 
@@ -29,6 +30,7 @@ optional arguments:
   -o OUTPUT, --output OUTPUT
                         path to the output-file
   -d, --debug           debug mode
+  -nod, --noonlinedc    don't add connect until now to onlinetime
 ```
 
 # Configuration
