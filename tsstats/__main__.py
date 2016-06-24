@@ -69,8 +69,13 @@ def main(config=None, idmap=None, log=None,
     if not log or not output:
         raise InvalidConfiguration('log or output missing')
 
-    clients = parse_logs(log, ident_map=identmap, online_dc=noonlinedc)
-    render_template(clients, output=abspath(output))
+    sid_clients = parse_logs(log, ident_map=identmap, online_dc=noonlinedc)
+    for sid, clients in sid_clients.items():
+        if sid:
+            ext = '.{}'.format(sid)
+        else:
+            ext = ''
+        render_template(clients, output=abspath(output + ext))
 
 
 if __name__ == '__main__':
