@@ -42,6 +42,7 @@ optional arguments:
 | output | Path to the location, where the generator will put the generated `.html`-file |
 | idmap | Path to [IdentMap](http://teamspeakstats.readthedocs.io/en/latest/identmap.html) |
 | debug | debug mode |
+| onlinedc | Add timedelta from last-connect until now to onlinetime for connected clients |
 
 
 ## Example
