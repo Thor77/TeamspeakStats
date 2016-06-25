@@ -53,7 +53,7 @@ def main(config=None, idmap=None, log=None,
         config = abspath(config)
         if not exists(config):
             logger.fatal('config not found (%s)', config)
-        idmap, log, output, debug = parse_config(config)
+        idmap, log, output, debug, noonlinedc = parse_config(config)
         if debug:
             logger.setLevel(logging.DEBUG)
 

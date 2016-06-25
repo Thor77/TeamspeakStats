@@ -28,10 +28,13 @@ def parse_config(config_path):
     config_items = dict(config.items('General'))
     if 'debug' in config_items:
         config_items['debug'] = config.getboolean('General', 'debug')
+    if 'onlinedc' in config_items:
+        config_items['onlinedc'] = config.getboolean('General', 'onlinedc')
     logger.debug('raw config: %s', config_items)
     return (
         config_items.get('idmap'),
         config_items.get('log'),
         config_items.get('output'),
-        config_items.get('debug', False)
+        config_items.get('debug', False),
+        config_items.get('onlinedc', True)
     )

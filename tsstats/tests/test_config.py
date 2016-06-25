@@ -35,10 +35,12 @@ def test_config(config):
         'idmap': 'tsstats/tests/res/id_map.json',
         'log': 'tsstats/tests/res/test.log',
         'output': 'output.html',
-        'debug': 'true'
+        'debug': 'true',
+        'onlinedc': 'false'
     })
-    idmap, log, output, debug = parse_config(configpath)
+    idmap, log, output, debug, onlinedc = parse_config(configpath)
     assert idmap == 'tsstats/tests/res/id_map.json'
     assert log == 'tsstats/tests/res/test.log'
     assert output == 'output.html'
     assert debug is True
+    assert onlinedc is False
