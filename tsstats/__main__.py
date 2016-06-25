@@ -38,14 +38,15 @@ def cli():
     )
     parser.add_argument(
         '-nod', '--noonlinedc',
-        help='don\'t add connect until now to onlinetime', action='store_false'
+        help='don\'t add connect until now to onlinetime',
+        action='store_false', dest='onlinedc'
     )
     args = parser.parse_args()
     main(**vars(args))
 
 
 def main(config=None, idmap=None, log=None,
-         output=None, debug=False, noonlinedc=True):
+         output=None, debug=False, onlinedc=True):
     if debug:
         logger.setLevel(logging.DEBUG)
 
@@ -53,7 +54,7 @@ def main(config=None, idmap=None, log=None,
         config = abspath(config)
         if not exists(config):
             logger.fatal('config not found (%s)', config)
-        idmap, log, output, debug, noonlinedc = parse_config(config)
+        idmap, log, output, debug, onlinedc = parse_config(config)
         if debug:
             logger.setLevel(logging.DEBUG)
 
@@ -69,7 +70,7 @@ def main(config=None, idmap=None, log=None,
     if not log or not output:
         raise InvalidConfiguration('log or output missing')
 
-    sid_clients = parse_logs(log, ident_map=identmap, online_dc=noonlinedc)
+    sid_clients = parse_logs(log, ident_map=identmap, online_dc=onlinedc)
     for sid, clients in sid_clients.items():
         if sid:
             ext = '.{}'.format(sid)
