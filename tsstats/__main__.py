@@ -41,8 +41,7 @@ def cli():
         help='don\'t add connect until now to onlinetime',
         action='store_false', dest='onlinedc'
     )
-    args = parser.parse_args()
-    main(**vars(args))
+    main(**vars(parser.parse_args()))
 
 
 def main(config=None, idmap=None, log=None,
