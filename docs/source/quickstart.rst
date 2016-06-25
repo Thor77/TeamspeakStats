@@ -11,7 +11,7 @@ Now you have various options to use TeamspeakStats, going from easy to hard:
 
 To start, you can just use cli-arguments to control the behaviour of TeamspeakStats::
 
-  usage: tsstats [-h] [-c CONFIG] [--idmap IDMAP] [-l LOG] [-o OUTPUT] [-d]
+  usage: tsstats [-h] [-c CONFIG] [--idmap IDMAP] [-l LOG] [-o OUTPUT] [-d] [-nod]
 
   A simple Teamspeak stats-generator - based on server-logs
 
@@ -24,6 +24,7 @@ To start, you can just use cli-arguments to control the behaviour of TeamspeakSt
     -o OUTPUT, --output OUTPUT
                           path to the output-file
     -d, --debug           debug mode
+    -nod, --noonlinedc    don't add connect until now to onlinetime
 
 Take a look at :doc:`cli` to get a more in-depth explanation of the available flags.
 If you want to use TeamspeakStats in a script (or cron) you should consider creating
