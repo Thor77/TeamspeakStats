@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import logging
+from datetime import datetime
 from os.path import dirname
 
 from jinja2 import ChoiceLoader, Environment, FileSystemLoader, PackageLoader
@@ -56,4 +57,5 @@ def render_template(clients, output, title='TeamspeakStats'):
     template = template_env.get_template('template.html')
     with open(output, 'w') as f:
         f.write(template.render(title=title, objs=objs,
-                                debug=logger.level <= logging.DEBUG))
+                                debug=logger.level <= logging.DEBUG,
+                                creation_time=datetime.now()))
