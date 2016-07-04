@@ -51,7 +51,7 @@ def render_template(clients, output, title='TeamspeakStats'):
     def frmttime(timestamp):
         if not timestamp:
             return ''
-        return timestamp.strftime('%x %X')
+        return timestamp.strftime('%x %X %Z')
     template_env.filters['frmttime'] = frmttime
     template = template_env.get_template('template.html')
     with open(output, 'w') as f:
