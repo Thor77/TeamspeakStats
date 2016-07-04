@@ -21,7 +21,7 @@
 {% for headline, list in objs %}
   {% if list|length > 0 %}
   {% set headline_id = headline|lower|replace(' ', '_') %}
-  <h1>{{ headline }}</h1>
+  <h2>{{ headline }}</h2>
   <ul class="list-group" id="{{ headline_id }}">
     {% for client, value in list %}
     {% set id = headline_id + "." + client.nick %}
