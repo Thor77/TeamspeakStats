@@ -36,7 +36,7 @@ def load(path=None):
     # use this way to set defaults, because ConfigParser.read_dict
     # is not available < 3.2
     for section, items in DEFAULT_CONFIG.items():
-        if section not in config:
+        if section not in config.sections():
             config.add_section(section)
         for key, value in items.items():
             config.set(section, key, str(value))
