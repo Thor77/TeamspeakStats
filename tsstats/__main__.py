@@ -5,7 +5,7 @@ import json
 import logging
 from os.path import abspath, exists
 
-from tsstats.config import parse_config
+from tsstats import config
 from tsstats.exceptions import InvalidConfiguration
 from tsstats.log import parse_logs
 from tsstats.template import render_template
@@ -15,7 +15,8 @@ logger = logging.getLogger('tsstats')
 
 def cli():
     parser = argparse.ArgumentParser(
-        description='A simple Teamspeak stats-generator - based on server-logs'
+        description='A simple Teamspeak stats-generator, based on server-logs',
+        argument_default=argparse.SUPPRESS
     )
     parser.add_argument(
         '-c', '--config',
@@ -41,22 +42,21 @@ def cli():
         help='don\'t add connect until now to onlinetime',
         action='store_false', dest='onlinedc'
     )
-    main(**vars(parser.parse_args()))
+    options = parser.parse_args()
+    if 'config' in options:
+        configuration = config.load(options.config)
+    else:
+        configuration = config.load()
+    for option, value in vars(options).items():
+        configuration.set('General', option, value)
+    main(configuration)
 
 
-def main(config=None, idmap=None, log=None,
-         output=None, debug=False, onlinedc=True):
-    if debug:
+def main(configuration):
+    if configuration.getboolean('General', 'debug'):
         logger.setLevel(logging.DEBUG)
 
-    if config:
-        config = abspath(config)
-        if not exists(config):
-            logger.fatal('config not found (%s)', config)
-        idmap, log, output, debug, onlinedc = parse_config(config)
-        if debug:
-            logger.setLevel(logging.DEBUG)
-
+    idmap = configuration.get('General', 'idmap')
     if idmap:
         idmap = abspath(idmap)
         if not exists(idmap):
@@ -66,16 +66,23 @@ def main(config=None, idmap=None, log=None,
     else:
         identmap = None
 
-    if not log or not output:
+    log = configuration.get('General', 'log')
+    if not log:
         raise InvalidConfiguration('log or output missing')
 
-    sid_clients = parse_logs(log, ident_map=identmap, online_dc=onlinedc)
+    sid_clients = parse_logs(
+        log, ident_map=identmap,
+        online_dc=configuration.getboolean('General', 'onlinedc')
+    )
     for sid, clients in sid_clients.items():
         if sid:
             ext = '.{}'.format(sid)
         else:
             ext = ''
-        render_template(clients, output=abspath(output + ext))
+        render_template(
+            clients,
+            output=abspath(configuration.get('General', 'output') + ext)
+        )
 
 
 if __name__ == '__main__':

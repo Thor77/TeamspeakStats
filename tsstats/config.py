@@ -10,7 +10,18 @@ import logging
 logger = logging.getLogger('tsstats')
 
 
-def parse_config(config_path):
+DEFAULT_CONFIG = {
+    'General': {
+        'debug': False,
+        'log': '',
+        'output': 'output.html',
+        'idmap': '',
+        'onlinedc': True
+    }
+}
+
+
+def load(path=None):
     '''
     parse config at `config_path`
 
@@ -22,19 +33,13 @@ def parse_config(config_path):
     '''
     logger.debug('reading config')
     config = ConfigParser()
-    config.read(config_path)
-    # use dict(ConfigParser.items) to get an easy-to-use interface
-    # compatible with py2 and py3
-    config_items = dict(config.items('General'))
-    if 'debug' in config_items:
-        config_items['debug'] = config.getboolean('General', 'debug')
-    if 'onlinedc' in config_items:
-        config_items['onlinedc'] = config.getboolean('General', 'onlinedc')
-    logger.debug('raw config: %s', config_items)
-    return (
-        config_items.get('idmap'),
-        config_items.get('log'),
-        config_items.get('output'),
-        config_items.get('debug', False),
-        config_items.get('onlinedc', True)
-    )
+    # use this way to set defaults, because ConfigParser.read_dict
+    # is not available < 3.2
+    for section, items in DEFAULT_CONFIG.items():
+        if section not in config:
+            config.add_section(section)
+        for key, value in items.items():
+            config.set(section, key, str(value))
+    if path:
+        config.read(path)
+    return config
