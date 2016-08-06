@@ -8,7 +8,7 @@ from os.path import abspath, exists
 
 import pytest
 
-from tsstats.config import parse_config
+from tsstats.config import load
 
 configpath = abspath('tsstats/tests/res/test.cfg')
 
@@ -38,9 +38,10 @@ def test_config(config):
         'debug': 'true',
         'onlinedc': 'false'
     })
-    idmap, log, output, debug, onlinedc = parse_config(configpath)
-    assert idmap == 'tsstats/tests/res/id_map.json'
-    assert log == 'tsstats/tests/res/test.log'
-    assert output == 'output.html'
-    assert debug is True
-    assert onlinedc is False
+    configuration = load(configpath)
+    assert configuration.get('General', 'idmap') ==\
+        'tsstats/tests/res/id_map.json'
+    assert configuration.get('General', 'log') == 'tsstats/tests/res/test.log'
+    assert configuration.get('General', 'output') == 'output.html'
+    assert configuration.getboolean('General', 'debug') is True
+    assert configuration.getboolean('General', 'onlinedc') is False
