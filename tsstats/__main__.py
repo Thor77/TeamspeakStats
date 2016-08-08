@@ -48,7 +48,7 @@ def cli():
     else:
         configuration = config.load()
     for option, value in vars(options).items():
-        configuration.set('General', option, value)
+        configuration.set('General', option, str(value))
     main(configuration)
 
 
