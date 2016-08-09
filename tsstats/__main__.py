@@ -75,7 +75,7 @@ def main(configuration):
         online_dc=configuration.getboolean('General', 'onlinedc')
     )
     for sid, clients in sid_clients.items():
-        if sid:
+        if sid and len(sid_clients) > 1:
             ext = '.{}'.format(sid)
         else:
             ext = ''
