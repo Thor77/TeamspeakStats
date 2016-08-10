@@ -85,7 +85,8 @@ def main(configuration):
             ext = ''
         render_template(
             clients,
-            output=abspath(configuration.get('General', 'output') + ext)
+            output=abspath(configuration.get('General', 'output') + ext),
+            template_path=configuration.get('General', 'template')
         )
 
 
