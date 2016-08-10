@@ -31,6 +31,8 @@ optional arguments:
                         path to the output-file
   -d, --debug           debug mode
   -nod, --noonlinedc    don't add connect until now to onlinetime
+  -t TEMPLATE, --template TEMPLATE
+                        path to custom template
 ```
 
 # Configuration
@@ -43,6 +45,7 @@ optional arguments:
 | idmap | Path to [IdentMap](http://teamspeakstats.readthedocs.io/en/latest/identmap.html) |
 | debug | debug mode |
 | onlinedc | Add timedelta from last-connect until now to onlinetime for connected clients |
+| template | Path to a custom template file (relative from `tsstats/` or absolute) |
 
 
 ## Example
