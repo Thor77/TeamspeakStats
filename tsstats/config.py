@@ -16,7 +16,8 @@ DEFAULT_CONFIG = {
         'log': '',
         'output': 'output.html',
         'idmap': '',
-        'onlinedc': True
+        'onlinedc': True,
+        'template': 'template.html'
     }
 }
 
