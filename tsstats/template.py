@@ -11,7 +11,8 @@ from tsstats.utils import seconds_to_text, sort_clients
 logger = logging.getLogger('tsstats')
 
 
-def render_template(clients, output, title='TeamspeakStats'):
+def render_template(clients, output, title='TeamspeakStats',
+                    template_path='template.html'):
     '''
     render template with `clients`
 
@@ -19,11 +20,13 @@ def render_template(clients, output, title='TeamspeakStats'):
     :param output: path to output-file
     :param template_name: path to template-file
     :param title: title of the resulting html-document
+    :param template_path: path to template-file
 
     :type clients: tsstats.client.Clients
     :type output: str
     :type template_name: str
     :type title: str
+    :type template_path: str
     '''
     # prepare clients
     clients_onlinetime_ = sort_clients(
@@ -54,7 +57,7 @@ def render_template(clients, output, title='TeamspeakStats'):
             return ''
         return timestamp.strftime('%x %X %Z')
     template_env.filters['frmttime'] = frmttime
-    template = template_env.get_template('template.html')
+    template = template_env.get_template(template_path)
     with open(output, 'w') as f:
         f.write(template.render(title=title, objs=objs,
                                 debug=logger.level <= logging.DEBUG,
