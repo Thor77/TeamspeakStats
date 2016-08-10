@@ -42,6 +42,10 @@ def cli():
         help='don\'t add connect until now to onlinetime',
         action='store_false', dest='onlinedc'
     )
+    parser.add_argument(
+        '-t', '--template',
+        type=str, help='path to custom template'
+    )
     options = parser.parse_args()
     if 'config' in options:
         configuration = config.load(options.config)
