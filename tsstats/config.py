@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 
 try:
-    from configparser import ConfigParser
+    from configparser import RawConfigParser
 except ImportError:
-    from ConfigParser import ConfigParser
+    from ConfigParser import RawConfigParser
 
 import logging
 
@@ -34,7 +34,7 @@ def load(path=None):
     :rtype: tuple
     '''
     logger.debug('reading config')
-    config = ConfigParser()
+    config = RawConfigParser()
     # use this way to set defaults, because ConfigParser.read_dict
     # is not available < 3.2
     for section, items in DEFAULT_CONFIG.items():
