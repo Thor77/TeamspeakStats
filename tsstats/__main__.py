@@ -46,6 +46,10 @@ def cli():
         '-t', '--template',
         type=str, help='path to custom template'
     )
+    parser.add_argument(
+        '-dtf', '--datetimeformat',
+        type=str, help='format of date/time-values (datetime.strftime)'
+    )
     options = parser.parse_args()
     if 'config' in options:
         configuration = config.load(options.config)
@@ -86,7 +90,8 @@ def main(configuration):
         render_template(
             clients,
             output=abspath(configuration.get('General', 'output') + ext),
-            template_path=configuration.get('General', 'template')
+            template_path=configuration.get('General', 'template'),
+            datetime_fmt=configuration.get('General', 'datetimeformat')
         )
 
 
