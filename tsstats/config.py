@@ -17,7 +17,8 @@ DEFAULT_CONFIG = {
         'output': 'output.html',
         'idmap': '',
         'onlinedc': True,
-        'template': 'template.html'
+        'template': 'template.html',
+        'datetimeformat': '%x %X %Z'
     }
 }
 
