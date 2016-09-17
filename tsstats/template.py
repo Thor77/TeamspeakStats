@@ -21,12 +21,14 @@ def render_template(clients, output, title='TeamspeakStats',
     :param template_name: path to template-file
     :param title: title of the resulting html-document
     :param template_path: path to template-file
+    :param datetime_fmt: custom datetime-format
 
     :type clients: tsstats.client.Clients
     :type output: str
     :type template_name: str
     :type title: str
     :type template_path: str
+    :type datetime_fmt: str
     '''
     # prepare clients
     clients_onlinetime_ = sort_clients(
