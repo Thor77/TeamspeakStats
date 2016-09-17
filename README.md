@@ -33,6 +33,8 @@ optional arguments:
   -nod, --noonlinedc    don't add connect until now to onlinetime
   -t TEMPLATE, --template TEMPLATE
                         path to custom template
+  -dtf DATETIMEFORMAT, --datetimeformat DATETIMEFORMAT
+                        format of date/time-values (datetime.strftime)
 ```
 
 # Configuration
@@ -46,6 +48,7 @@ optional arguments:
 | debug | debug mode |
 | onlinedc | Add timedelta from last-connect until now to onlinetime for connected clients |
 | template | Path to a custom template file (relative from `tsstats/` or absolute) |
+| datetimeformat | Format of date/time-values used for render-timestamp and last online (using [datetime.strftime](https://docs.python.org/3/library/datetime.html#strftime-strptime-behavior)) |
 
 
 ## Example
