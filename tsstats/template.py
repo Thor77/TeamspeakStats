@@ -57,10 +57,14 @@ def render_template(clients, output, title='TeamspeakStats',
     def frmttime(timestamp):
         if not timestamp:
             return ''
-        return timestamp.strftime(datetime_fmt)
+        formatted = timestamp.strftime(datetime_fmt)
+        logger.debug('Formatting timestamp %s -> %s', timestamp, formatted)
+        return formatted
     template_env.filters['frmttime'] = frmttime
     template = template_env.get_template(template_path)
+    logger.debug('Rendering template %s', template)
     with open(output, 'w') as f:
         f.write(template.render(title=title, objs=objs,
                                 debug=logger.level <= logging.DEBUG,
                                 creation_time=datetime.now()))
+        logger.debug('Wrote rendered template to %s', output)
