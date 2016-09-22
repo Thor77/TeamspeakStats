@@ -31,7 +31,7 @@ def cli():
     )
     parser.add_argument(
         '-o', '--output',
-        type=str, help='path to the output-file', default='stats.html'
+        type=str, help='path to the output-file'
     )
     parser.add_argument(
         '-d', '--debug',
