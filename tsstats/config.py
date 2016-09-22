@@ -14,7 +14,7 @@ DEFAULT_CONFIG = {
     'General': {
         'debug': False,
         'log': '',
-        'output': 'output.html',
+        'output': 'tsstats.html',
         'idmap': '',
         'onlinedc': True,
         'template': 'template.html',
