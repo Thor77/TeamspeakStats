@@ -87,7 +87,7 @@ class Client(object):
         :param timestamp: time of connect
         :type timestamp: int
         '''
-        logger.debug('CONNECT %s', self)
+        logger.debug('[%s] CONNECT %s', timestamp, self)
         self.connected += 1
         self._last_connect = timestamp
 
@@ -98,7 +98,7 @@ class Client(object):
         :param timestamp: time of disconnect
         :type timestamp: int
         '''
-        logger.debug('DISCONNECT %s', self)
+        logger.debug('[%s] DISCONNECT %s', timestamp, self)
         if not self.connected:
             logger.debug('^ disconnect before connect')
             raise InvalidLog('disconnect before connect!')
