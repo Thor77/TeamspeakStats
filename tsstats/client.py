@@ -104,6 +104,7 @@ class Client(object):
             raise InvalidLog('disconnect before connect!')
         self.connected -= 1
         session_time = timestamp - self._last_connect
+        logger.debug('Session lasted %s', session_time)
         self.onlinetime += session_time
         self.last_seen = timestamp
 
