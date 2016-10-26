@@ -15,7 +15,7 @@ re_log_entry = re.compile('(?P<timestamp>\d{4}-\d\d-\d\d\ \d\d:\d\d:\d\d.\d+)'
                           '\|\ *(?P<level>\w+)\ *\|\ *(?P<component>\w+)\ *'
                           '\|\ *(?P<sid>\d+)\ *\|\ *(?P<message>.*)')
 re_dis_connect = re.compile(
-    r"client (dis)?connected '(?P<nick>.*)'\(id:(?P<clid>\d+)\)")
+    r"client (?P<action>(dis)?connected) '(?P<nick>.*)'\(id:(?P<clid>\d+)\)")
 re_disconnect_invoker = re.compile(
     r'invokername=(.*)\ invokeruid=(.*)\ reasonmsg'
 )
@@ -135,9 +135,10 @@ def _parse_details(log_path, ident_map=None, clients=None, online_dc=True):
             nick, clid = match.group('nick'), match.group('clid')
             client = clients.setdefault(clid, Client(clid, nick))
             client.nick = nick  # set nick to display changes
-            if message.startswith('client connected'):
+            action = match.group('action')
+            if action == 'connected':
                 client.connect(logdatetime)
-            elif message.startswith('client disconnected'):
+            elif action == 'disconnected':
                 client.disconnect(logdatetime)
                 if 'invokeruid' in message:
                     re_disconnect_data = re_disconnect_invoker.findall(
