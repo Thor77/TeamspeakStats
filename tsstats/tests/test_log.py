@@ -82,3 +82,8 @@ def test_log_client_online():
 def test_parse_logs():
     assert len(_parse_details(testlog_path)) ==\
         len(parse_logs(testlog_path)[''])
+
+
+def test_parse_groups():
+    clients = _parse_details('tsstats/tests/res/test.log.groups')
+    assert len(clients) == 0

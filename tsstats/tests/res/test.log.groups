@@ -1,0 +1,3 @@
+2016-03-06 18:34:52.674929|INFO    |VirtualServer |1  |client 'Client1'(id:1) was added to channelgroup 'Channelgroup1'(id:1) by client 'Client2'(id:2) in channel 'Channel1'(id:1)
+2016-02-20 11:11:28.451329|INFO    |VirtualServer |1  |client (id:1) was added to servergroup 'Servergroup1'(id:1) by client 'Client2'(id:2)
+2016-02-19 14:35:00.253289|INFO    |VirtualServer |1  |client (id:1) was removed from servergroup 'Servergroup1'(id:1) by client 'Client2'(id:2)
