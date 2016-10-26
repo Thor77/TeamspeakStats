@@ -14,7 +14,8 @@ re_log_filename = re.compile(r'ts3server_(?P<date>\d{4}-\d\d-\d\d)'
 re_log_entry = re.compile('(?P<timestamp>\d{4}-\d\d-\d\d\ \d\d:\d\d:\d\d.\d+)'
                           '\|\ *(?P<level>\w+)\ *\|\ *(?P<component>\w+)\ *'
                           '\|\ *(?P<sid>\d+)\ *\|\ *(?P<message>.*)')
-re_dis_connect = re.compile(r"'(.*)'\(id:(\d*)\)")
+re_dis_connect = re.compile(
+    r"client (dis)?connected '(?P<nick>.*)'\(id:(?P<clid>\d+)\)")
 re_disconnect_invoker = re.compile(
     r'invokername=(.*)\ invokeruid=(.*)\ reasonmsg'
 )
@@ -127,7 +128,11 @@ def _parse_details(log_path, ident_map=None, clients=None, online_dc=True):
                                         log_timestamp_format)
         message = match['message']
         if message.startswith('client'):
-            nick, clid = re_dis_connect.findall(message)[0]
+            match = re_dis_connect.match(message)
+            if not match:
+                logger.debug('Not supported client action: "%s"', message)
+                continue
+            nick, clid = match.group('nick'), match.group('clid')
             client = clients.setdefault(clid, Client(clid, nick))
             client.nick = nick  # set nick to display changes
             if message.startswith('client connected'):
