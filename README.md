@@ -5,6 +5,8 @@ A simple Teamspeak stat-generator - based on server-logs
 
 # Installation
 - Install the package via PyPi `pip install tsstats`
+- Clone this repo `git clone https://github.com/Thor77/TeamspeakStats` and install with `python setup.py install`
+- Just use the package as is via `python -m tsstats [-h]`
 
 # Usage
 - Create a config (see [Configuration](https://github.com/Thor77/TeamspeakStats#configuration))
