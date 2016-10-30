@@ -12,10 +12,6 @@ A simple Teamspeak stat-generator - based on server-logs
 - Create a config (see [Configuration](https://github.com/Thor77/TeamspeakStats#configuration))
 - Run the script `tsstats [-h]`
 
-# Tests
-- Install testing-requirements `pip install -r testing_requirements.txt`
-- Run `py.test tsstats/`
-
 # CMD-Arguments
 ```
 usage: tsstats [-h] [-c CONFIG] [--idmap IDMAP] [-l LOG] [-o OUTPUT] [-d]
@@ -71,6 +67,13 @@ You can map multiple ID's to one (for example, when an user creates a new identi
 }
 ```
 The online-time of `1` and `3` will be added to the online-time of `2`
+
+# Contributing
+Please make sure tests are succeeding and your code follows [flake8](https://flake8.readthedocs.io)-guidelines.
+
+## Run tests
+- Install testing-requirements `pip install -r testing_requirements.txt`
+- Run `py.test tsstats/`
 
 # TODO
 - Localization
