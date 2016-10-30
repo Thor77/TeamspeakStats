@@ -56,18 +56,6 @@ log = /usr/local/bin/teamspeak-server/logs/ts3server*_1.log
 output = /var/www/html/stats.html
 ```
 
-# ID-Mapping
-`id_map.json`  
-You can map multiple ID's to one (for example, when an user creates a new identity)
-## Example
-```json
-{
-	"1": "2",
-	"3": "2"
-}
-```
-The online-time of `1` and `3` will be added to the online-time of `2`
-
 # Contributing
 Please make sure tests are succeeding and your code follows [flake8](https://flake8.readthedocs.io)-guidelines.
 
