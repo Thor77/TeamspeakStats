@@ -9,8 +9,8 @@ A simple Teamspeak stat-generator - based on server-logs
 - Just use the package as is via `python -m tsstats [-h]`
 
 # Usage
-- Create a config (see [Configuration](https://github.com/Thor77/TeamspeakStats#configuration))
 - Run the script `tsstats [-h]`
+- Optionally create a config-file (see [Configuration](https://github.com/Thor77/TeamspeakStats#configuration))
 
 # CMD-Arguments
 ```
