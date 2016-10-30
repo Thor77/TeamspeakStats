@@ -19,7 +19,7 @@ tsstats -l /var/log/teamspeak3-server/ts3server*.log -o /var/www/tsstats.html
 
 Parse logs matching `ts3server*.log` in `/var/log/teamspeak3-server` and write output to `/var/www/tsstats.html`
 
-# CMD-Arguments
+# CLI-Usage
 ```
 usage: tsstats [-h] [-c CONFIG] [--idmap IDMAP] [-l LOG] [-o OUTPUT] [-d]
                    [-nod]
