@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import logging
+from codecs import open
 from datetime import datetime
 from os.path import dirname
 
@@ -63,7 +64,7 @@ def render_template(clients, output, title='TeamspeakStats',
     template_env.filters['frmttime'] = frmttime
     template = template_env.get_template(template_path)
     logger.debug('Rendering template %s', template)
-    with open(output, 'w') as f:
+    with open(output, 'w', encoding='utf-8') as f:
         f.write(template.render(title=title, objs=objs,
                                 debug=logger.level <= logging.DEBUG,
                                 creation_time=datetime.now()))
