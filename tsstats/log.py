@@ -2,6 +2,7 @@
 
 import logging
 import re
+from codecs import open
 from collections import namedtuple
 from datetime import datetime
 from glob import glob
@@ -115,7 +116,7 @@ def _parse_details(log_path, ident_map=None, clients=None, online_dc=True):
     '''
     if clients is None:
         clients = Clients(ident_map)
-    log_file = open(log_path)
+    log_file = open(log_path, encoding='utf-8')
     # process lines
     logger.debug('Started parsing of %s', log_file.name)
     for line in log_file:
