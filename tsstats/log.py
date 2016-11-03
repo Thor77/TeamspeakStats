@@ -29,7 +29,7 @@ TimedLog = namedtuple('TimedLog', ['path', 'timestamp'])
 logger = logging.getLogger('tsstats')
 
 
-def parse_logs(log_glob, ident_map=None, *args, **kwargs):
+def parse_logs(log_glob, ident_map=None, online_dc=True, *args, **kwargs):
     '''
     parse logs from `log_glob`
 
@@ -46,8 +46,15 @@ def parse_logs(log_glob, ident_map=None, *args, **kwargs):
     for virtualserver_id, logs in\
             _bundle_logs(log_file for log_file in glob(log_glob)).items():
         clients = Clients(ident_map)
-        for log in logs:
-            _parse_details(log.path, clients=clients, *args, **kwargs)
+        # keep last log out of the iteration for now
+        for log in logs[:-1]:
+            # don't reconnect connected clients for all logs except last one
+            # because that would lead to insane onlinetimes
+            _parse_details(log.path, clients=clients, online_dc=False,
+                           *args, **kwargs)
+        # now parse details of last log with correct online_dc set
+        _parse_details(logs[-1].path, clients=clients, online_dc=online_dc,
+                       *args, **kwargs)
         if len(clients) >= 1:
             vserver_clients[virtualserver_id] = clients
     return vserver_clients
