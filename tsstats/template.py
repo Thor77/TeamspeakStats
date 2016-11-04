@@ -67,5 +67,5 @@ def render_template(clients, output, title='TeamspeakStats',
     with open(output, 'w', encoding='utf-8') as f:
         f.write(template.render(title=title, objs=objs,
                                 debug=logger.level <= logging.DEBUG,
-                                creation_time=datetime.now()))
+                                creation_time=datetime.utcnow()))
         logger.debug('Wrote rendered template to %s', output)
