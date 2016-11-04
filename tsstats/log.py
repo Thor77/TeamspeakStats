@@ -160,9 +160,9 @@ def _parse_details(log_path, ident_map=None, clients=None, online_dc=True):
                     else:
                         invoker.kick(client)
     if online_dc:
-        for client in clients:
-            if client.connected:
-                client.disconnect(datetime.utcnow())
-                client.connected += 1
+        def _reconnect(client):
+            client.disconnect(datetime.utcnow())
+            client.connected += 1
+        [_reconnect(client) for client in clients if client.connected]
     logger.debug('Finished parsing of %s', log_file.name)
     return clients
