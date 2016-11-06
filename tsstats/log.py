@@ -44,7 +44,7 @@ def parse_logs(log_glob, ident_map=None, online_dc=True, *args, **kwargs):
     '''
     vserver_clients = {}
     for virtualserver_id, logs in\
-            _bundle_logs(log_file for log_file in glob(log_glob)).items():
+            _bundle_logs(glob(log_glob)).items():
         clients = Clients(ident_map)
         # keep last log out of the iteration for now
         for log in logs[:-1]:
