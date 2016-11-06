@@ -159,6 +159,13 @@ def _parse_details(log_path, ident_map=None, clients=None, online_dc=True):
                         invoker.ban(client)
                     else:
                         invoker.kick(client)
+        elif message == 'stopped':
+            # make sure all clients are disconnected at server stop
+            [
+                client.disconnect(logdatetime)
+                for client in clients
+                if client.connected
+            ]
     if online_dc:
         def _reconnect(client):
             client.disconnect(datetime.utcnow())
