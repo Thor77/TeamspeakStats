@@ -40,6 +40,8 @@ optional arguments:
                         path to custom template
   -dtf DATETIMEFORMAT, --datetimeformat DATETIMEFORMAT
                         format of date/time-values (datetime.strftime)
+  -otth ONLINETIMETHRESHOLD, --onlinetimethreshold ONLINETIMETHRESHOLD
+                        threshold for displaying onlinetime (in seconds)
 ```
 
 # Configuration
