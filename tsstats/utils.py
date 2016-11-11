@@ -36,3 +36,16 @@ def seconds_to_text(seconds):
     minutes = str(minutes) + 'm ' if minutes > 0 else ''
     seconds = str(seconds) + 's' if seconds > 0 else ''
     return hours + minutes + seconds
+
+
+def filter_threshold(clients, threshold):
+    '''
+    Filter clients by threshold
+
+    :param clients: List of clients as returned by tsstats.utils.sort_clients
+    :type clients: list
+
+    :return: Clients matching given threshold
+    :rtype: list
+    '''
+    return list(filter(lambda c: c[1] > threshold, clients))

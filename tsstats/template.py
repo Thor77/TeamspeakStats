@@ -7,13 +7,14 @@ from os.path import dirname
 
 from jinja2 import ChoiceLoader, Environment, FileSystemLoader, PackageLoader
 
-from tsstats.utils import seconds_to_text, sort_clients
+from tsstats.utils import filter_threshold, seconds_to_text, sort_clients
 
 logger = logging.getLogger('tsstats')
 
 
 def render_template(clients, output, title='TeamspeakStats',
-                    template_path='template.html', datetime_fmt='%x %X %Z'):
+                    template_path='template.html', datetime_fmt='%x %X %Z',
+                    onlinetime_threshold=-1):
     '''
     render template with `clients`
 
@@ -23,6 +24,7 @@ def render_template(clients, output, title='TeamspeakStats',
     :param title: title of the resulting html-document
     :param template_path: path to template-file
     :param datetime_fmt: custom datetime-format
+    :param onlinetime_threshold: threshold for clients onlinetime
 
     :type clients: tsstats.client.Clients
     :type output: str
@@ -30,11 +32,16 @@ def render_template(clients, output, title='TeamspeakStats',
     :type title: str
     :type template_path: str
     :type datetime_fmt: str
+    :type onlinetime_threshold: int
     '''
     # prepare clients
     clients_onlinetime_ = sort_clients(
         clients, lambda c: c.onlinetime.total_seconds()
     )
+    # filter clients for onlinetime threshold
+    clients_onlinetime_ = filter_threshold(clients_onlinetime_,
+                                           onlinetime_threshold)
+
     clients_onlinetime = [
         (client, seconds_to_text(int(onlinetime)))
         for client, onlinetime in clients_onlinetime_
