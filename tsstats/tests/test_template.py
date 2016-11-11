@@ -7,10 +7,10 @@ from bs4 import BeautifulSoup
 
 from tsstats.log import _parse_details
 from tsstats.template import render_template
-from tsstats.utils import seconds_to_text
+from tsstats.utils import filter_threshold, seconds_to_text, sort_clients
 
 output_path = 'tsstats/tests/res/output.html'
-clients = _parse_details('tsstats/tests/res/test.log')
+clients = _parse_details('tsstats/tests/res/test.log', online_dc=False)
 
 logger = logging.getLogger('tsstats')
 
@@ -60,3 +60,11 @@ def test_onlinetime(soup):
             #  they're only used for bans and kicks)
             assert nick_data[client.nick] == \
                 seconds_to_text(int(client.onlinetime.total_seconds()))
+
+
+def test_filter_threshold():
+    sorted_clients = sort_clients(
+        clients, lambda c: c.onlinetime.total_seconds())
+    assert len(filter_threshold(sorted_clients, -1)) == len(sorted_clients)
+    assert len(filter_threshold(sorted_clients, 20)) == 1
+    assert len(filter_threshold(sorted_clients, 500)) == 0
