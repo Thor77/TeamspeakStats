@@ -18,7 +18,8 @@ DEFAULT_CONFIG = {
         'idmap': '',
         'onlinedc': True,
         'template': 'template.html',
-        'datetimeformat': '%x %X %Z'
+        'datetimeformat': '%x %X %Z',
+        'onlinetimethreshold': -1
     }
 }
 

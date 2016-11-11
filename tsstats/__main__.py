@@ -50,6 +50,10 @@ def cli():
         '-dtf', '--datetimeformat',
         type=str, help='format of date/time-values (datetime.strftime)'
     )
+    parser.add_argument(
+        '-otth', '--onlinetimethreshold',
+        type=int, help='threshold for displaying onlinetime (in seconds)'
+    )
     options = parser.parse_args()
     if 'config' in options:
         configuration = config.load(options.config)
@@ -91,7 +95,9 @@ def main(configuration):
             clients,
             output=abspath(configuration.get('General', 'output') + ext),
             template_path=configuration.get('General', 'template'),
-            datetime_fmt=configuration.get('General', 'datetimeformat')
+            datetime_fmt=configuration.get('General', 'datetimeformat'),
+            onlinetime_threshold=int(configuration.get(
+                'General', 'onlinetimethreshold'))
         )
 
 
