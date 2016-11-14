@@ -56,6 +56,7 @@ optional arguments:
 | onlinedc | Add timedelta from last-connect until now to onlinetime for connected clients |
 | template | Path to a custom template file (relative from `tsstats/` or absolute) |
 | datetimeformat | Format of date/time-values used for render-timestamp and last online (using [datetime.strftime](https://docs.python.org/3/library/datetime.html#strftime-strptime-behavior)) |
+| onlinetimethreshold | Clients with an onlinetime below that threshold (in seconds) are hidden in the onlinetime-section |
 
 
 ## Example
