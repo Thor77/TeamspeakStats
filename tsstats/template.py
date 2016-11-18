@@ -13,7 +13,7 @@ logger = logging.getLogger('tsstats')
 
 
 def render_template(clients, output, title='TeamspeakStats',
-                    template='template.html', datetime_fmt='%x %X %Z',
+                    template='stats.jinja2', datetime_fmt='%x %X %Z',
                     onlinetime_threshold=-1):
     '''
     render template with `clients`
