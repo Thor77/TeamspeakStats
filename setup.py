@@ -15,7 +15,7 @@ setup(
         ]
     },
     package_data={
-        'tsstats': ['template.html']
+        'tsstats': ['templates/*.jinja2']
     },
     install_requires=[
         'Jinja2>=2.8'
