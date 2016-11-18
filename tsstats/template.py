@@ -3,7 +3,7 @@
 import logging
 from codecs import open
 from datetime import datetime
-from os.path import dirname
+from os.path import dirname, join
 
 from jinja2 import ChoiceLoader, Environment, FileSystemLoader, PackageLoader
 
@@ -57,8 +57,8 @@ def render_template(clients, output, title='TeamspeakStats',
 
     # render
     template_loader = ChoiceLoader([
-        PackageLoader(__package__, ''),
-        FileSystemLoader(dirname(__file__))
+        PackageLoader(__package__, 'templates'),
+        FileSystemLoader(join(dirname(__file__), 'templates'))
     ])
     template_env = Environment(loader=template_loader)
 
