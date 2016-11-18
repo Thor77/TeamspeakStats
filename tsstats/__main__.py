@@ -94,7 +94,7 @@ def main(configuration):
         render_template(
             clients,
             output=abspath(configuration.get('General', 'output') + ext),
-            template_path=configuration.get('General', 'template'),
+            template=configuration.get('General', 'template'),
             datetime_fmt=configuration.get('General', 'datetimeformat'),
             onlinetime_threshold=int(configuration.get(
                 'General', 'onlinetimethreshold'))

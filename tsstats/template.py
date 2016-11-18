@@ -13,7 +13,7 @@ logger = logging.getLogger('tsstats')
 
 
 def render_template(clients, output, title='TeamspeakStats',
-                    template_path='template.html', datetime_fmt='%x %X %Z',
+                    template='template.html', datetime_fmt='%x %X %Z',
                     onlinetime_threshold=-1):
     '''
     render template with `clients`
@@ -69,7 +69,7 @@ def render_template(clients, output, title='TeamspeakStats',
         logger.debug('Formatting timestamp %s -> %s', timestamp, formatted)
         return formatted
     template_env.filters['frmttime'] = frmttime
-    template = template_env.get_template(template_path)
+    template = template_env.get_template(template)
     logger.debug('Rendering template %s', template)
     with open(output, 'w', encoding='utf-8') as f:
         f.write(template.render(title=title, objs=objs,
