@@ -86,7 +86,7 @@ def main(configuration):
         log, ident_map=identmap,
         online_dc=configuration.getboolean('General', 'onlinedc')
     )
-    for sid, clients in sid_clients.items():
+    for sid, clients in sid_clients:
         if sid and len(sid_clients) > 1:
             ext = '.{}'.format(sid)
         else:
