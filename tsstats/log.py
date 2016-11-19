@@ -24,6 +24,7 @@ re_disconnect_invoker = re.compile(
 log_timestamp_format = '%Y-%m-%d %H:%M:%S.%f'
 
 TimedLog = namedtuple('TimedLog', ['path', 'timestamp'])
+Server = namedtuple('Server', ['sid', 'clients'])
 
 
 logger = logging.getLogger('tsstats')
@@ -40,9 +41,9 @@ def parse_logs(log_glob, ident_map=None, online_dc=True, *args, **kwargs):
     :type ident_map: dict
 
     :return: clients bundled by virtual-server
-    :rtype: dict
+    :rtype: tsstats.log.Server
     '''
-    vserver_clients = {}
+    server = []
     for virtualserver_id, logs in\
             _bundle_logs(glob(log_glob)).items():
         clients = Clients(ident_map)
@@ -56,8 +57,8 @@ def parse_logs(log_glob, ident_map=None, online_dc=True, *args, **kwargs):
         _parse_details(logs[-1].path, clients=clients, online_dc=online_dc,
                        *args, **kwargs)
         if len(clients) >= 1:
-            vserver_clients[virtualserver_id] = clients
-    return vserver_clients
+            server.append(Server(virtualserver_id, clients))
+    return server
 
 
 def _bundle_logs(logs):
