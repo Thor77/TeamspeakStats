@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import logging
+from collections import namedtuple
 from datetime import datetime
 from os.path import dirname, join
 
@@ -9,6 +10,36 @@ from jinja2 import ChoiceLoader, Environment, FileSystemLoader, PackageLoader
 from tsstats.utils import filter_threshold, seconds_to_text, sort_clients
 
 logger = logging.getLogger('tsstats')
+
+SortedClients = namedtuple('SortedClients', [
+    'onlinetime', 'kicks', 'pkicks', 'bans', 'pbans'])
+
+
+def prepare_clients(clients, onlinetime_threshold=-1):
+    '''
+    Prepare `clients` for rendering
+
+    sort them and convert onlinetime to string
+    '''
+    # sort by onlinetime
+    onlinetime_ = sort_clients(
+        clients, lambda c: c.onlinetime.total_seconds()
+    )
+    # filter clients not matching threshold
+    onlinetime_ = filter_threshold(onlinetime_,
+                                   onlinetime_threshold)
+    # convert timespans to text
+    onlinetime = [
+        (client, seconds_to_text(int(onlinetime)))
+        for client, onlinetime in onlinetime_
+    ]
+    return SortedClients(
+        onlinetime=onlinetime,
+        kicks=sort_clients(clients, lambda c: c.kicks),
+        pkicks=sort_clients(clients, lambda c: c.pkicks),
+        bans=sort_clients(clients, lambda c: c.bans),
+        pbans=sort_clients(clients, lambda c: c.pbans)
+    )
 
 
 def render_template(clients, output, title='TeamspeakStats',
@@ -33,26 +64,14 @@ def render_template(clients, output, title='TeamspeakStats',
     :type datetime_fmt: str
     :type onlinetime_threshold: int
     '''
-    # prepare clients
-    clients_onlinetime_ = sort_clients(
-        clients, lambda c: c.onlinetime.total_seconds()
-    )
-    # filter clients for onlinetime threshold
-    clients_onlinetime_ = filter_threshold(clients_onlinetime_,
-                                           onlinetime_threshold)
-
-    clients_onlinetime = [
-        (client, seconds_to_text(int(onlinetime)))
-        for client, onlinetime in clients_onlinetime_
+    prepared_clients = prepare_clients(clients)
+    objs = [
+        ('Onlinetime', prepared_clients.onlinetime),
+        ('Kicks', prepared_clients.kicks),
+        ('passive Kicks', prepared_clients.pkicks),
+        ('Bans', prepared_clients.bans),
+        ('passive Bans', prepared_clients.pbans)
     ]
-
-    clients_kicks = sort_clients(clients, lambda c: c.kicks)
-    clients_pkicks = sort_clients(clients, lambda c: c.pkicks)
-    clients_bans = sort_clients(clients, lambda c: c.bans)
-    clients_pbans = sort_clients(clients, lambda c: c.pbans)
-    objs = [('Onlinetime', clients_onlinetime), ('Kicks', clients_kicks),
-            ('passive Kicks', clients_pkicks),
-            ('Bans', clients_bans), ('passive Bans', clients_pbans)]
 
     # render
     template_loader = ChoiceLoader([
