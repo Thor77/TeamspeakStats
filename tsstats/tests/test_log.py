@@ -84,7 +84,7 @@ def test_log_client_online():
 
 def test_parse_logs():
     assert len(_parse_details(testlog_path)) ==\
-        len(parse_logs(testlog_path)[''])
+        len(parse_logs(testlog_path)[0].clients)
 
 
 def test_parse_groups():
@@ -93,6 +93,6 @@ def test_parse_groups():
 
 
 def test_parse_utf8():
-    clients = parse_logs(testlog_path + '.utf8')['']
+    clients = parse_logs(testlog_path + '.utf8')[0].clients
     render_template(clients, output_path)
     remove(output_path)
