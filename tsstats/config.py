@@ -17,7 +17,7 @@ DEFAULT_CONFIG = {
         'output': 'tsstats.html',
         'idmap': '',
         'onlinedc': True,
-        'template': 'stats.jinja2',
+        'template': 'index.jinja2',
         'datetimeformat': '%x %X %Z',
         'onlinetimethreshold': -1
     }
