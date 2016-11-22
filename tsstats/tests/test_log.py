@@ -6,7 +6,7 @@ import pytest
 
 from tsstats.exceptions import InvalidLog
 from tsstats.log import TimedLog, _bundle_logs, _parse_details, parse_logs
-from tsstats.template import render_template
+from tsstats.template import render_servers
 from tsstats.tests.test_template import output_path
 
 testlog_path = 'tsstats/tests/res/test.log'
@@ -93,6 +93,6 @@ def test_parse_groups():
 
 
 def test_parse_utf8():
-    clients = parse_logs(testlog_path + '.utf8')[0].clients
-    render_template(clients, output_path)
+    servers = parse_logs(testlog_path + '.utf8')
+    render_servers(servers, output_path)
     remove(output_path)
