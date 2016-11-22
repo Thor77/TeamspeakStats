@@ -7,6 +7,7 @@ from os.path import dirname, join
 
 from jinja2 import ChoiceLoader, Environment, FileSystemLoader, PackageLoader
 
+from tsstats.log import Server
 from tsstats.utils import filter_threshold, seconds_to_text, sort_clients
 
 logger = logging.getLogger('tsstats')
@@ -42,13 +43,13 @@ def prepare_clients(clients, onlinetime_threshold=-1):
     )
 
 
-def render_template(clients, output, title='TeamspeakStats',
-                    template='stats.jinja2', datetime_fmt='%x %X %Z',
-                    onlinetime_threshold=-1):
+def render_servers(servers, output, title='TeamspeakStats',
+                   template='index.jinja2', datetime_fmt='%x %X %Z',
+                   onlinetime_threshold=-1):
     '''
-    render template with `clients`
+    Render `servers`
 
-    :param clients: clients to fill template with
+    :param servers: list of servers to render
     :param output: path to output-file
     :param template_name: path to template-file
     :param title: title of the resulting html-document
@@ -56,7 +57,8 @@ def render_template(clients, output, title='TeamspeakStats',
     :param datetime_fmt: custom datetime-format
     :param onlinetime_threshold: threshold for clients onlinetime
 
-    :type clients: tsstats.client.Clients
+
+    :type servers: [tsstats.log.Server]
     :type output: str
     :type template_name: str
     :type title: str
@@ -64,15 +66,11 @@ def render_template(clients, output, title='TeamspeakStats',
     :type datetime_fmt: str
     :type onlinetime_threshold: int
     '''
-    prepared_clients = prepare_clients(clients)
-    objs = [
-        ('Onlinetime', prepared_clients.onlinetime),
-        ('Kicks', prepared_clients.kicks),
-        ('passive Kicks', prepared_clients.pkicks),
-        ('Bans', prepared_clients.bans),
-        ('passive Bans', prepared_clients.pbans)
+    # preparse servers
+    prepared_servers = [
+        Server(sid, prepare_clients(clients))
+        for sid, clients in servers
     ]
-
     # render
     template_loader = ChoiceLoader([
         PackageLoader(__package__, 'templates'),
@@ -89,7 +87,7 @@ def render_template(clients, output, title='TeamspeakStats',
     template_env.filters['frmttime'] = frmttime
     template = template_env.get_template(template)
     logger.debug('Rendering template %s', template)
-    template.stream(title=title, objs=objs,
+    template.stream(title=title, servers=prepared_servers,
                     debug=logger.level <= logging.DEBUG,
                     creation_time=datetime.utcnow())\
         .dump(output, encoding='utf-8')
