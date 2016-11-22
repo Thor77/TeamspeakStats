@@ -8,7 +8,7 @@ from os.path import abspath, exists
 from tsstats import config
 from tsstats.exceptions import InvalidConfiguration
 from tsstats.log import parse_logs
-from tsstats.template import render_template
+from tsstats.template import render_servers
 
 logger = logging.getLogger('tsstats')
 
@@ -82,23 +82,18 @@ def main(configuration):
     if not log:
         raise InvalidConfiguration('log or output missing')
 
-    sid_clients = parse_logs(
+    servers = parse_logs(
         log, ident_map=identmap,
         online_dc=configuration.getboolean('General', 'onlinedc')
     )
-    for sid, clients in sid_clients:
-        if sid and len(sid_clients) > 1:
-            ext = '.{}'.format(sid)
-        else:
-            ext = ''
-        render_template(
-            clients,
-            output=abspath(configuration.get('General', 'output') + ext),
-            template=configuration.get('General', 'template'),
-            datetime_fmt=configuration.get('General', 'datetimeformat'),
-            onlinetime_threshold=int(configuration.get(
-                'General', 'onlinetimethreshold'))
-        )
+    render_servers(
+        servers,
+        output=abspath(configuration.get('General', 'output')),
+        template=configuration.get('General', 'template'),
+        datetime_fmt=configuration.get('General', 'datetimeformat'),
+        onlinetime_threshold=int(configuration.get(
+            'General', 'onlinetimethreshold'))
+    )
 
 
 if __name__ == '__main__':
