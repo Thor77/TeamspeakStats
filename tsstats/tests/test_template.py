@@ -46,7 +46,7 @@ def test_debug(output):
 
 def test_onlinetime(soup):
     # move this into a (parameterized) fixture or function
-    items = soup.find('ul', id='onlinetime').find_all('li')
+    items = soup.find('ul', id='1.onlinetime').find_all('li')
     nick_data = {}
     for item in items:
         nick, data = item.find_all('span')
