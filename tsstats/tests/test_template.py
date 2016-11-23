@@ -35,7 +35,7 @@ def test_debug(output):
     logger.setLevel(logging.INFO)
     soup = BeautifulSoup(open(output_path), 'html.parser')
     # check debug-label presence
-    assert soup.find_all(class_='alert alert-danger')
+    assert soup.find_all(style='color: red; padding-right: 10px;')
     for client_item in soup.find_all('li'):
         nick = client_item.find('span').text
         # check for right identifier
