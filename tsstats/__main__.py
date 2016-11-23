@@ -87,7 +87,7 @@ def main(configuration):
         online_dc=configuration.getboolean('General', 'onlinedc')
     )
     render_servers(
-        servers,
+        sorted(servers, key=lambda s: s.sid),
         output=abspath(configuration.get('General', 'output')),
         template=configuration.get('General', 'template'),
         datetime_fmt=configuration.get('General', 'datetimeformat'),
