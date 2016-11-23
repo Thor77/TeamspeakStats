@@ -5,12 +5,13 @@ from os import remove
 import pytest
 from bs4 import BeautifulSoup
 
-from tsstats.log import _parse_details
-from tsstats.template import render_template
+from tsstats.log import _parse_details, Server
+from tsstats.template import render_servers
 from tsstats.utils import filter_threshold, seconds_to_text, sort_clients
 
 output_path = 'tsstats/tests/res/output.html'
 clients = _parse_details('tsstats/tests/res/test.log', online_dc=False)
+servers = [Server(1, clients)]
 
 logger = logging.getLogger('tsstats')
 
@@ -24,13 +25,13 @@ def output(request):
 
 @pytest.fixture
 def soup(output):
-    render_template(clients, output_path)
+    render_servers(servers, output_path)
     return BeautifulSoup(open(output_path), 'html.parser')
 
 
 def test_debug(output):
     logger.setLevel(logging.DEBUG)
-    render_template(clients, output_path)
+    render_servers(servers, output_path)
     logger.setLevel(logging.INFO)
     soup = BeautifulSoup(open(output_path), 'html.parser')
     # check debug-label presence
