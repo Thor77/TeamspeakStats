@@ -5,7 +5,7 @@ from os import remove
 import pytest
 from bs4 import BeautifulSoup
 
-from tsstats.log import _parse_details, Server
+from tsstats.log import Server, _parse_details
 from tsstats.template import render_servers
 from tsstats.utils import filter_threshold, seconds_to_text, sort_clients
 
