@@ -68,7 +68,7 @@ def render_servers(servers, output, title='TeamspeakStats',
     '''
     # preparse servers
     prepared_servers = [
-        Server(sid, prepare_clients(clients))
+        Server(sid, prepare_clients(clients, onlinetime_threshold))
         for sid, clients in servers
     ]
     # render
