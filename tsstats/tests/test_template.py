@@ -36,7 +36,7 @@ def test_debug(output):
     soup = BeautifulSoup(open(output_path), 'html.parser')
     # check debug-label presence
     assert soup.find_all(style='color: red; padding-right: 10px;')
-    for client_item in soup.find_all('li'):
+    for client_item in soup.find('ul', id='1.onlinetime').find_all('li'):
         nick = client_item.find('span').text
         # check for right identifier
         nick, encl_identifier = nick.split()
