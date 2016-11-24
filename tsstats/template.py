@@ -21,6 +21,15 @@ def prepare_clients(clients, onlinetime_threshold=-1):
     Prepare `clients` for rendering
 
     sort them and convert onlinetime to string
+
+    :param clients: List of clients to prepare
+    :param onlinetime_threshold: threshold for clients onlinetime
+
+    :type clients: tsstats.client.Clients
+    :type onlinetime_treshold: int
+
+    :return: `clients` sorted by onlinetime, kics, pkicks, bans and pbans
+    :rtype: tsstats.template.SortedClients
     '''
     # sort by onlinetime
     onlinetime_ = sort_clients(
