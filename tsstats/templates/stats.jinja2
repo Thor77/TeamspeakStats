@@ -14,7 +14,7 @@
     {% set id = [headline_id, client.nick|striptags]|join('.') %}
     <li id="{{ id }}" onclick="window.location = '#{{ id }}'" class="list-group-item{{ ' list-group-item-success' if client.connected else loop.cycle('" style="background-color: #eee;', '') }}">
       <span>{{ client.nick }}{{ " (" + client.identifier + ")" if debug }}</span>
-      <span class="badge"><div{% if not client.connected %} class="hint--left" data-hint="{{ client.last_seen|frmttime }}"{% endif %}>{{ value }}</div></span>
+      <span class="badge"><div{% if not client.connected and headline == 'Onlinetime' %} class="hint--left" data-hint="{{ client.last_seen|frmttime }}"{% endif %}>{{ value }}</div></span>
     </li>
     {% endfor %}
   </ul>
