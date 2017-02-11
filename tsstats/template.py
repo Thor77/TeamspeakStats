@@ -20,7 +20,7 @@ def prepare_clients(clients, onlinetime_threshold=-1):
     '''
     Prepare `clients` for rendering
 
-    sort them and convert onlinetime to string
+    sort them, clean their nick-history and convert onlinetime to string
 
     :param clients: List of clients to prepare
     :param onlinetime_threshold: threshold for clients onlinetime
@@ -31,6 +31,12 @@ def prepare_clients(clients, onlinetime_threshold=-1):
     :return: `clients` sorted by onlinetime, kics, pkicks, bans and pbans
     :rtype: tsstats.template.SortedClients
     '''
+    # drop current nick from nick-history
+    [
+        c.nick_history.remove(c.nick)
+        for c in clients
+        if c.nick in c.nick_history
+    ]
     # sort by onlinetime
     onlinetime_ = sort_clients(
         clients, lambda c: c.onlinetime.total_seconds()

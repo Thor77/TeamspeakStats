@@ -143,7 +143,11 @@ def _parse_details(log_path, ident_map=None, clients=None, online_dc=True):
                 continue
             nick, clid = match.group('nick'), match.group('clid')
             client = clients.setdefault(clid, Client(clid, nick))
-            client.nick = nick  # set nick to display changes
+            # set current nick
+            client.nick = nick
+            # add nick to history
+            client.nick_history.add(nick)
+
             action = match.group('action')
             if action == 'connected':
                 client.connect(logdatetime)

@@ -70,6 +70,7 @@ class Client(object):
         # public
         self.identifier = identifier
         self.nick = nick
+        self.nick_history = set()
         self.connected = 0
         self.onlinetime = datetime.timedelta()
         self.kicks = 0
