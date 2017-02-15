@@ -73,3 +73,7 @@ Please make sure tests are succeeding and your code follows [flake8](https://fla
 ## Run tests
 - Install testing-requirements `pip install -r testing_requirements.txt`
 - Run `py.test tsstats/`
+
+## Supported Python-versions
+* Python 2 (2.7)
+* Python 3 (3.5, 3.6)
