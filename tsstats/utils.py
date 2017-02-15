@@ -78,3 +78,22 @@ def tz_aware_datime(datetime, timezone=UTC()):
     :type timezone: datetime.timezone
     '''
     return datetime.replace(tzinfo=timezone)
+
+
+def transform_pretty_identmap(pretty_identmap):
+    '''
+    Transforms a list of client ID mappings from a more descriptive format
+    to the traditional format of alternative IDs to actual ID.
+
+    :param pretty_identmap: ID mapping in "nice" form
+    :type pretty_identmap: list
+
+    :return: ID mapping in simple key/value pairs
+    :rtype: dict
+    '''
+
+    final_identmap = {}
+    for mapping in pretty_identmap:
+        for alt_id in mapping['alternate_ids']:
+            final_identmap[alt_id] = mapping['primary_id']
+    return final_identmap

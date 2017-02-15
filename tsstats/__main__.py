@@ -9,6 +9,7 @@ from tsstats import config
 from tsstats.exceptions import InvalidConfiguration
 from tsstats.log import parse_logs
 from tsstats.template import render_servers
+from tsstats.utils import transform_pretty_identmap
 
 logger = logging.getLogger('tsstats')
 
@@ -77,6 +78,8 @@ def main(configuration):
         identmap = json.load(open(idmap))
     else:
         identmap = None
+    if isinstance(identmap, list):
+        identmap = transform_pretty_identmap(identmap)
 
     log = configuration.get('General', 'log')
     if not log:
