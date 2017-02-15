@@ -8,6 +8,7 @@ from datetime import datetime
 from glob import glob
 from os.path import basename
 
+from tsstats.utils import tz_aware_datime
 from tsstats.client import Client, Clients
 
 re_log_filename = re.compile(r'ts3server_(?P<date>\d{4}-\d\d-\d\d)'
@@ -133,8 +134,8 @@ def _parse_details(log_path, ident_map=None, clients=None, online_dc=True):
             logger.debug('No match: "%s"', line)
             continue
         match = match.groupdict()
-        logdatetime = datetime.strptime(match['timestamp'],
-                                        log_timestamp_format)
+        logdatetime = tz_aware_datime(datetime.strptime(match['timestamp'],
+                                      log_timestamp_format))
         message = match['message']
         if message.startswith('client'):
             match = re_dis_connect.match(message)
@@ -173,7 +174,7 @@ def _parse_details(log_path, ident_map=None, clients=None, online_dc=True):
             ]
     if online_dc:
         def _reconnect(client):
-            client.disconnect(datetime.utcnow())
+            client.disconnect(tz_aware_datime(datetime.utcnow()))
             client.connected += 1
         [_reconnect(client) for client in clients if client.connected]
     logger.debug('Finished parsing of %s', log_file.name)

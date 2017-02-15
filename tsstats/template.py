@@ -8,7 +8,9 @@ from os.path import dirname, join
 from jinja2 import ChoiceLoader, Environment, FileSystemLoader, PackageLoader
 
 from tsstats.log import Server
-from tsstats.utils import filter_threshold, seconds_to_text, sort_clients
+from tsstats.utils import (
+    filter_threshold, seconds_to_text, sort_clients, tz_aware_datime
+)
 
 logger = logging.getLogger('tsstats')
 
@@ -104,6 +106,6 @@ def render_servers(servers, output, title='TeamspeakStats',
     logger.debug('Rendering template %s', template)
     template.stream(title=title, servers=prepared_servers,
                     debug=logger.level <= logging.DEBUG,
-                    creation_time=datetime.utcnow())\
+                    creation_time=tz_aware_datime(datetime.utcnow()))\
         .dump(output, encoding='utf-8')
     logger.debug('Wrote rendered template to %s', output)
