@@ -43,7 +43,7 @@ def test_ident_map(identmap_clients):
         (('4', '2'), ('9', '8'), ('14', '8'))
     )
 ])
-def test_flip_pretty_identmap(test_input, expected):
+def test_transform_pretty_identmap(test_input, expected):
     transformed_identmap = transform_pretty_identmap(test_input)
     for alternate, primary in expected:
         assert transformed_identmap[alternate] == primary
