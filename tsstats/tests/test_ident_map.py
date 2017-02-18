@@ -27,14 +27,6 @@ def test_ident_map(identmap_clients):
     assert clients['UID5'] == uidcl
 
 
-@pytest.fixture(scope="module")
-def pretty_identmap():
-    return [
-        {'primary_id': '1', 'alternate_ids': ['3', '6']},
-        {'primary_id': '4', 'alternate_ids': ['9', '42']}
-    ]
-
-
 @pytest.mark.parametrize('test_input,expected', [
     (
         [
