@@ -38,7 +38,11 @@ def test_ident_map(identmap_clients):
     (
         [
             {'name': 'Friend 1', 'primary_id': '2', 'alternate_ids': ['4']},
-            {'name': 'Friend 3', 'primary_id': '8', 'alternate_ids': ['9', '14']}
+            {
+                'name': 'Friend 3',
+                'primary_id': '8',
+                'alternate_ids': ['9', '14']
+            }
         ],
         (('4', '2'), ('9', '8'), ('14', '8'))
     )

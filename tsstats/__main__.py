@@ -16,7 +16,8 @@ logger = logging.getLogger('tsstats')
 
 def cli():
     parser = argparse.ArgumentParser(
-        description='A simple Teamspeak stats-generator, based solely on server-logs',
+        description='A simple Teamspeak stats-generator,'
+        ' based solely on server-logs',
         argument_default=argparse.SUPPRESS
     )
     parser.add_argument(
