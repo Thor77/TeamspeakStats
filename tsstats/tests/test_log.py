@@ -96,3 +96,9 @@ def test_parse_utf8():
     servers = parse_logs(testlog_path + '.utf8')
     render_servers(servers, output_path)
     remove(output_path)
+
+
+def test_server_stop():
+    clients = _parse_details('tsstats/tests/res/test.log.stopped')
+    assert clients['1'].onlinetime.seconds / 60 == 20  # minutes
+    assert clients['2'].onlinetime.seconds / 60 == 10  # minutes
