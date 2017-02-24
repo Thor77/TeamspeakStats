@@ -28,19 +28,22 @@
 </head>
 <body>
 <div class="container-fluid">
-  <nav class="navbar navbar-default navbar-fixed-top"><div class="container-fluid">
-    <div class="navbar-header">
-      <a class="navbar-brand" href="#">{{ title }}</a>
+  <nav class="navbar navbar-toggleable-md navbar-light bg-faded sticky-top">
+    <a class="navbar-brand" href="#">{{ title }}</a>
+
+    <div class="collapse navbar-collapse">
+      <ul class="navbar-nav mr-auto">
+        {% for sid, _ in servers %}
+          <li class="nav-item">
+            <a class="nav-link" href="#sid{{ sid }}">Server {{ sid }}</a>
+          </li>
+        {% endfor %}
+      </ul>
+      {% if debug %}
+      <span class="navbar-text" style="color: red">debug mode</span>
+      {% endif %}
     </div>
-    <ul class="nav navbar-nav">
-      {% for sid, _ in servers %}
-        <li><a href="#sid{{ sid }}">Server {{ sid }}</a></li>
-      {% endfor %}
-     </ul>
-     {% if debug %}
-     <p class="navbar-text navbar-right" style="color: red; padding-right: 10px;">debug mode</p>
-     {% endif %}
-  </div></nav>
+  </nav>
   {% for server in servers %}
     <h1 class="page-header" id="sid{{ server.sid }}">
       <a href="#sid{{ server.sid }}">Server {{ server.sid }}</a>
