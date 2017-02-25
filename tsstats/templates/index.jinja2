@@ -42,7 +42,7 @@
     </div>
   </nav>
   {% for server in servers %}
-    <h1 class="page-header" id="sid{{ server.sid }}">
+    <h1 class="display-4" id="sid{{ server.sid }}">
       <a href="#sid{{ server.sid }}">Server {{ server.sid }}</a>
     </h1>
     {% include 'stats.jinja2' %}
