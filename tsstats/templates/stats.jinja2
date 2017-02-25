@@ -9,7 +9,7 @@
   {% if clients|length > 0 %}
   {% set headline_id = [server.sid, headline|lower|replace(' ', '_')]|join('.') %}
   <h2><a href="#{{ headline_id }}">{{ headline }}</a></h2>
-  <ul class="list-group" id="{{ headline_id }}">
+  <ul class="list-group my-3" id="{{ headline_id }}">
     {% for client, value in clients %}
     {% set id = [headline_id, client.nick|striptags]|join('.') %}
     <li id="{{ id }}" class="list-group-item justify-content-between{{ ' list-group-item-success' if client.connected else loop.cycle('" style="background-color: #eee;', '') }}">
