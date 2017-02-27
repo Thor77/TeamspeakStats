@@ -8,12 +8,12 @@
 ] %}
   {% if clients|length > 0 %}
   {% set headline_id = [server.sid, headline|lower|replace(' ', '_')]|join('.') %}
-  <h2 onclick="window.location = '#{{ headline_id }}'">{{ headline }}</h2>
+  <h2><a href="#{{ headline_id }}">{{ headline }}</a></h2>
   <ul class="list-group" id="{{ headline_id }}">
     {% for client, value in clients %}
     {% set id = [headline_id, client.nick|striptags]|join('.') %}
-    <li id="{{ id }}" onclick="window.location = '#{{ id }}'" class="list-group-item{{ ' list-group-item-success' if client.connected else loop.cycle('" style="background-color: #eee;', '') }}">
-      <span class="hint--right hint--medium--xs" data-hint="{{ client.nick_history|join(', ') }}">{{ client.nick }}{{ " (" + client.identifier + ")" if debug }}</span>
+    <li id="{{ id }}" class="list-group-item{{ ' list-group-item-success' if client.connected else loop.cycle('" style="background-color: #eee;', '') }}">
+      <span class="hint--right hint--medium--xs" data-hint="{{ client.nick_history|join(', ') }}"><a href="#{{ id }}">{{ client.nick }}{{ " (" + client.identifier + ")" if debug }}</a></span>
       <span class="badge"><div{% if not client.connected and headline == 'Onlinetime' %} class="hint--left" data-hint="{{ client.last_seen|frmttime }}"{% endif %}>{{ value }}</div></span>
     </li>
     {% endfor %}
