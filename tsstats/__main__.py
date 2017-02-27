@@ -8,6 +8,7 @@ from os.path import abspath, exists
 from tsstats import config
 from tsstats.exceptions import InvalidConfiguration
 from tsstats.log import parse_logs
+from tsstats.logger import file_handler, stream_handler
 from tsstats.template import render_servers
 from tsstats.utils import transform_pretty_identmap
 
@@ -67,8 +68,12 @@ def cli():
 
 
 def main(configuration):
+    # setup logging
     if configuration.getboolean('General', 'debug'):
         logger.setLevel(logging.DEBUG)
+    # attach handlers
+    logger.addHandler(file_handler)
+    logger.addHandler(stream_handler)
 
     idmap = configuration.get('General', 'idmap')
     if idmap:
