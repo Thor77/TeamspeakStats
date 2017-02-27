@@ -8,3 +8,4 @@ exclude_lines =
 omit =
   tsstats/tests/*
   tsstats/__main__.py
+  tsstats/logger.py
