@@ -35,7 +35,8 @@ def test_debug(output):
     logger.setLevel(logging.INFO)
     soup = BeautifulSoup(open(output_path), 'html.parser')
     # check debug-label presence
-    assert soup.find('nav').find(id='main-nav').find('span').text == 'debug mode'
+    debug_element = soup.find('nav').find('div', id='main-nav').find('span')
+    assert debug_element.text == 'debug mode'
     for client_item in soup.find('ul', id='1.onlinetime').find_all('li'):
         nick = client_item.find('span').text
         # check for right identifier
