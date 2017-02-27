@@ -23,9 +23,10 @@ Parse logs matching `ts3server*.log` in `/var/log/teamspeak3-server` and write o
 # CLI-Usage
 ```
 usage: tsstats [-h] [-c CONFIG] [--idmap IDMAP] [-l LOG] [-o OUTPUT] [-d]
-                   [-nod]
+                   [-ds] [-nod] [-t TEMPLATE] [-dtf DATETIMEFORMAT]
+                   [-otth ONLINETIMETHRESHOLD]
 
-A simple Teamspeak stats-generator - based solely on server-logs
+A simple Teamspeak stats-generator, based solely on server-logs
 
 optional arguments:
   -h, --help            show this help message and exit
@@ -36,6 +37,7 @@ optional arguments:
   -o OUTPUT, --output OUTPUT
                         path to the output-file
   -d, --debug           debug mode
+  -ds, --debugstdout    write debug output to stdout
   -nod, --noonlinedc    don't add connect until now to onlinetime
   -t TEMPLATE, --template TEMPLATE
                         path to custom template
