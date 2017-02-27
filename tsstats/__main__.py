@@ -41,6 +41,10 @@ def cli():
         help='debug mode', action='store_true'
     )
     parser.add_argument(
+        '-ds', '--debugstdout',
+        help='write debug output to stdout', action='store_true'
+    )
+    parser.add_argument(
         '-nod', '--noonlinedc',
         help='don\'t add connect until now to onlinetime',
         action='store_false', dest='onlinedc'
@@ -71,9 +75,12 @@ def main(configuration):
     # setup logging
     if configuration.getboolean('General', 'debug'):
         logger.setLevel(logging.DEBUG)
+    if configuration.getboolean('General', 'debugstdout'):
+        stream_handler.setLevel(logging.DEBUG)
+
     # attach handlers
-    logger.addHandler(file_handler)
     logger.addHandler(stream_handler)
+    logger.addHandler(file_handler)
 
     idmap = configuration.get('General', 'idmap')
     if idmap:

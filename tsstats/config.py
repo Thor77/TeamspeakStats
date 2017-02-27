@@ -13,6 +13,7 @@ logger = logging.getLogger('tsstats')
 DEFAULT_CONFIG = {
     'General': {
         'debug': False,
+        'debugstdout': False,
         'log': '',
         'output': 'tsstats.html',
         'idmap': '',
