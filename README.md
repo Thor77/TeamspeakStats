@@ -56,6 +56,7 @@ optional arguments:
 | output | Path to the location, where the generator will put the generated `.html`-file |
 | idmap | Path to [IdentMap](http://teamspeakstats.readthedocs.io/en/latest/identmap.html) |
 | debug | debug mode |
+| debugstdout | write debug output (only) to stdout |
 | onlinedc | Add timedelta from last-connect until now to onlinetime for connected clients |
 | template | Path to a custom template file (relative from `tsstats/` or absolute) |
 | datetimeformat | Format of date/time-values used for render-timestamp and last online (using [datetime.strftime](https://docs.python.org/3/library/datetime.html#strftime-strptime-behavior)) |
