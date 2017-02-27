@@ -77,10 +77,11 @@ def main(configuration):
         logger.setLevel(logging.DEBUG)
     if configuration.getboolean('General', 'debugstdout'):
         stream_handler.setLevel(logging.DEBUG)
+    else:
+        logger.addHandler(file_handler)
 
     # attach handlers
     logger.addHandler(stream_handler)
-    logger.addHandler(file_handler)
 
     idmap = configuration.get('General', 'idmap')
     if idmap:
