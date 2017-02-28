@@ -30,7 +30,7 @@ The format is flexible enough to support other arbitrary data to assist you in m
 
 The parser will ignore all nodes other than the "primary_id" and "alternate_ids" nodes, allowing you to use them for whatever you want.
 
-The original IdentMap format is still supported:
+The original IdentMap format is still supported::
 
   {
     '2': '1',
