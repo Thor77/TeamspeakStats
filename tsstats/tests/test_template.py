@@ -45,22 +45,25 @@ def test_debug(output):
 
 
 def test_onlinetime(soup):
-    # move this into a (parameterized) fixture or function
     items = soup.find('ul', id='1.onlinetime').find_all('li')
-    nick_data = {}
-    for item in items:
-        nick, data = item.find_all('span')
-        nick_data[nick.text] = data.text
-    # seperate between uuid and id-clients or merge them some way
-    # => assert len(items) == len(clients.id)
     assert len(items) == 2
-    for client in clients:
-        if client.nick in nick_data and client.onlinetime > timedelta(0):
-            # remove this clause after splitting cients
-            # (uuid-clients will never have a online-time, because
-            #  they're only used for bans and kicks)
-            assert nick_data[client.nick] == \
-                seconds_to_text(int(client.onlinetime.total_seconds()))
+    for item in items:
+        nick, onlinetime = item.find_all('span')
+        nick = nick.text
+        onlinetime = onlinetime.text
+        # find corresponding client-object
+        client = filter(
+            lambda c: c.nick == nick and c.onlinetime > timedelta(0),
+            clients
+        )
+        # assert existence
+        assert client
+        client = client[0]
+        # compare onlinetimes
+        client_onlinetime_text = seconds_to_text(
+            int(client.onlinetime.total_seconds())
+        )
+        assert onlinetime == client_onlinetime_text
 
 
 def test_filter_threshold():
