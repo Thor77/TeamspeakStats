@@ -52,10 +52,10 @@ def test_onlinetime(soup):
         nick = nick.text
         onlinetime = onlinetime.text
         # find corresponding client-object
-        client = filter(
+        client = list(filter(
             lambda c: c.nick == nick and c.onlinetime > timedelta(0),
             clients
-        )
+        ))
         # assert existence
         assert client
         client = client[0]
