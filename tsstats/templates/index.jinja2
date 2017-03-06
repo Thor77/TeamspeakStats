@@ -61,21 +61,22 @@
 </div>
 
 <script type="text/javascript">
-  document.addEventListener('click', function(event) {
-    var toggler = event.target;
-    if (toggler.dataset.toggle !== 'collapse') {
-      return;
-    }
-    var toggleTarget = document.getElementById(toggler.dataset.target);
-
-    if (toggleTarget.classList.contains('collapse')) {
-      toggleTarget.classList.remove('collapse');
-      toggler.setAttribute('aria-expanded', false);
-    } else {
-      toggleTarget.classList.add('collapse');
-      toggler.setAttribute('aria-expanded', true);
-    }
-  });
+  (function() {
+    var collapseTogglers = document.querySelectorAll('[data-toggle="collapse"]');
+    var toggleTarget;
+    Array.prototype.forEach.call(collapseTogglers, function(toggler) {
+      toggler.addEventListener('click', function(event) {
+        toggleTarget = document.getElementById(toggler.dataset.target);
+        if (toggler.getAttribute('aria-expanded') === 'true') {
+          toggleTarget.classList.add('collapse');
+          toggler.setAttribute('aria-expanded', false);
+        } else {
+          toggleTarget.classList.remove('collapse');
+          toggler.setAttribute('aria-expanded', true);
+        }
+      });
+    });
+  })();
 </script>
 </body>
 </html>
