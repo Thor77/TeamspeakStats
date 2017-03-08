@@ -21,7 +21,8 @@ To start, you can just use cli-arguments to control the behaviour of TeamspeakSt
     -c CONFIG, --config CONFIG
                           path to config
     --idmap IDMAP         path to id_map
-    -l LOG, --log LOG     path to your logfile(s)
+    -l LOG, --log LOG     path to your logfile(s). pass a directory to use all
+                          logfiles inside it
     -o OUTPUT, --output OUTPUT
                           path to the output-file
     -d, --debug           debug mode

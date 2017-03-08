@@ -3,7 +3,7 @@
 import argparse
 import json
 import logging
-from os.path import abspath, exists
+from os.path import abspath, exists, isdir, join as pathjoin
 
 from tsstats import config
 from tsstats.exceptions import InvalidConfiguration
@@ -30,7 +30,7 @@ def cli():
     )
     parser.add_argument(
         '-l', '--log',
-        type=str, help='path to your logfile(s)'
+        type=str, help='path to your logfile(s). pass a directory to use all logfiles inside it'
     )
     parser.add_argument(
         '-o', '--output',
@@ -98,6 +98,8 @@ def main(configuration):
     log = configuration.get('General', 'log')
     if not log:
         raise InvalidConfiguration('log or output missing')
+    if isdir(log):
+        log = pathjoin(log, '*.log')
 
     servers = parse_logs(
         log, ident_map=identmap,
