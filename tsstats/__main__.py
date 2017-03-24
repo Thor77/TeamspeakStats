@@ -3,7 +3,9 @@
 import argparse
 import json
 import logging
-from os.path import abspath, exists, isdir, join as pathjoin
+from os.path import join as pathjoin
+from os.path import abspath, exists, isdir
+from time import time
 
 from tsstats import config
 from tsstats.exceptions import InvalidConfiguration
@@ -72,6 +74,7 @@ def cli():
 
 
 def main(configuration):
+    start_time = time()
     # setup logging
     if configuration.getboolean('General', 'debug'):
         logger.setLevel(logging.DEBUG)
@@ -113,6 +116,7 @@ def main(configuration):
         onlinetime_threshold=int(configuration.get(
             'General', 'onlinetimethreshold'))
     )
+    logger.info('Finished after %s seconds', time() - start_time)
 
 
 if __name__ == '__main__':
