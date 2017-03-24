@@ -32,7 +32,8 @@ def cli():
     )
     parser.add_argument(
         '-l', '--log',
-        type=str, help='path to your logfile(s). pass a directory to use all logfiles inside it'
+        type=str, help='path to your logfile(s). '
+        'pass a directory to use all logfiles inside it'
     )
     parser.add_argument(
         '-o', '--output',
