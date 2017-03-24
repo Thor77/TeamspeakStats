@@ -7,9 +7,10 @@ from collections import namedtuple
 from datetime import datetime
 from glob import glob
 from os.path import basename
+from time import time
 
-from tsstats.utils import tz_aware_datime
 from tsstats.client import Client, Clients
+from tsstats.utils import tz_aware_datime
 
 re_log_filename = re.compile(r'ts3server_(?P<date>\d{4}-\d\d-\d\d)'
                              '__(?P<time>\d\d_\d\d_\d\d.\d+)_(?P<sid>\d).log')
@@ -123,6 +124,7 @@ def _parse_details(log_path, ident_map=None, clients=None, online_dc=True):
     :return: parsed clients
     :rtype: tsstats.client.Clients
     '''
+    start_time = time()
     if clients is None:
         clients = Clients(ident_map)
     log_file = open(log_path, encoding='utf-8')
@@ -177,5 +179,8 @@ def _parse_details(log_path, ident_map=None, clients=None, online_dc=True):
             client.disconnect(tz_aware_datime(datetime.utcnow()))
             client.connected += 1
         [_reconnect(client) for client in clients if client.connected]
-    logger.debug('Finished parsing of %s', log_file.name)
+    logger.debug(
+        'Finished parsing of %s in %s seconds',
+        log_file.name, time() - start_time
+    )
     return clients
