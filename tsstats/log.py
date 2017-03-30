@@ -145,7 +145,9 @@ def _parse_details(log_path, ident_map=None, clients=None, online_dc=True):
                 logger.debug('Not supported client action: "%s"', message)
                 continue
             nick, clid = match.group('nick'), match.group('clid')
-            client = clients.setdefault(clid, Client(clid, nick))
+            client = clients.setdefault(
+                clid, Client(clients.ident_map.get(clid, clid), nick)
+            )
             # set current nick
             client.nick = nick
             # add nick to history
