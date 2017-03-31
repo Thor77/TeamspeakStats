@@ -94,7 +94,7 @@ def _bundle_logs(logs):
                            key=lambda tl: tl.timestamp)
             else:
                 # if not exists, just create a list
-                vserver_logfiles[match['sid']] = [tl]
+                vserver_logfiles[sid] = [tl]
         else:
             # fallback to plain sorting
             vserver_logfiles.setdefault('', [])\
