@@ -1,14 +1,14 @@
 API
-***
+===
 
 Log
-===
+---
 
 .. automodule:: tsstats.log
   :members:
 
 Client
-======
+------
 .. autoclass:: tsstats.client.Client
   :members:
 
@@ -21,24 +21,24 @@ Client
   .. automethod:: tsstats.client.Clients.__iter__
 
 Template
-========
+--------
 
 .. automodule:: tsstats.template
   :members:
 
 Config
-======
+------
 
 .. automodule:: tsstats.config
   :members:
 
 Exceptions
-==========
+----------
 .. automodule:: tsstats.exceptions
   :members:
 
 Utils
-=====
+-----
 
 .. automodule:: tsstats.utils
   :members:
