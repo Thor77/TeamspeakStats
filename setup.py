@@ -6,6 +6,7 @@ setup(
     author='Thor77',
     author_email='thor77@thor77.org',
     description='A simple Teamspeak stats-generator',
+    long_description=open('README.rst').read(),
     keywords='ts3 teamspeak teamspeak3 tsstats teamspeakstats',
     url='https://github.com/Thor77/TeamspeakStats',
     packages=['tsstats'],
