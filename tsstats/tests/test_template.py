@@ -1,6 +1,5 @@
 import logging
 from datetime import timedelta
-from os import remove
 
 import pytest
 from bs4 import BeautifulSoup
@@ -9,7 +8,6 @@ from tsstats.log import Server, _parse_details
 from tsstats.template import render_servers
 from tsstats.utils import filter_threshold, seconds_to_text, sort_clients
 
-output_path = 'tsstats/tests/res/output.html'
 clients = _parse_details('tsstats/tests/res/test.log', online_dc=False)
 servers = [Server(1, clients)]
 
@@ -17,23 +15,16 @@ logger = logging.getLogger('tsstats')
 
 
 @pytest.fixture
-def output(request):
-    def clean():
-        remove(output_path)
-    request.addfinalizer(clean)
-
-
-@pytest.fixture
 def soup(output):
-    render_servers(servers, output_path)
-    return BeautifulSoup(open(output_path), 'html.parser')
+    render_servers(servers, output)
+    return BeautifulSoup(open(output), 'html.parser')
 
 
 def test_debug(output):
     logger.setLevel(logging.DEBUG)
-    render_servers(servers, output_path)
+    render_servers(servers, output)
     logger.setLevel(logging.INFO)
-    soup = BeautifulSoup(open(output_path), 'html.parser')
+    soup = BeautifulSoup(open(output), 'html.parser')
     # check debug-label presence
     assert soup.find_all(style='color: red; padding-right: 10px;')
     for client_item in soup.find('ul', id='1.onlinetime').find_all('li'):

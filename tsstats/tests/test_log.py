@@ -1,5 +1,4 @@
 from datetime import datetime, timedelta
-from os import remove
 from time import sleep
 
 import pytest
@@ -7,7 +6,6 @@ import pytest
 from tsstats.exceptions import InvalidLog
 from tsstats.log import TimedLog, _bundle_logs, _parse_details, parse_logs
 from tsstats.template import render_servers
-from tsstats.tests.test_template import output_path
 
 testlog_path = 'tsstats/tests/res/test.log'
 
@@ -92,10 +90,9 @@ def test_parse_groups():
     assert len(clients) == 0
 
 
-def test_parse_utf8():
+def test_parse_utf8(output):
     servers = parse_logs(testlog_path + '.utf8')
-    render_servers(servers, output_path)
-    remove(output_path)
+    render_servers(servers, output)
 
 
 def test_server_stop():
