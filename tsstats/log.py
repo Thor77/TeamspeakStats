@@ -185,4 +185,5 @@ def _parse_details(log_path, ident_map=None, clients=None, online_dc=True):
         'Finished parsing of %s in %s seconds',
         log_file.name, time() - start_time
     )
+    log_file.close()
     return clients
