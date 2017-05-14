@@ -32,7 +32,8 @@ class Clients(MutableMapping):
         :param client: Client to add to the collection
         :type id_or_uid: Client
         '''
-        self.store[client.identifier] = client
+        identifier = client.identifier
+        self.store[self.ident_map.get(identifier, identifier)] = client
         return self
 
     def __iter__(self):
