@@ -132,4 +132,4 @@ class Client(object):
         self.bans += 1
 
     def __str__(self):
-        return u'<{},{}>'.format(self.identifier, self.nick)
+        return u'<{}, {}>'.format(self.identifier, self.nick)

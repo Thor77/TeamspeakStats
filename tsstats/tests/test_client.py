@@ -30,10 +30,10 @@ def test_client_get(clients):
 
 def test_client_repr(clients):
     clients, _, _, _, _ = clients
-    assert str(clients['1']) == '<1,None>'
-    assert str(clients['2']) == '<2,None>'
-    assert str(clients['UID1']) == '<UID1,None>'
-    assert str(clients['UID2']) == '<UID2,None>'
+    assert str(clients['1']) == '<1, None>'
+    assert str(clients['2']) == '<2, None>'
+    assert str(clients['UID1']) == '<UID1, None>'
+    assert str(clients['UID2']) == '<UID2, None>'
 
 
 def test_clients_iter(clients):
