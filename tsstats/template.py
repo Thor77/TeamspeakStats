@@ -2,14 +2,13 @@
 
 import logging
 from collections import namedtuple
-from datetime import datetime
 from os.path import dirname, join
 
+import pendulum
 from jinja2 import ChoiceLoader, Environment, FileSystemLoader, PackageLoader
 
 from tsstats.log import Server
-from tsstats.utils import (filter_threshold, seconds_to_text, sort_clients,
-                           tz_aware_datime)
+from tsstats.utils import filter_threshold, seconds_to_text, sort_clients
 
 logger = logging.getLogger('tsstats')
 
@@ -43,8 +42,7 @@ def prepare_clients(clients, onlinetime_threshold=-1):
         clients, lambda c: c.onlinetime.total_seconds()
     )
     # filter clients not matching threshold
-    onlinetime_ = filter_threshold(onlinetime_,
-                                   onlinetime_threshold)
+    onlinetime_ = filter_threshold(onlinetime_, onlinetime_threshold)
     # convert timespans to text
     onlinetime = [
         (client, seconds_to_text(int(onlinetime)))
@@ -105,6 +103,6 @@ def render_servers(servers, output, title='TeamspeakStats',
     logger.debug('Rendering template %s', template)
     template.stream(title=title, servers=prepared_servers,
                     debug=logger.level <= logging.DEBUG,
-                    creation_time=tz_aware_datime(datetime.utcnow()))\
+                    creation_time=pendulum.utcnow())\
         .dump(output, encoding='utf-8')
     logger.debug('Wrote rendered template to %s', output)
