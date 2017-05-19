@@ -64,6 +64,11 @@ def cli():
         '-otth', '--onlinetimethreshold',
         type=int, help='threshold for displaying onlinetime (in seconds)'
     )
+    parser.add_argument(
+        '-lsa', '--lastseenabsolute',
+        help='render last seen timestamp absolute (instead of relative)',
+        action='store_false', dest='lastseenrelative'
+    )
     options = parser.parse_args()
     if 'config' in options:
         configuration = config.load(options.config)
@@ -115,7 +120,11 @@ def main(configuration):
         template=configuration.get('General', 'template'),
         datetime_fmt=configuration.get('General', 'datetimeformat'),
         onlinetime_threshold=int(configuration.get(
-            'General', 'onlinetimethreshold'))
+            'General', 'onlinetimethreshold'
+        )),
+        lastseen_relative=configuration.getboolean(
+            'General', 'lastseenrelative'
+        )
     )
     logger.info('Finished after %s seconds', time() - start_time)
 

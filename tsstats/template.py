@@ -59,7 +59,7 @@ def prepare_clients(clients, onlinetime_threshold=-1):
 
 def render_servers(servers, output, title='TeamspeakStats',
                    template='index.jinja2', datetime_fmt='%x %X %Z',
-                   onlinetime_threshold=-1):
+                   onlinetime_threshold=-1, lastseen_relative=True):
     '''
     Render `servers`
 
@@ -70,6 +70,7 @@ def render_servers(servers, output, title='TeamspeakStats',
     :param template_path: path to template-file
     :param datetime_fmt: custom datetime-format
     :param onlinetime_threshold: threshold for clients onlinetime
+    :param lastseen_relative: render last seen timestamp relative
 
 
     :type servers: [tsstats.log.Server]
@@ -79,6 +80,7 @@ def render_servers(servers, output, title='TeamspeakStats',
     :type template_path: str
     :type datetime_fmt: str
     :type onlinetime_threshold: int
+    :type lastseen_relative: bool
     '''
     # preparse servers
     prepared_servers = [
@@ -98,7 +100,14 @@ def render_servers(servers, output, title='TeamspeakStats',
         formatted = timestamp.strftime(datetime_fmt)
         logger.debug('Formatting timestamp %s -> %s', timestamp, formatted)
         return formatted
+
+    def lastseen(timestamp):
+        if lastseen_relative:
+            return timestamp.diff_for_humans()
+        else:
+            return frmttime(timestamp)
     template_env.filters['frmttime'] = frmttime
+    template_env.filters['lastseen'] = lastseen
     template = template_env.get_template(template)
     logger.debug('Rendering template %s', template)
     template.stream(title=title, servers=prepared_servers,
