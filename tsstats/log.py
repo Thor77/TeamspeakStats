@@ -4,13 +4,13 @@ import logging
 import re
 from codecs import open
 from collections import namedtuple
-from datetime import datetime
 from glob import glob
 from os.path import basename
 from time import time
 
+import pendulum
+
 from tsstats.client import Client, Clients
-from tsstats.utils import tz_aware_datime
 
 re_log_filename = re.compile(r'ts3server_(?P<date>\d{4}-\d\d-\d\d)'
                              '__(?P<time>\d\d_\d\d_\d\d.\d+)_(?P<sid>\d).log')
@@ -22,8 +22,6 @@ re_dis_connect = re.compile(
 re_disconnect_invoker = re.compile(
     r'invokername=(.*)\ invokeruid=(.*)\ reasonmsg'
 )
-
-log_timestamp_format = '%Y-%m-%d %H:%M:%S.%f'
 
 TimedLog = namedtuple('TimedLog', ['path', 'timestamp'])
 Server = namedtuple('Server', ['sid', 'clients'])
@@ -81,9 +79,9 @@ def _bundle_logs(logs):
         match = re_log_filename.match(basename(log))
         if match:
             match = match.groupdict()
-            timestamp = datetime.strptime('{0} {1}'.format(
-                match['date'], match['time'].replace('_', ':')),
-                log_timestamp_format)
+            timestamp = pendulum.parse('{0} {1}'.format(
+                match['date'], match['time'].replace('_', ':'))
+            )
             tl = TimedLog(log, timestamp)
             sid = match['sid']
             if sid in vserver_logfiles:
@@ -136,8 +134,7 @@ def _parse_details(log_path, ident_map=None, clients=None, online_dc=True):
             logger.debug('No match: "%s"', line)
             continue
         match = match.groupdict()
-        logdatetime = tz_aware_datime(datetime.strptime(match['timestamp'],
-                                      log_timestamp_format))
+        logdatetime = pendulum.parse(match['timestamp'])
         message = match['message']
         if message.startswith('client'):
             match = re_dis_connect.match(message)
@@ -178,7 +175,7 @@ def _parse_details(log_path, ident_map=None, clients=None, online_dc=True):
             ]
     if online_dc:
         def _reconnect(client):
-            client.disconnect(tz_aware_datime(datetime.utcnow()))
+            client.disconnect(pendulum.now())
             client.connected += 1
         [_reconnect(client) for client in clients if client.connected]
     logger.debug(

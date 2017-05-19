@@ -1,6 +1,6 @@
 import logging
-from datetime import timedelta
 
+import pendulum
 import pytest
 from bs4 import BeautifulSoup
 
@@ -44,7 +44,7 @@ def test_onlinetime(soup):
         onlinetime = onlinetime.text
         # find corresponding client-object
         client = list(filter(
-            lambda c: c.nick == nick and c.onlinetime > timedelta(0),
+            lambda c: c.nick == nick and c.onlinetime > pendulum.Interval(),
             clients
         ))
         # assert existence

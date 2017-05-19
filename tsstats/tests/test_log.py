@@ -1,6 +1,4 @@
-from datetime import datetime, timedelta
-from time import sleep
-
+import pendulum
 import pytest
 
 from tsstats.exceptions import InvalidLog
@@ -20,8 +18,10 @@ def test_log_client_count(clients):
 
 
 def test_log_onlinetime(clients):
-    assert clients['1'].onlinetime == timedelta(0, 402, 149208)
-    assert clients['2'].onlinetime == timedelta(0, 19, 759644)
+    assert clients['1'].onlinetime == pendulum.Interval(
+        seconds=402, microseconds=149208)
+    assert clients['2'].onlinetime == pendulum.Interval(
+        seconds=19, microseconds=759644)
 
 
 def test_log_kicks(clients):
@@ -52,12 +52,20 @@ def test_log_pbans(clients):
         ],
         {
             '1': [
-                TimedLog('ts3server_2016-06-06__14_22_09.527229_1.log',
-                         datetime(year=2016, month=6, day=6, hour=14,
-                                  minute=22, second=9, microsecond=527229)),
-                TimedLog('ts3server_2017-07-07__15_23_10.638340_1.log',
-                         datetime(year=2017, month=7, day=7, hour=15,
-                                  minute=23, second=10, microsecond=638340))
+                TimedLog(
+                    'ts3server_2016-06-06__14_22_09.527229_1.log',
+                    pendulum.create(
+                        year=2016, month=6, day=6, hour=14, minute=22,
+                        second=9, microsecond=527229
+                    )
+                ),
+                TimedLog(
+                    'ts3server_2017-07-07__15_23_10.638340_1.log',
+                    pendulum.create(
+                        year=2017, month=7, day=7, hour=15, minute=23,
+                        second=10, microsecond=638340
+                    )
+                )
             ]
         }
     )
@@ -71,11 +79,14 @@ def test_log_invalid():
         _parse_details('tsstats/tests/res/test.log.broken')
 
 
-@pytest.mark.slowtest
 def test_log_client_online():
+    current_time = pendulum.now()
+
+    pendulum.set_test_now(current_time)
     clients = _parse_details(testlog_path)
     old_onlinetime = int(clients['1'].onlinetime.total_seconds())
-    sleep(2)
+
+    pendulum.set_test_now(current_time.add(seconds=2))  # add 2s to .now()
     clients = _parse_details(testlog_path)
     assert int(clients['1'].onlinetime.total_seconds()) == old_onlinetime + 2
 
