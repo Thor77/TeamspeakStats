@@ -1,7 +1,4 @@
 # -*- coding: utf-8 -*-
-import datetime
-
-
 def sort_clients(clients, key_l):
     '''
     sort `clients` by `key`
@@ -50,34 +47,6 @@ def filter_threshold(clients, threshold):
     :rtype: list
     '''
     return list(filter(lambda c: c[1] > threshold, clients))
-
-
-class UTC(datetime.tzinfo):
-    '''
-    Reimplementation of `timezone.utc` for Python2-Compatibility
-    '''
-
-    def utcoffset(self, dt):
-        return datetime.timedelta(0)
-
-    def dst(self, dt):
-        return datetime.timedelta(0)
-
-    def tzname(self, dt):
-        return 'UTC'
-
-
-def tz_aware_datime(datetime, timezone=UTC()):
-    '''
-    Make `datetime` aware of it's timezone (UTC by default)
-
-    :param datetime: Target datetime
-    :param timezone: Target timezone
-
-    :type datetime: datetime.datetime
-    :type timezone: datetime.timezone
-    '''
-    return datetime.replace(tzinfo=timezone)
 
 
 def transform_pretty_identmap(pretty_identmap):
