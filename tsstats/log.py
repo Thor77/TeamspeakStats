@@ -23,8 +23,6 @@ re_disconnect_invoker = re.compile(
     r'invokername=(.*)\ invokeruid=(.*)\ reasonmsg'
 )
 
-log_timestamp_format = '%Y-%m-%d %H:%M:%S.%f'
-
 TimedLog = namedtuple('TimedLog', ['path', 'timestamp'])
 Server = namedtuple('Server', ['sid', 'clients'])
 
