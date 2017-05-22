@@ -1,6 +1,6 @@
 from datetime import datetime, timedelta
-from time import sleep
 
+import pendulum
 import pytest
 
 from tsstats.exceptions import InvalidLog
@@ -71,11 +71,14 @@ def test_log_invalid():
         _parse_details('tsstats/tests/res/test.log.broken')
 
 
-@pytest.mark.slowtest
 def test_log_client_online():
+    current_time = pendulum.now()
+
+    pendulum.set_test_now(current_time)
     clients = _parse_details(testlog_path)
     old_onlinetime = int(clients['1'].onlinetime.total_seconds())
-    sleep(2)
+
+    pendulum.set_test_now(current_time.add(seconds=2))  # add 2s to .now()
     clients = _parse_details(testlog_path)
     assert int(clients['1'].onlinetime.total_seconds()) == old_onlinetime + 2
 
