@@ -1,9 +1,9 @@
 import logging
-from datetime import timedelta
 
+import pendulum
 import pytest
-from bs4 import BeautifulSoup
 
+from bs4 import BeautifulSoup
 from tsstats.log import Server, _parse_details
 from tsstats.template import render_servers
 from tsstats.utils import filter_threshold, seconds_to_text, sort_clients
@@ -44,7 +44,7 @@ def test_onlinetime(soup):
         onlinetime = onlinetime.text
         # find corresponding client-object
         client = list(filter(
-            lambda c: c.nick == nick and c.onlinetime > timedelta(0),
+            lambda c: c.nick == nick and c.onlinetime > pendulum.Interval(),
             clients
         ))
         # assert existence
