@@ -13,8 +13,8 @@ matrix:
         - pip install flake8
         - pip install isort
       script:
-        - flake8 tsstats/**/*.py
-        - isort -c tsstats/**/*.py
+        - flake8 tsstats
+        - isort -c -rc tsstats
 
 install:
   - pip install -r requirements.txt
