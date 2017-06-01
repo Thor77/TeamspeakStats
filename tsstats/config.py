@@ -20,7 +20,8 @@ DEFAULT_CONFIG = {
         'onlinedc': True,
         'template': 'index.jinja2',
         'datetimeformat': '%x %X %Z',
-        'onlinetimethreshold': -1
+        'onlinetimethreshold': -1,
+        'lastseenrelative': True
     }
 }
 

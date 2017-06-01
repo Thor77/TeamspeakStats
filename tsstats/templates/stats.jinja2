@@ -14,7 +14,7 @@
     {% set id = [headline_id, client.nick|striptags]|join('.') %}
     <li id="{{ id }}" class="list-group-item{{ ' list-group-item-success' if client.connected else loop.cycle('" style="background-color: #eee;', '') }}">
       <span class="hint--right hint--medium--xs" data-hint="{{ client.nick_history|join(', ') }}"><a href="#{{ id }}">{{ client.nick }}{{ " (" + client.identifier + ")" if debug }}</a></span>
-      <span class="badge"><div{% if not client.connected and headline == 'Onlinetime' %} class="hint--left" data-hint="{{ client.last_seen.diff_for_humans() }}"{% endif %}>{{ value }}</div></span>
+      <span class="badge"><div{% if not client.connected and headline == 'Onlinetime' %} class="hint--left" data-hint="{{ client.last_seen|lastseen }}"{% endif %}>{{ value }}</div></span>
     </li>
     {% endfor %}
   </ul>
