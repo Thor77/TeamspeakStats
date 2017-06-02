@@ -8,9 +8,8 @@ from os.path import dirname, join
 from jinja2 import ChoiceLoader, Environment, FileSystemLoader, PackageLoader
 
 from tsstats.log import Server
-from tsstats.utils import (
-    filter_threshold, seconds_to_text, sort_clients, tz_aware_datime
-)
+from tsstats.utils import (filter_threshold, seconds_to_text, sort_clients,
+                           tz_aware_datime)
 
 logger = logging.getLogger('tsstats')
 
