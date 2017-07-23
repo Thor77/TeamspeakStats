@@ -52,6 +52,9 @@ class Clients(MutableMapping):
     def __setitem__(self, key, value):
         self.store[self.ident_map.get(key, key)] = value
 
+    def __str__(self):
+        return str(list(map(str, self)))
+
 
 class Client(object):
     '''
