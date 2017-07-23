@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-
+# TODO: Implement action for set_nick event
 import datetime
 import logging
 from collections import MutableMapping
@@ -22,6 +22,28 @@ class Clients(MutableMapping):
 
         self.store = dict()
         self.update(dict(*args, **kwargs))
+
+    def apply_events(self, events):
+        '''
+        Apply events to this Client-collection
+
+        :param events: list of events to apply
+        :type events: list
+        '''
+        for event in events:
+            # find corresponding client
+            client = self.setdefault(
+                event.identifier, Client(event.identifier)
+            )
+            if event.action == 'set_nick':
+                # omit, not implemented, nick action for now
+                continue
+            if event.arg_is_client:
+                # if arg is client, replace identifier with Client-obj
+                event = event._replace(
+                    arg=self.setdefault(event.arg, Client(event.arg))
+                )
+            client.__getattribute__(event.action)(event.arg)
 
     def __add__(self, client):
         '''
