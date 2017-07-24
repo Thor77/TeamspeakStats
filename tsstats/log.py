@@ -110,7 +110,7 @@ def _parse_line(line):
                     parsed_events.append(
                         events.kick(logdatetime, invokeruid, clid)
                     )
-        return parsed_events
+    return parsed_events
 
 
 def parse_logs(log_glob, ident_map=None, online_dc=True, *args, **kwargs):
