@@ -131,5 +131,6 @@ def parse_logs(log_glob, ident_map=None, online_dc=True, *args, **kwargs):
                 events = filter(None, map(_parse_line, f))
                 # chain apply events to Client-obj
                 clients.apply_events(itertools.chain.from_iterable(events))
-        # assemble Server-obj and yield
-        yield Server(virtualserver_id, clients)
+        if len(clients) >= 1:
+            # assemble Server-obj and yield
+            yield Server(virtualserver_id, clients)
