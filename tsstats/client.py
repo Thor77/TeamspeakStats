@@ -92,7 +92,7 @@ class Client(object):
         '''
         # public
         self.identifier = identifier
-        self.nick = nick
+        self._nick = nick
         self.nick_history = set()
         self.connected = 0
         self.onlinetime = datetime.timedelta()
@@ -103,6 +103,18 @@ class Client(object):
         self.last_seen = None
         # private
         self._last_connect = 0
+
+    @property
+    def nick(self):
+        return self._nick
+
+    @nick.setter
+    def nick(self, new_nick):
+        if self._nick and new_nick != self._nick:
+            # add old nick to history
+            self.nick_history.add(self._nick)
+        # set new nick
+        self._nick = new_nick
 
     def connect(self, timestamp):
         '''
