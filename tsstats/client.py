@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-# TODO: Implement action for set_nick event
 import datetime
 import logging
 from collections import MutableMapping
@@ -36,7 +35,7 @@ class Clients(MutableMapping):
                 event.identifier, Client(event.identifier)
             )
             if event.action == 'set_nick':
-                # omit, not implemented, nick action for now
+                client.nick = event.arg
                 continue
             if event.arg_is_client:
                 # if arg is client, replace identifier with Client-obj
