@@ -126,6 +126,7 @@ def parse_logs(log_glob, ident_map=None, online_dc=True, *args, **kwargs):
         clients = Clients(ident_map)
         for index, log in enumerate(logs):
             with open(log.path, encoding='utf-8') as f:
+                logger.debug('Started parsing of %s', f.name)
                 # parse logfile line by line and filter lines without events
                 events = filter(None, map(_parse_line, f))
                 # chain apply events to Client-obj
@@ -143,6 +144,8 @@ def parse_logs(log_glob, ident_map=None, online_dc=True, *args, **kwargs):
                     for online_client in online_clients:
                         online_client.disconnect(pendulum.utcnow())
                         online_client.connected += 1
+
+                logger.debug('Finished parsing of %s', f.name)
         if len(clients) >= 1:
             # assemble Server-obj and yield
             yield Server(virtualserver_id, clients)
