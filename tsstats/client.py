@@ -167,3 +167,6 @@ class Client(object):
 
     def __str__(self):
         return u'<{}, {}>'.format(self.identifier, self.nick)
+
+    def __repr__(self):
+        return self.__str__()
