@@ -121,6 +121,9 @@ def parse_logs(log_glob, ident_map=None, online_dc=True, *args, **kwargs):
 
     :type log_glob: str
     :type ident_map: dict
+
+    :return: list of servers
+    :rtype: [tsstats.log.Server]
     '''
     for virtualserver_id, logs in _bundle_logs(glob(log_glob)).items():
         clients = Clients(ident_map)
