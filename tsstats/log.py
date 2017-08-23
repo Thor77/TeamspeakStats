@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-# TODO: Implemented online_dc again
 import itertools
 import logging
 import re
@@ -125,17 +124,25 @@ def parse_logs(log_glob, ident_map=None, online_dc=True, *args, **kwargs):
     '''
     for virtualserver_id, logs in _bundle_logs(glob(log_glob)).items():
         clients = Clients(ident_map)
-        for log in logs:
+        for index, log in enumerate(logs):
             with open(log.path, encoding='utf-8') as f:
                 # parse logfile line by line and filter lines without events
                 events = filter(None, map(_parse_line, f))
                 # chain apply events to Client-obj
                 clients.apply_events(itertools.chain.from_iterable(events))
-                # warn for online clients
+
+                # find connected clients
                 online_clients = list(filter(lambda c: c.connected, clients))
+
                 logger.debug(
-                    'Some clients are still connected: %s' % online_clients
+                    'Some clients are still connected: %s', online_clients
                 )
+                if index == len(logs) - 1 and online_dc:
+                    logger.debug('Last log => disconnecting online clients')
+                    # last iteration => disconnect online clients if desired
+                    for online_client in online_clients:
+                        online_client.disconnect(pendulum.utcnow())
+                        online_client.connected += 1
         if len(clients) >= 1:
             # assemble Server-obj and yield
             yield Server(virtualserver_id, clients)
