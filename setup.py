@@ -19,6 +19,7 @@ setup(
         'tsstats': ['templates/*.jinja2']
     },
     install_requires=[
-        'Jinja2>=2.8'
+        'Jinja2>=2.8',
+        'pendulum==1.2.4'
     ],
 )
