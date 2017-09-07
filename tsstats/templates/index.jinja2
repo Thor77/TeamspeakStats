@@ -27,17 +27,14 @@
   </style>
 </head>
 <body>
-<nav class="navbar navbar-toggleable-md navbar-light bg-faded sticky-top">
-  <div class="d-flex justify-content-between hidden-lg-up">
-    <a href="" class="navbar-brand">{{ title }}</a>
-    <button class="navbar-toggler hidden-lg-up" type="button" data-toggle="collapse" data-target="main-nav" aria-controls="main-nav" aria-expanded="false" aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
-    </button>
-  </div>
+<nav class="navbar navbar-expand-md navbar-light bg-light sticky-top">
+  <a href="" class="navbar-brand">{{ title }}</a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="main-nav" aria-controls="main-nav" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
 
   <div id="main-nav" class="collapse navbar-collapse">
     <ul class="navbar-nav mr-auto">
-      <li class="hidden-md-down"><a href="" class="navbar-brand">{{ title }}</a></li>
       {% for sid, _ in servers %}
         <li class="nav-item">
           <a class="nav-link" href="#sid{{ sid }}">Server {{ sid }}</a>
