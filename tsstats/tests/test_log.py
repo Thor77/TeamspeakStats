@@ -1,7 +1,6 @@
 import pendulum
 import pytest
 
-from tsstats.exceptions import InvalidLog
 from tsstats.log import TimedLog, _bundle_logs, _parse_details, parse_logs
 from tsstats.template import render_servers
 
@@ -72,11 +71,6 @@ def test_log_pbans(clients):
 ])
 def test_log_bundle(logs, bundled):
     assert _bundle_logs(logs) == bundled
-
-
-def test_log_invalid():
-    with pytest.raises(InvalidLog):
-        _parse_details('tsstats/tests/res/test.log.broken')
 
 
 def test_log_client_online():

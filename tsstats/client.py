@@ -4,8 +4,6 @@ import datetime
 import logging
 from collections import MutableMapping
 
-from tsstats.exceptions import InvalidLog
-
 logger = logging.getLogger('tsstats')
 
 
@@ -102,7 +100,7 @@ class Client(object):
         logger.debug('[%s] DISCONNECT %s', timestamp, self)
         if not self.connected:
             logger.debug('^ disconnect before connect')
-            raise InvalidLog('disconnect before connect!')
+            return
         self.connected -= 1
         session_time = timestamp - self._last_connect
         logger.debug('Session lasted %s', session_time)
