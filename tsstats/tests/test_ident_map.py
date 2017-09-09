@@ -1,7 +1,7 @@
 import pytest
 
 from tsstats.client import Client, Clients
-from tsstats.log import _parse_details
+from tsstats.log import parse_logs
 from tsstats.utils import transform_pretty_identmap
 
 
@@ -55,12 +55,12 @@ def test_transform_pretty_identmap(test_input, expected):
 
 
 def test_ident_map_wrong_identifier():
-    clients = _parse_details(
+    clients = list(parse_logs(
         'tsstats/tests/res/test.log.identmap_wrong_identifier', ident_map={
             '2': '1',
             '3': '1'
         }
-    )
+    ))[0].clients
     client = clients.get('1')
     # assert client exists
     assert client
