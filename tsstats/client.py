@@ -32,7 +32,8 @@ class Clients(MutableMapping):
         for event in events:
             # find corresponding client
             client = self.setdefault(
-                event.identifier, Client(event.identifier)
+                event.identifier,
+                Client(self.ident_map.get(event.identifier, event.identifier))
             )
             if event.action == 'set_nick':
                 client.nick = event.arg
