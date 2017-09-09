@@ -2,14 +2,15 @@ import logging
 
 import pendulum
 import pytest
-from bs4 import BeautifulSoup
 
-from tsstats.log import Server, _parse_details
+from bs4 import BeautifulSoup
+from tsstats.log import parse_logs
 from tsstats.template import render_servers
 from tsstats.utils import filter_threshold, seconds_to_text, sort_clients
 
-clients = _parse_details('tsstats/tests/res/test.log', online_dc=False)
-servers = [Server(1, clients)]
+servers = list(parse_logs('tsstats/tests/res/test.log', online_dc=False))
+servers[0] = servers[0]._replace(sid=1)  # add missing sid to server object
+clients = servers[0].clients
 
 logger = logging.getLogger('tsstats')
 
