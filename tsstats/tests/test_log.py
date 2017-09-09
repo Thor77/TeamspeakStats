@@ -93,9 +93,3 @@ def test_parse_groups():
 def test_parse_utf8(output):
     servers = parse_logs(testlog_path + '.utf8')
     render_servers(servers, output)
-
-
-def test_server_stop():
-    clients = list(parse_logs('tsstats/tests/res/test.log.stopped'))[0].clients
-    assert clients['1'].onlinetime.seconds / 60 == 20  # minutes
-    assert clients['2'].onlinetime.seconds / 60 == 10  # minutes
