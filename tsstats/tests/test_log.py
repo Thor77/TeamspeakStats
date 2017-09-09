@@ -1,7 +1,7 @@
 import pendulum
 import pytest
 
-from tsstats.log import TimedLog, _bundle_logs, _parse_details, parse_logs
+from tsstats.log import TimedLog, _bundle_logs, parse_logs
 from tsstats.template import render_servers
 
 testlog_path = 'tsstats/tests/res/test.log'
@@ -9,7 +9,7 @@ testlog_path = 'tsstats/tests/res/test.log'
 
 @pytest.fixture
 def clients():
-    return _parse_details(testlog_path, online_dc=False)
+    return list(parse_logs(testlog_path, online_dc=False))[0].clients
 
 
 def test_log_client_count(clients):
@@ -77,22 +77,17 @@ def test_log_client_online():
     current_time = pendulum.now()
 
     pendulum.set_test_now(current_time)
-    clients = _parse_details(testlog_path)
+    clients = list(parse_logs(testlog_path))[0].clients
     old_onlinetime = int(clients['1'].onlinetime.total_seconds())
 
     pendulum.set_test_now(current_time.add(seconds=2))  # add 2s to .now()
-    clients = _parse_details(testlog_path)
+    clients = list(parse_logs(testlog_path))[0].clients
     assert int(clients['1'].onlinetime.total_seconds()) == old_onlinetime + 2
 
 
-def test_parse_logs():
-    assert len(_parse_details(testlog_path)) ==\
-        len(parse_logs(testlog_path)[0].clients)
-
-
 def test_parse_groups():
-    clients = _parse_details('tsstats/tests/res/test.log.groups')
-    assert len(clients) == 0
+    server = list(parse_logs('tsstats/tests/res/test.log.groups'))
+    assert len(server) == 0
 
 
 def test_parse_utf8(output):
@@ -101,6 +96,6 @@ def test_parse_utf8(output):
 
 
 def test_server_stop():
-    clients = _parse_details('tsstats/tests/res/test.log.stopped')
+    clients = list(parse_logs('tsstats/tests/res/test.log.stopped'))[0].clients
     assert clients['1'].onlinetime.seconds / 60 == 20  # minutes
     assert clients['2'].onlinetime.seconds / 60 == 10  # minutes
