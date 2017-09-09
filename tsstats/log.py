@@ -112,7 +112,7 @@ def _parse_line(line):
     return parsed_events
 
 
-def parse_logs(log_glob, ident_map=None, online_dc=True, *args, **kwargs):
+def parse_logs(log_glob, ident_map=None, online_dc=True):
     '''
     parse logs from `log_glob`
 
