@@ -35,8 +35,6 @@ def test_client_repr(clients):
     assert str(clients['UID1']) == '<UID1, None>'
     assert str(clients['UID2']) == '<UID2, None>'
     assert repr(clients['1']) == str(clients['1'])
-    assert str(clients) == \
-        "['<1, None>', '<2, None>', '<UID2, None>', '<UID1, None>']"
 
 
 def test_client_nick(clients):
