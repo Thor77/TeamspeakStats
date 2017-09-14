@@ -2,8 +2,8 @@ import logging
 
 import pendulum
 import pytest
-
 from bs4 import BeautifulSoup
+
 from tsstats.log import parse_logs
 from tsstats.template import render_servers
 from tsstats.utils import filter_threshold, seconds_to_text, sort_clients
@@ -64,3 +64,16 @@ def test_filter_threshold():
     assert len(filter_threshold(sorted_clients, -1)) == len(sorted_clients)
     assert len(filter_threshold(sorted_clients, 20)) == 1
     assert len(filter_threshold(sorted_clients, 500)) == 0
+
+
+def test_lastseen_relative(output):
+    render_servers(servers, output, lastseen_relative=True)
+    soup = BeautifulSoup(open(output), 'html.parser')
+    assert soup.find('ul', id='1.onlinetime')\
+        .select('div.hint--left')[0]['data-hint'] == \
+        '2 years ago'
+    render_servers(servers, output, lastseen_relative=False)
+    soup = BeautifulSoup(open(output), 'html.parser')
+    assert soup.find('ul', id='1.onlinetime')\
+        .select('div.hint--left')[0]['data-hint'] == \
+        '05/18/15 15:54:38 GMT'
