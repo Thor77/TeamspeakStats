@@ -1,7 +1,7 @@
 import pendulum
 import pytest
 
-from tsstats.log import TimedLog, _bundle_logs, parse_logs
+from tsstats.log import TimedLog, _bundle_logs, _parse_line, parse_logs
 from tsstats.template import render_servers
 
 testlog_path = 'tsstats/tests/res/test.log'
@@ -93,3 +93,7 @@ def test_parse_groups():
 def test_parse_utf8(output):
     servers = parse_logs(testlog_path + '.utf8')
     render_servers(servers, output)
+
+
+def test_parse_invalid_line():
+    assert _parse_line('INVALID') == []
