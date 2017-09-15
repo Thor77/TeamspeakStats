@@ -1,10 +1,13 @@
 import pendulum
 import pytest
 
+from tsstats import events
 from tsstats.log import TimedLog, _bundle_logs, _parse_line, parse_logs
 from tsstats.template import render_servers
 
 testlog_path = 'tsstats/tests/res/test.log'
+
+static_timestamp = pendulum.Pendulum(2015, 5, 18, 15, 52, 52, 685612)
 
 
 @pytest.fixture
@@ -97,3 +100,44 @@ def test_parse_utf8(output):
 
 def test_parse_invalid_line():
     assert _parse_line('INVALID') == []
+
+
+@pytest.mark.parametrize('line,expected_events', [
+    (
+        "client connected 'Client1'(id:1) from 1.2.3.4:1234",
+        [
+            events.connect(static_timestamp, '1')
+        ]
+    ),
+    (
+        "client disconnected 'Client1'(id:1) reason 'reasonmsg=ByeBye!'",
+        [
+            events.disconnect(static_timestamp, '1')
+        ]
+    ),
+    (
+        "client disconnected 'Client1'(id:1) reason 'invokerid=1"
+        " invokername=Client2 invokeruid=UIDClient2 reasonmsg'",
+        [
+            events.disconnect(static_timestamp, '1'),
+            events.nick(None, 'UIDClient2', 'Client2'),
+            events.kick(None, 'UIDClient2', '1')
+        ]
+    ),
+    (
+        "client disconnected 'Client1'(id:1) reason 'invokerid=2 "
+        "invokername=Client2 invokeruid=UIDClient2 reasonmsg bantime=0'",
+        [
+            events.disconnect(static_timestamp, '1'),
+            events.nick(None, 'UIDClient2', 'Client2'),
+            events.ban(None, 'UIDClient2', '1')
+        ]
+    )
+])
+def test_parse_line(line, expected_events):
+    line = '2015-05-18 15:52:52.685612|INFO    |VirtualServerBase|  3| ' + line
+    expected_events.insert(0, events.nick(None, '1', 'Client1'))
+    expected_events = [
+        event._replace(timestamp=static_timestamp) for event in expected_events
+    ]
+    assert _parse_line(line) == expected_events
