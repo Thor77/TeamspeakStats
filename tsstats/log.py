@@ -31,11 +31,10 @@ logger = logging.getLogger('tsstats')
 
 def _bundle_logs(logs):
     '''
-    bundle `logs` by virtualserver-id
+    Bundle `logs` by virtualserver-id
     and sort by timestamp from filename (if exists)
 
     :param logs: list of paths to logfiles
-
     :type logs: list
 
     :return: `logs` bundled by virtualserver-id and sorted by timestamp
@@ -72,6 +71,15 @@ def _bundle_logs(logs):
 
 
 def _parse_line(line):
+    '''
+    Parse events from a single line
+
+    :param line: line to parse events from
+    :type line: str
+
+    :return: parsed events
+    :rtype list
+    '''
     parsed_events = []
     match = re_log_entry.match(line)
     if not match:
@@ -114,7 +122,7 @@ def _parse_line(line):
 
 def parse_logs(log_glob, ident_map=None, online_dc=True):
     '''
-    parse logs from `log_glob`
+    Parse logs from `log_glob`
 
     :param log_glob: path to server-logs (supports globbing)
     :param ident_map: identmap used for Client-initializations
