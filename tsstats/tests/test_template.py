@@ -2,8 +2,8 @@ import logging
 
 import pendulum
 import pytest
-
 from bs4 import BeautifulSoup
+
 from tsstats.log import parse_logs
 from tsstats.template import render_servers
 from tsstats.utils import filter_threshold, seconds_to_text, sort_clients
