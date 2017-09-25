@@ -13,7 +13,8 @@ def sort_clients(clients, key_l):
     :rtype: list
     '''
     cl_data = [
-        (client, key_l(client)) for client in clients if key_l(client) > 0
+        (client, key_l(client)) for client in clients.values()
+        if key_l(client) > 0
     ]
     return sorted(cl_data, key=lambda data: data[1], reverse=True)
 

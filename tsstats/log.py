@@ -144,7 +144,9 @@ def parse_logs(log_glob, ident_map=None, online_dc=True):
                 clients.apply_events(itertools.chain.from_iterable(events))
 
                 # find connected clients
-                online_clients = list(filter(lambda c: c.connected, clients))
+                online_clients = list(
+                    filter(lambda c: c.connected, clients.values())
+                )
 
                 logger.debug(
                     'Some clients are still connected: %s', online_clients
