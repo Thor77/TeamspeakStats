@@ -60,7 +60,7 @@ class Clients(MutableMapping):
         '''
         Yield all Client-objects from the collection
         '''
-        return iter(self.store.values())
+        return iter(self.store.keys())
 
     def __getitem__(self, key):
         return self.store[self.ident_map.get(key, key)]
