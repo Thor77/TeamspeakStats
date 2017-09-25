@@ -52,7 +52,7 @@ def test_client_nick(clients):
 
 def test_clients_iter(clients):
     clients, cl1, cl2, uidcl1, uidcl2 = clients
-    client_list = list(iter(clients))
+    client_list = list(clients.values())
     assert cl1 in client_list
     assert cl2 in client_list
     assert uidcl1 in client_list
@@ -62,4 +62,4 @@ def test_clients_iter(clients):
 def test_clients_delete(clients):
     clients, cl1, _, _, _ = clients
     del clients['1']
-    assert cl1 not in clients
+    assert '1' not in clients

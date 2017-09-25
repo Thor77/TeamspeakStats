@@ -47,7 +47,7 @@ def test_onlinetime(soup):
         # find corresponding client-object
         client = list(filter(
             lambda c: c.nick == nick and c.onlinetime > pendulum.Interval(),
-            clients
+            clients.values()
         ))
         # assert existence
         assert client
