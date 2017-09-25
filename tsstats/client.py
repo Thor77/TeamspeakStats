@@ -171,3 +171,17 @@ class Client(object):
 
     def __repr__(self):
         return self.__str__()
+
+    def __eq__(self, other):
+        if type(other) != Client:
+            raise NotImplemented
+        return self.identifier == other.identifier \
+            and self.nick == other.nick \
+            and self.nick_history == other.nick_history \
+            and self.connected == other.connected \
+            and self.onlinetime == other.onlinetime \
+            and self.kicks == other.kicks \
+            and self.pkicks == other.pkicks \
+            and self.bans == other.bans \
+            and self.pbans == other.pbans \
+            and self.last_seen == other.last_seen
