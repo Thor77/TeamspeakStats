@@ -177,5 +177,5 @@ def parse_logs(log_glob, ident_map=None, online_dc=True, cache_path=None):
         if len(clients) >= 1:
             # assemble Server-obj and yield
             yield Server(virtualserver_id, clients)
-    if cache:
+    if cache is not None:
         cache.write()
