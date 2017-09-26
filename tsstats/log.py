@@ -10,6 +10,7 @@ from os.path import basename
 import pendulum
 
 from tsstats import events
+from tsstats.cache import Cache
 from tsstats.client import Clients
 
 re_log_filename = re.compile(r'ts3server_(?P<date>\d{4}-\d\d-\d\d)'
@@ -120,7 +121,7 @@ def _parse_line(line):
     return parsed_events
 
 
-def parse_logs(log_glob, ident_map=None, online_dc=True):
+def parse_logs(log_glob, ident_map=None, online_dc=True, cache_path=None):
     '''
     Parse logs from `log_glob`
 
@@ -133,13 +134,27 @@ def parse_logs(log_glob, ident_map=None, online_dc=True):
     :return: list of servers
     :rtype: [tsstats.log.Server]
     '''
+    # read cache
+    cache = Cache.read(cache_path) if cache_path else None
     for virtualserver_id, logs in _bundle_logs(glob(log_glob)).items():
         clients = Clients(ident_map)
         for index, log in enumerate(logs):
             with open(log.path, encoding='utf-8') as f:
                 logger.debug('Started parsing of %s', f.name)
-                # parse logfile line by line and filter lines without events
-                events = filter(None, map(_parse_line, f))
+                # check if parsing is neccessary
+                if cache is not None and not cache.needs_parsing(f.name):
+                    logger.debug('Nothing new, reading events from cache')
+                    # load events from cache
+                    events = cache[f.name].events
+                else:
+                    # parse logfile line by line
+                    # and filter lines without events
+                    events = filter(None, map(_parse_line, f))
+
+                    # cache parsed events
+                    if cache is not None:
+                        logger.debug('Caching events from %s', f.name)
+                        cache[f.name] = events
                 # chain apply events to Client-obj
                 clients.apply_events(itertools.chain.from_iterable(events))
 
@@ -162,3 +177,5 @@ def parse_logs(log_glob, ident_map=None, online_dc=True):
         if len(clients) >= 1:
             # assemble Server-obj and yield
             yield Server(virtualserver_id, clients)
+    if cache:
+        cache.write()
