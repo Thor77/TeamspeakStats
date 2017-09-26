@@ -1,4 +1,6 @@
 pytest>=2.9.1
+pytest-mock>=1.6.3
+mock>=2.0.0
 pyflakes>=1.2.2
 BeautifulSoup4>=4.4.1
 pendulum>=1.2.4
