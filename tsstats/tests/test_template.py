@@ -72,7 +72,7 @@ def test_lastseen_relative(output):
     soup = BeautifulSoup(open(output), 'html.parser')
     assert soup.find('ul', id='1.onlinetime')\
         .select('div.hint--left')[0]['data-hint'] == \
-        '2 years ago'
+        pendulum.create(2015, 5, 18).diff_for_humans()
     render_servers(servers, output, lastseen_relative=False)
     soup = BeautifulSoup(open(output), 'html.parser')
     assert soup.find('ul', id='1.onlinetime')\
