@@ -18,6 +18,7 @@ class Cache(MutableMapping):
     def __init__(self, path, data={}):
         self.path = path
         self.store = data
+        self.initial_store_version = self.store.setdefault('version', 0)
 
     @classmethod
     def read(cls, path):
@@ -34,6 +35,9 @@ class Cache(MutableMapping):
     def write(self, path=None):
         if not path:
             path = self.path
+        if self.initial_store_version == self.store['version']:
+            logger.debug('Cached content did not change, skipping write')
+            return
         logger.debug('Writing cache to %s', path)
         with open(path, 'wb') as f:
             pickle.dump(self.store, f)
@@ -45,6 +49,7 @@ class Cache(MutableMapping):
 
     def __setitem__(self, path, events):
         self.store[path] = CachedLog(path, _calculate_hash(path), list(events))
+        self.store['version'] += 1
 
     def __getitem__(self, path):
         return self.store[path]
