@@ -4,6 +4,7 @@ try:
 except ImportError:
     from ConfigParser import RawConfigParser
 
+import os
 import logging
 
 logger = logging.getLogger('tsstats')
@@ -20,7 +21,11 @@ DEFAULT_CONFIG = {
         'template': 'index.jinja2',
         'datetimeformat': '%x %X %Z',
         'onlinetimethreshold': -1,
-        'lastseenrelative': True
+        'lastseenrelative': True,
+        'cache': True,
+        'cachepath': os.environ.get('XDG_CACHE_HOME') or os.path.join(
+            os.environ.get('HOME', '/tmp'), '.cache'
+        )
     }
 }
 

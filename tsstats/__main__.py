@@ -68,6 +68,15 @@ def cli():
         help='render last seen timestamp absolute (instead of relative)',
         action='store_false', dest='lastseenrelative'
     )
+    parser.add_argument(
+        '-dc', '--disablecache',
+        help='disable caching feature',
+        action='store_false', dest='cache'
+    )
+    parser.add_argument(
+        '-cp', '--cachepath',
+        type=str, help='Path for cache location'
+    )
     options = parser.parse_args()
     if 'config' in options:
         configuration = config.load(options.config)
@@ -111,7 +120,10 @@ def main(configuration):
 
     servers = parse_logs(
         log, ident_map=identmap,
-        online_dc=configuration.getboolean('General', 'onlinedc')
+        online_dc=configuration.getboolean('General', 'onlinedc'),
+        cache_path=pathjoin(
+            configuration.get('General', 'cachepath'), 'tsstats.pickle'
+        ) if configuration.getboolean('General', 'cache') else None
     )
     render_servers(
         sorted(servers, key=lambda s: s.sid),
