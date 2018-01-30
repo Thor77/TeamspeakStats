@@ -37,7 +37,7 @@ For more details checkout the `documentation <http://teamspeakstats.readthedocs.
 .. |screenshot| image:: https://raw.githubusercontent.com/Thor77/TeamspeakStats/master/screenshot.png
 .. |Build Status| image:: https://travis-ci.org/Thor77/TeamspeakStats.svg?branch=master
    :target: https://travis-ci.org/Thor77/TeamspeakStats
-.. |Build status| image:: https://ci.appveyor.com/api/projects/status/u9cx7krwmmevbvl2?svg=true
+.. |Build status| image:: https://ci.appveyor.com/api/projects/status/u9cx7krwmmevbvl2/branch/master?svg=true
    :target: https://ci.appveyor.com/project/Thor77/teamspeakstats
 .. |Coverage Status| image:: https://coveralls.io/repos/Thor77/TeamspeakStats/badge.svg?branch=master&service=github
    :target: https://coveralls.io/github/Thor77/TeamspeakStats?branch=master
