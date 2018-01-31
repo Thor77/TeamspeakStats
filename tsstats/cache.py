@@ -106,7 +106,7 @@ class Cache(MutableMapping):
         del self.store[path]
 
     def __iter__(self):
-        return iter(self.store.keys())
+        return iter(self.store.keys() - ['version'])
 
     def __len__(self):
-        return len(self.store)
+        return len(self.store.keys() - ['version'])
