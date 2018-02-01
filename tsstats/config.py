@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-
 try:
     from configparser import RawConfigParser
 except ImportError:
