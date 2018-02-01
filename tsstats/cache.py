@@ -95,6 +95,12 @@ class Cache(MutableMapping):
             return True
         return _calculate_hash(path) != self.store[path].hash
 
+    @property
+    def cached_files(self):
+        store_keys = list(self.store.keys())
+        store_keys.remove('version')
+        return store_keys
+
     def __setitem__(self, path, events):
         self.store[path] = CachedLog(path, _calculate_hash(path), list(events))
         self.store['version'] += 1
@@ -106,7 +112,7 @@ class Cache(MutableMapping):
         del self.store[path]
 
     def __iter__(self):
-        return iter(self.store.keys() - ['version'])
+        return iter(self.cached_files)
 
     def __len__(self):
-        return len(self.store.keys() - ['version'])
+        return len(self.cached_files)
