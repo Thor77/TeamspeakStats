@@ -1,6 +1,9 @@
 # -*- coding: utf-8 -*-
 import os
 
+
+import shutil
+
 import pytest
 
 from tsstats.cache import Cache, CachedLog, _calculate_hash
@@ -48,10 +51,17 @@ def test_cache_read_write(cache):
     )
 
 
-def test_cache_needs_parsing(cache):
-    cache[testlog_path] = []
-    assert not cache.needs_parsing(testlog_path)
-    assert cache.needs_parsing(testlog_path + '.nl')
+def test_cache_needs_parsing(cache, tmpdir):
+    tmplog_path = str(tmpdir.mkdir('cache').join('test.log'))
+    # copy logfile to temporary location
+    shutil.copy(testlog_path, tmplog_path)
+
+    assert cache.needs_parsing(tmplog_path)
+    cache[tmplog_path] = []
+    assert not cache.needs_parsing(tmplog_path)
+    with open(tmplog_path, 'a') as f:
+        f.writelines(['content'])
+    assert cache.needs_parsing(tmplog_path)
 
 
 # INTEGRATION
