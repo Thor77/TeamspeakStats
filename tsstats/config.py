@@ -4,8 +4,8 @@ try:
 except ImportError:
     from ConfigParser import RawConfigParser
 
-import os
 import logging
+import os
 
 logger = logging.getLogger('tsstats')
 
