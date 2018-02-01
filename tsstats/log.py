@@ -149,7 +149,7 @@ def parse_logs(log_glob, ident_map=None, online_dc=True, cache_path=None):
                 else:
                     # parse logfile line by line
                     # and filter lines without events
-                    events = filter(None, map(_parse_line, f))
+                    events = list(filter(None, map(_parse_line, f)))
 
                     # cache parsed events
                     if cache is not None:
