@@ -66,5 +66,10 @@ def test_cache_needs_parsing(cache, tmpdir):
 
 # INTEGRATION
 def test_cache_integration(cache_path):
-    assert next(parse_logs(testlog_path, online_dc=False)) == \
-        next(parse_logs(testlog_path, online_dc=False, cache_path=cache_path))
+    first_run = list(parse_logs(
+        testlog_path, online_dc=False, cache_path=cache_path
+    ))
+    second_run = list(parse_logs(
+        testlog_path, online_dc=False, cache_path=cache_path
+    ))
+    assert first_run == second_run
