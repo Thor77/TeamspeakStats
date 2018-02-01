@@ -13,7 +13,9 @@ from tsstats.tests.test_log import testlog_path
 
 @pytest.fixture
 def cache_path(request):
-    cache_path = 'tsstats/tests/res/tsstats.cache'
+    cache_path = 'tsstats/tests/res/tsstats.cache.{}'.format(
+        request.function.__name__
+    )
 
     def clean():
         if os.path.exists(cache_path):
