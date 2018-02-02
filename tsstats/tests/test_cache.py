@@ -73,3 +73,18 @@ def test_cache_integration(cache_path):
         testlog_path, online_dc=False, cache_path=cache_path
     ))
     assert first_run == second_run
+
+
+def test_same_result_without_cache(cache_path):
+    first_run = list(parse_logs(
+        testlog_path, online_dc=False
+    ))
+    second_run = list(parse_logs(
+        testlog_path, online_dc=False, cache_path=cache_path
+    ))
+    third_run = list(parse_logs(
+        testlog_path, online_dc=False, cache_path=cache_path
+    ))
+    assert first_run == second_run
+    assert first_run == third_run
+    assert second_run == third_run
