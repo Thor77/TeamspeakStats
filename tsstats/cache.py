@@ -58,7 +58,7 @@ class Cache(MutableMapping):
             with open(path, 'rb') as f:
                 try:
                     data = pickle.load(f)
-                except EOFError:
+                except EOFError or pickle.UnpicklingError:
                     logger.debug('Couldn\'t read cache')
         return cls(path, data)
 
