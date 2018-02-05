@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import os
 import shutil
+from pickle import UnpicklingError
 
 import pytest
 
@@ -62,6 +63,11 @@ def test_cache_needs_parsing(cache, tmpdir):
     with open(tmplog_path, 'a') as f:
         f.writelines(['content'])
     assert cache.needs_parsing(tmplog_path)
+
+
+def test_cache_read_broken_file():
+    with pytest.raises(UnpicklingError):
+        Cache.read('tsstats/__init__.py')
 
 
 # INTEGRATION
