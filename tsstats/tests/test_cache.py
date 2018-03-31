@@ -66,8 +66,8 @@ def test_cache_needs_parsing(cache, tmpdir):
 
 
 def test_cache_read_broken_file():
-    with pytest.raises(UnpicklingError):
-        Cache.read('tsstats/__init__.py')
+    cache = Cache.read('tsstats/__init__.py')
+    assert isinstance(cache, Cache)
 
 
 # INTEGRATION
