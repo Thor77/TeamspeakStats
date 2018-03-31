@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 import os
 import shutil
-from pickle import UnpicklingError
 
 import pytest
 
