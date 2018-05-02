@@ -148,9 +148,10 @@ def parse_logs(log_glob, ident_map=None, online_dc=True):
                     filter(lambda c: c.connected, clients.values())
                 )
 
-                logger.debug(
-                    'Some clients are still connected: %s', online_clients
-                )
+                if online_clients:
+                    logger.debug(
+                        'Some clients are still connected: %s', online_clients
+                    )
                 if index == len(logs) - 1 and online_dc:
                     logger.debug('Last log => disconnecting online clients')
                     # last iteration => disconnect online clients if desired
