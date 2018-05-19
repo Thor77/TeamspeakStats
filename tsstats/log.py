@@ -13,10 +13,10 @@ from tsstats import events
 from tsstats.client import Clients
 
 re_log_filename = re.compile(r'ts3server_(?P<date>\d{4}-\d\d-\d\d)'
-                             '__(?P<time>\d\d_\d\d_\d\d.\d+)_(?P<sid>\d).log')
-re_log_entry = re.compile('(?P<timestamp>\d{4}-\d\d-\d\d\ \d\d:\d\d:\d\d.\d+)'
-                          '\|\ *(?P<level>\w+)\ *\|\ *(?P<component>\w+)\ *'
-                          '\|\ *(?P<sid>\d+)\ *\|\ *(?P<message>.*)')
+                             r'__(?P<time>\d\d_\d\d_\d\d.\d+)_(?P<sid>\d).log')
+re_log_entry = re.compile(r'(?P<timestamp>\d{4}-\d\d-\d\d\ \d\d:\d\d:\d\d.\d+)'
+                          r'\|\ *(?P<level>\w+)\ *\|\ *(?P<component>\w+)\ *'
+                          r'\|\ *(?P<sid>\d+)\ *\|\ *(?P<message>.*)')
 re_dis_connect = re.compile(
     r"client (?P<action>(dis)?connected) '(?P<nick>.*)'\(id:(?P<clid>\d+)\)")
 re_disconnect_invoker = re.compile(
