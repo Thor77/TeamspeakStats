@@ -140,8 +140,9 @@ def parse_logs(log_glob, ident_map=None, online_dc=True):
                 logger.debug('Started parsing of %s', f.name)
                 # parse logfile line by line and filter lines without events
                 events = filter(None, map(_parse_line, f))
+                all_events = list(itertools.chain.from_iterable(events))
                 # chain apply events to Client-obj
-                clients.apply_events(itertools.chain.from_iterable(events))
+                clients.apply_events(all_events)
 
                 # find connected clients
                 online_clients = list(
@@ -152,12 +153,32 @@ def parse_logs(log_glob, ident_map=None, online_dc=True):
                     logger.debug(
                         'Some clients are still connected: %s', online_clients
                     )
-                if index == len(logs) - 1 and online_dc:
-                    logger.debug('Last log => disconnecting online clients')
-                    # last iteration => disconnect online clients if desired
-                    for online_client in online_clients:
-                        online_client.disconnect(pendulum.utcnow())
-                        online_client.connected += 1
+                    if index == len(logs) - 1:
+                        if online_dc:
+                            logger.debug(
+                                'Last log => disconnecting online clients'
+                            )
+                            # last iteration
+                            # => disconnect online clients if desired
+                            for online_client in online_clients:
+                                online_client.disconnect(pendulum.utcnow())
+                                online_client.connected += 1
+                    else:
+                        logger.warn(
+                            'Server didn\'t disconnect all clients on shutdown'
+                            ' or logfile is incorrectly named/corrupted (%s).'
+                            ' Check debuglog for details',
+                            f.name
+                        )
+                        logger.debug(
+                            'Will handle this by disconnecting all clients on'
+                            ' last event timestamp'
+                        )
+                        last_event_timestamp = all_events[-1].timestamp
+                        logger.debug(
+                            'Last event timestamp: %s', last_event_timestamp)
+                        for online_client in online_clients:
+                            online_client.disconnect(last_event_timestamp)
 
                 logger.debug('Finished parsing of %s', f.name)
         if len(clients) >= 1:
