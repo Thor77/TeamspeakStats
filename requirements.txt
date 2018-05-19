@@ -1,2 +1,8 @@
-Jinja2>=2.8
-pendulum
+Jinja2==2.10
+MarkupSafe==1.0
+pendulum==1.5.1
+python-dateutil==2.7.3
+pytz==2018.4
+pytzdata==2018.5
+six==1.11.0
+tzlocal==1.5.1
