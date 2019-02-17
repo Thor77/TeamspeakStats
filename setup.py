@@ -20,6 +20,6 @@ setup(
     },
     install_requires=[
         'Jinja2>=2.8',
-        'pendulum==1.5.1'
+        'pendulum==2.0.4'
     ],
 )
