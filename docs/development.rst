@@ -21,7 +21,7 @@ There are unit tests for all parts of the project built with `py.test <https://d
 Besides ``py.test`` tests require ``BeautifulSoup`` for template-testing.
 Those requirements are listed in ``testing_requirements.txt``::
 
-  $ pip install -r testing_requirement.txt
+  $ pip install -r requirements-dev.txt
   $ py.test tsstats/tests/
 
 Versioning
