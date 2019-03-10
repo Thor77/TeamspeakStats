@@ -10,3 +10,4 @@ pendulum = "==1.5.1"
 [dev-packages]
 "pytest" = "*"
 "beautifulsoup4" = "*"
+pylama = "*"

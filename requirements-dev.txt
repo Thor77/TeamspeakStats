@@ -10,5 +10,6 @@
 # `Pipfile.lock` and then regenerate `requirements*.txt`.
 ################################################################################
 
-jinja2
-pendulum==1.5.1
+beautifulsoup4
+pylama
+pytest
