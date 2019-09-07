@@ -14,7 +14,7 @@ jinja2==2.10.1
 markupsafe==1.1.1
 pendulum==1.5.1
 python-dateutil==2.8.0
-pytz==2018.9
-pytzdata==2018.9
+pytz==2019.2
+pytzdata==2019.2
 six==1.12.0
 tzlocal==1.5.1
