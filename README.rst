@@ -3,6 +3,9 @@ TeamspeakStats |Build Status| |Build status| |Coverage Status| |Code Health| |Py
 
 A simple Teamspeak stat-generator - based solely on server-logs
 
+Screenshots
+============
+
 |screenshot|
 
 Installation
