@@ -1,4 +1,4 @@
-TeamspeakStats |Build Status| |Build status| |Coverage Status| |Code Health| |PyPI| |Documentation Status|
+TeamspeakStats |Build Status| |Build status| |Coverage Status| |PyPI| |Documentation Status|
 ==========================================================================================================
 
 A simple Teamspeak stat-generator - based solely on server-logs
