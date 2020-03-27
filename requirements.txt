@@ -10,11 +10,11 @@
 # `Pipfile.lock` and then regenerate `requirements*.txt`.
 ################################################################################
 
-jinja2==2.10.1
+jinja2==2.11.1
 markupsafe==1.1.1
 pendulum==1.5.1
-python-dateutil==2.8.0
-pytz==2019.2
-pytzdata==2019.2
-six==1.12.0
+python-dateutil==2.8.1
+pytz==2019.3
+pytzdata==2019.3
+six==1.14.0
 tzlocal==1.5.1
