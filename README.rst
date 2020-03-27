@@ -41,8 +41,6 @@ For more details checkout the `documentation <http://teamspeakstats.readthedocs.
    :target: https://ci.appveyor.com/project/Thor77/teamspeakstats
 .. |Coverage Status| image:: https://coveralls.io/repos/Thor77/TeamspeakStats/badge.svg?branch=master&service=github
    :target: https://coveralls.io/github/Thor77/TeamspeakStats?branch=master
-.. |Code Health| image:: https://landscape.io/github/Thor77/TeamspeakStats/master/landscape.svg?style=flat
-   :target: https://landscape.io/github/Thor77/TeamspeakStats/master
 .. |PyPI| image:: https://img.shields.io/pypi/v/tsstats.svg
    :target: https://pypi.python.org/pypi/tsstats
 .. |Documentation Status| image:: https://readthedocs.org/projects/teamspeakstats/badge/?version=latest
