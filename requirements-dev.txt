@@ -1,29 +1,17 @@
-################################################################################
-# This requirements file has been automatically generated from `Pipfile` with
-# `pipenv-to-requirements`
-#
-#
-# This has been done to maintain backward compatibility with tools and services
-# that do not support `Pipfile` yet.
-#
-# Do NOT edit it directly, use `pipenv install [-d]` to modify `Pipfile` and
-# `Pipfile.lock` and then regenerate `requirements*.txt`.
-################################################################################
-
-attrs==19.3.0
+-i https://pypi.python.org/simple/
+attrs==20.3.0
 beautifulsoup4==4.8.2
 mccabe==0.6.1
-more-itertools==8.2.0
-packaging==20.3
+more-itertools==8.7.0
+packaging==20.9
 pluggy==0.13.1
-py==1.8.1
-pycodestyle==2.5.0
-pydocstyle==5.0.2
-pyflakes==2.1.1
+py==1.10.0
+pycodestyle==2.7.0
+pydocstyle==6.0.0
+pyflakes==2.3.0
 pylama==7.7.1
-pyparsing==2.4.6
+pyparsing==2.4.7
 pytest==5.4.1
-six==1.14.0
-snowballstemmer==2.0.0
-soupsieve==2.0
-wcwidth==0.1.9
+snowballstemmer==2.1.0
+soupsieve==2.2.1
+wcwidth==0.2.5
