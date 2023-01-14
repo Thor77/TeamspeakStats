@@ -1,0 +1,22 @@
+[tool.poetry]
+name = "tsstats"
+version = "2.0.1"
+description = "A simple Teamspeak stats generator"
+authors = ["Thor77 <thor77@thor77.org>"]
+license = "MIT"
+readme = "README.rst"
+
+[tool.poetry.dependencies]
+python = "^3.10"
+jinja2 = "^3.1.2"
+pendulum = "1.5.1"
+
+
+[tool.poetry.group.test.dependencies]
+pytest = "^7.2.0"
+beautifulsoup4 = "^4.11.1"
+pylama = "^8.4.1"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
