@@ -9,10 +9,10 @@ from tsstats.utils import transform_pretty_identmap
 @pytest.fixture(scope='module')
 def identmap_clients():
     clients = Clients({
-            '1': '2',
-            '5': '2',
-            'UID1': 'UID2',
-            'UID5': 'UID2'
+        '1': '2',
+        '5': '2',
+        'UID1': 'UID2',
+        'UID5': 'UID2'
     })
     cl = Client('2', 'Client2')
     uidcl = Client('UID2', 'Client2++')
