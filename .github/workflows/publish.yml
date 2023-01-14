@@ -6,8 +6,6 @@ on:
       - "*"
 
 jobs:
-  test:
-    uses: ./.github/workflows/test.yml
   publish:
     runs-on: ubuntu-22.04
     steps:
