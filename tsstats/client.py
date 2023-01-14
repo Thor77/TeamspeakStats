@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import datetime
 import logging
-from collections import MutableMapping
+from collections.abc import MutableMapping
 
 logger = logging.getLogger('tsstats')
 
