@@ -47,7 +47,7 @@ def test_onlinetime(soup):
         onlinetime = onlinetime.text
         # find corresponding client-object
         client = list(filter(
-            lambda c: c.nick == nick and c.onlinetime > pendulum.Interval(),
+            lambda c: c.nick == nick and c.onlinetime > pendulum.duration(),
             clients.values()
         ))
         # assert existence
@@ -73,9 +73,9 @@ def test_lastseen_relative(output):
     soup = BeautifulSoup(open(output), 'html.parser')
     assert soup.find('ul', id='1.onlinetime')\
         .select('div.hint--left')[0]['data-hint'] == \
-        pendulum.create(2015, 5, 18).diff_for_humans()
+        pendulum.datetime(2015, 5, 18).diff_for_humans()
     render_servers(servers, output, lastseen_relative=False)
     soup = BeautifulSoup(open(output), 'html.parser')
     assert soup.find('ul', id='1.onlinetime')\
         .select('div.hint--left')[0]['data-hint'] == \
-        '05/18/15 15:54:38 GMT'
+        '05/18/15 15:54:38 UTC'

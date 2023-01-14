@@ -8,7 +8,7 @@ from tsstats.template import render_servers
 
 testlog_path = 'tsstats/tests/res/test.log'
 
-static_timestamp = pendulum.Pendulum(2015, 5, 18, 15, 52, 52, 685612)
+static_timestamp = pendulum.datetime(2015, 5, 18, 15, 52, 52, 685612)
 
 
 @pytest.fixture
@@ -21,9 +21,9 @@ def test_log_client_count(clients):
 
 
 def test_log_onlinetime(clients):
-    assert clients['1'].onlinetime == pendulum.Interval(
+    assert clients['1'].onlinetime == pendulum.duration(
         seconds=402, microseconds=149208)
-    assert clients['2'].onlinetime == pendulum.Interval(
+    assert clients['2'].onlinetime == pendulum.duration(
         seconds=19, microseconds=759644)
 
 
@@ -57,14 +57,14 @@ def test_log_pbans(clients):
             '1': [
                 TimedLog(
                     'ts3server_2016-06-06__14_22_09.527229_1.log',
-                    pendulum.create(
+                    pendulum.datetime(
                         year=2016, month=6, day=6, hour=14, minute=22,
                         second=9, microsecond=527229
                     )
                 ),
                 TimedLog(
                     'ts3server_2017-07-07__15_23_10.638340_1.log',
-                    pendulum.create(
+                    pendulum.datetime(
                         year=2017, month=7, day=7, hour=15, minute=23,
                         second=10, microsecond=638340
                     )

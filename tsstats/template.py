@@ -105,6 +105,6 @@ def render_servers(servers, output, title='TeamspeakStats',
     logger.debug('Rendering template %s', template)
     template.stream(title=title, servers=prepared_servers,
                     debug=logger.level <= logging.DEBUG,
-                    creation_time=pendulum.utcnow())\
+                    creation_time=pendulum.now('UTC'))\
         .dump(output, encoding='utf-8')
     logger.debug('Wrote rendered template to %s', output)
