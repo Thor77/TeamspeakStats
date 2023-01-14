@@ -19,7 +19,7 @@ jobs:
       - name: Install dependencies
         run: poetry install
       - name: Lint
-        run: poetry run pylama tsstats/
+        run: poetry run poe lint
   test:
     strategy:
       fail-fast: false
@@ -38,4 +38,4 @@ jobs:
       - name: Install dependencies
         run: poetry install
       - name: Run tests
-        run: poetry run pytest tsstats/
+        run: poetry run poe test
