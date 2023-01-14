@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "tsstats"
-version = "2.0.2"
+version = "2.1.0"
 description = "A simple Teamspeak stats generator"
 authors = ["Thor77 <thor77@thor77.org>"]
 license = "MIT"
