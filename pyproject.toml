@@ -5,6 +5,7 @@ description = "A simple Teamspeak stats generator"
 authors = ["Thor77 <thor77@thor77.org>"]
 license = "MIT"
 readme = "README.rst"
+include = ["tsstats/templates/*.jinja2"]
 
 [tool.poetry.dependencies]
 python = "^3.10"
@@ -17,6 +18,9 @@ beautifulsoup4 = "^4.11.1"
 pylama = "^8.4.1"
 poethepoet = "^0.18.0"
 pytest-cov = "^4.0.0"
+
+[tool.poetry.scripts]
+tsstats = 'tsstats.__main__:cli'
 
 [build-system]
 requires = ["poetry-core"]
